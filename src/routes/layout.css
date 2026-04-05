@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Sono:wght,MONO@200..800,1&display=swap');
+@import 'tailwindcss';
+
+
+@theme {
+    --color-border: rgb(54, 108, 148);
+    --color-surface: rgb(250, 243, 234);
+    --color-foreground: var(--color-border);
+    --color-accent: var(--color-border);
+    --color-muted: gray;
+    --default-font-family: "Sono", mono;
+}
+
+body {
+        background-color: var(--color-surface);
+    }
