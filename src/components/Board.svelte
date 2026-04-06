@@ -40,6 +40,7 @@
 <svg
     bind:this={svgElement}
     viewBox="0 0 {GRID_SIZE} {GRID_SIZE}"
+    class:game-over={gameManager.gameOver}
     ontouchstart={(e) => inputManager.handleTouchStart(e, getTouchRect())}
     ontouchmove={(e) => inputManager.handleTouchMove(e, getTouchRect())}
     ontouchend={(e) => inputManager.handleTouchEnd(e)}
@@ -65,11 +66,20 @@
 
     {#if line.length > 0}
         {@const end = line.at(-1)!}
-        <circle cx={end.x} cy={end.y} r="0.1" fill="var(--color-accent)"> </circle>
+        <circle cx={end.x} cy={end.y} r="0.1" fill="var(--color-accent)">
+        </circle>
     {/if}
 
     {#each lineWindows as [{ x: x1, y: y1 }, { x: x2, y: y2 }]}
-        <line stroke="var(--color-accent)" stroke-width="0.002rem" {x1} {y1} {x2} {y2}> </line>
+        <line
+            stroke="var(--color-accent)"
+            stroke-width="0.002rem"
+            {x1}
+            {y1}
+            {x2}
+            {y2}
+        >
+        </line>
     {/each}
 </svg>
 
@@ -88,5 +98,11 @@
         cursor: pointer;
         user-select: none;
         touch-action: none;
+    }
+
+    svg.game-over {
+        opacity: 0.4;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
     }
 </style>

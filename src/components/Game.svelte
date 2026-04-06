@@ -10,6 +10,21 @@
     const timeDisplay = $derived(
         `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`,
     );
+
+    const {
+        dateKey,
+        playerStatus,
+        avasWords,
+        histogram,
+    }: {
+        dateKey: string;
+        playerStatus: "ava" | "player";
+        avasWords: null | string[];
+        histogram: any;
+    } = $props();
+
+    // svelte-ignore state_referenced_locally
+    gameManager.init(dateKey, playerStatus, avasWords, histogram);
 </script>
 
 <div class="game-container text-foreground">

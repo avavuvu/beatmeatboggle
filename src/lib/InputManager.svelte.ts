@@ -12,6 +12,7 @@ class InputManager {
     #lastTouchClientY: number = 0;
 
     inputKey = (event: KeyboardEvent) => {
+        if (gameManager.gameOver) return;
         switch (event.key) {
             case "Backspace":
                 gameManager.removeLast();
@@ -28,6 +29,7 @@ class InputManager {
     };
 
     handleTileClick = (index: number) => {
+        if (gameManager.gameOver) return;
         if (this.isSliding) return;
         gameManager.addTile(index);
     };
@@ -60,6 +62,7 @@ class InputManager {
     };
 
     handleTouchStart = (event: TouchEvent, rect: DOMRect) => {
+        if (gameManager.gameOver) return;
         event.preventDefault();
         this.isSliding = true;
         this.#lastActivatedIndex = -1;
@@ -78,6 +81,7 @@ class InputManager {
     };
 
     handleTouchMove = (event: TouchEvent, rect: DOMRect) => {
+        if (gameManager.gameOver) return;
         event.preventDefault();
         if (!this.isSliding) return;
 

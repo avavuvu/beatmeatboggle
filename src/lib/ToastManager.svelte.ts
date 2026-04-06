@@ -10,7 +10,7 @@ class ToastManager {
 
     GOOD_WORDS = [
         "Nice", "Awesome", "Good",
-        "Wowza", "Yup"
+        "Wowza", "Yup", "Wow", "Cool"
     ]
 
 

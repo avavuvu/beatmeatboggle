@@ -4,11 +4,21 @@
     import { page } from "$app/state";
     import { slide } from "svelte/transition";
 
-    const { scores, totalWordSet, didWin, wordsMap } = scoreManager.getReveal();
+    const getReveal = async () => {
+        const reveal = await scoreManager.getReveal();
 
-    const shareText = didWin
-        ? "I beat Ava at Boggle!"
-        : "I couldn't quite beat Ava at Boggle :(";
+        didWin = reveal.didWin;
+
+        return reveal;
+    };
+
+    let didWin = $state(false);
+
+    const shareText = $derived(
+        didWin
+            ? "I beat Ava at Boggle!"
+            : "I couldn't quite beat Ava at Boggle :(",
+    );
 
     const share = async () => {
         const url = page.url.origin;
@@ -40,49 +50,51 @@
     });
 </script>
 
-<div
-    transition:slide={{ delay }}
-    class="game-over h-full grid grid-rows-4 bg-surface border border-border"
->
-    <div class="grid grid-cols-3 gap-1 w-full flex-1 min-h-0 pt-2">
-        {#each scores as [name, score], index}
-            <div class="flex flex-col justify-end text-sm text-center">
-                <div
-                    class:player={name === "You!"}
-                    class="bar text-xs text-white transition-all duration-500 ease-out"
-                    style="height: {mounted
-                        ? (score / totalWordSet.size) * 100
-                        : 0}%; transition-delay: {delay + index * 400}ms;"
-                >
-                    {name}
+{#await getReveal() then { scores, totalWordSet, didWin, wordsMap }}
+    <div
+        transition:slide={{ delay }}
+        class="game-over h-full grid grid-rows-4 bg-surface border border-border"
+    >
+        <div class="grid grid-cols-3 gap-1 w-full flex-1 min-h-0 pt-2">
+            {#each scores as [name, score], index}
+                <div class="flex flex-col justify-end text-sm text-center">
+                    <div
+                        class:player={name === "You!"}
+                        class="bar text-xs text-white transition-all duration-500 ease-out"
+                        style="height: {mounted
+                            ? (score / totalWordSet.size) * 100
+                            : 0}%; transition-delay: {delay + index * 400}ms;"
+                    >
+                        {name}
+                    </div>
                 </div>
-            </div>
-        {/each}
-    </div>
-    <div class="row-span-2">
-        <ul class="p-2 flex flex-wrap gap-2 h-full overflow-y-scroll">
-            {#each wordsMap as [word, wasFound]}
-                <li class:found={wasFound}>
-                    {word}
-                </li>
             {/each}
-        </ul>
-    </div>
-    <div class="bubble-container flex gap-1 flex-col [align-items:end]">
-        <div class="imessage-bubble">
-            {#if didWin}
-                I beat Ava at Boggle!
-            {:else}
-                I couldn't quite beat Ava at Boggle :{"("}
-            {/if}
-            <div class="bubble-tail"></div>
         </div>
-        <button class="imessage-bubble underline" onclick={share}>
-            Share
-            <div class="bubble-tail"></div>
-        </button>
+        <div class="row-span-2">
+            <ul class="p-2 flex flex-wrap gap-2 h-full overflow-y-scroll">
+                {#each wordsMap as [word, wasFound]}
+                    <li class:found={wasFound}>
+                        {word}
+                    </li>
+                {/each}
+            </ul>
+        </div>
+        <div class="bubble-container flex gap-1 flex-col [align-items:end]">
+            <div class="imessage-bubble">
+                {#if didWin}
+                    I beat Ava at Boggle!
+                {:else}
+                    I couldn't quite beat Ava at Boggle :{"("}
+                {/if}
+                <div class="bubble-tail"></div>
+            </div>
+            <button class="imessage-bubble underline" onclick={share}>
+                Share
+                <div class="bubble-tail"></div>
+            </button>
+        </div>
     </div>
-</div>
+{/await}
 
 <style>
     .bar {

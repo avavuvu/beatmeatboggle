@@ -23,21 +23,18 @@ export const generateClassic = (): string[] => {
 
 }
 
-export const generateClusters = (vowelness = 0.5): string[] => {
-    const date = new Date()
-    const dateKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
-    console.log(dateKey)
-    const rng = seedrandom(dateKey + "6")
+export const generateClusters = (seed: string, vowelness = 0.46): string[] => {
+    const rng = seedrandom(seed)
 
     const clusters: Record<string, string[]> = {
         "b": ["r", "l"],
-        "c": ["r", "l", "h"],
+        "c": ["r", "l", "h", "k"],
         "d": ["r", "w", "g"],
         "f": ["r", "l"],
         "g": ["r", "l", "h", "w", "n"],
         "h": ["s", "c",],
         // "j": [],
-        "k": ["r", "l", "n"],
+        "k": ["r", "l", "n", "c"],
         // "l": [],
         // "m": [],
         "n": ["g"],
@@ -56,10 +53,17 @@ export const generateClusters = (vowelness = 0.5): string[] => {
 
     const consonantPool = ["l", "l", "l", "l", "n", "n", "n", "n", "n", "n", "s", "s", "s", "s", "s", "s", "t", "t", "t", "t", "t", "t", "t", "t", "t", "d", "d", "d", "r", "r", "r", "r", "r", "b", "b", "c", "c", "g", "g", "h", "h", "h", "h", "h", "m", "m", "p", "p", "y", "y", "y", "f", "f", "k", "v", "v", "w", "w", "w", "j", "q", "x", "z"]
 
+    const qualityLetterPool = ["s", "t", "e", "r", "a"]
+
     const randomVowel = () => vowelPool[Math.floor(rng() * vowelPool.length)]
     const randomConsonant = () => consonantPool[Math.floor(rng() * consonantPool.length)]
+    const randomQualityLetter = () => qualityLetterPool[Math.floor(rng() * qualityLetterPool.length)]
 
-    const board = Array.from({ length: GRID_SIZE * GRID_SIZE }, () => {
+    const board = Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, i) => {
+        if ([5, 6, 9, 10].includes(i) && rng() > 0.7) {
+            return randomQualityLetter()
+        }
+
         if (rng() > vowelness) {
             return randomVowel()
         }
@@ -84,6 +88,33 @@ export const generateClusters = (vowelness = 0.5): string[] => {
             if (!positions.some(x => vowelPool.includes(board[x]))) {
                 board[i] = randomVowel()
             }
+        }
+    }
+
+    let change = []
+
+    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+        const letter = board[i]
+
+        const positions = getAdjacentPositions(i)
+
+        let count = 0
+        for (const pos of positions) {
+            if (board[pos] === letter) {
+                count++
+            }
+        }
+
+        if (count > 1) {
+            change.push(i)
+        }
+    }
+
+    for (const pos of change) {
+        if (vowelPool.includes(board[pos])) {
+            board[pos] = randomConsonant()
+        } else {
+            board[pos] = randomVowel()
         }
     }
 

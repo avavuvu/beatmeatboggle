@@ -6,8 +6,6 @@ import toastManager from "./ToastManager.svelte"
 import scoreManager from "./ScoreManager.svelte"
 export { getAdjacentPositions } from "./constants"
 
-const alphabet = "aaaaaabbbcccddddeeeeffgghhhhiiiiijkllllmmmnnnnnnnnnooooooopppqrrrrrrrrrsssssssstttttttttttttuuuuuvwwwyz"
-
 class Chain {
     #letters = $state<Array<[number, string]>>([])
 
@@ -83,20 +81,28 @@ class GameManager {
     secondsLeft: number = $state(5)
     gameOver: boolean = $state(false)
 
+    playerState: "ava" | "player" = $state("player")
+    dateKey: string = $state("")
+
     isTentative: boolean = $state(false)
 
     #timerHandle: ReturnType<typeof setInterval> | undefined = undefined
 
-    init = () => {
-        this.letters = generateClusters()
+    init = (dateKey: string, playerState: "ava" | "player", avasWords: null | string[], histogram: any) => {
+        this.dateKey = dateKey
+        this.playerState = playerState
+
+        this.letters = generateClusters(this.dateKey)
         this.totalPossibleWords = [...solve(this.letters)]
-        this.secondsLeft = 4 * 60
+        this.secondsLeft = 3 * 60
         this.gameOver = false
         this.foundWords = []
         this.currentChain.clear()
 
-        scoreManager.init( // TODO: Ava words / state
-            this.totalPossibleWords, []
+        scoreManager.init(
+            this.totalPossibleWords,
+            avasWords,
+            histogram
         )
 
         clearInterval(this.#timerHandle)
@@ -104,13 +110,18 @@ class GameManager {
             this.secondsLeft -= 1
             if (this.secondsLeft <= 0) {
                 this.secondsLeft = 0
-                this.gameOver = true
+                this.endGame()
                 clearInterval(this.#timerHandle)
             }
         }, 1000)
     }
 
+    endGame = () => {
+        this.gameOver = true
+    }
+
     removeLast = () => {
+        if (this.gameOver) return
         this.currentChain.removeLast()
         if (this.currentChain.length === 0) {
             this.isTentative = false
@@ -118,6 +129,7 @@ class GameManager {
     }
 
     addTile = (index: number) => {
+        if (this.gameOver) return
         const lastLetter = this.currentChain.last()
 
         if (lastLetter && index === lastLetter?.[0]) {
@@ -150,6 +162,7 @@ class GameManager {
     }
 
     submitWord = () => {
+        if (this.gameOver) return
         const word = this.currentChain.getString()
 
         this.currentChain.clear()
@@ -227,6 +240,7 @@ class GameManager {
     }
 
     inputChar = (char: string) => {
+        if (this.gameOver) return
         const tile = this.findTileFromCharacter(char, this.getSearchArea())
 
         if (tile) {
@@ -249,6 +263,5 @@ class GameManager {
 }
 
 const gameManager = new GameManager()
-gameManager.init()
 
 export default gameManager

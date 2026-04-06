@@ -15,14 +15,22 @@ class ScoreManager {
     pointsMap = new SvelteMap<string, ScoreItem[]>([])
     totalWords!: string[]
     avasScore!: number
-    avasWords!: string[]
+    avasWords!: null | string[]
     totalPossibleScore!: number
+    histogram!: {
+        [k: string]: number;
+    }
 
-    init = (totalWords: string[], avasWords: string[]) => {
+    init = (totalWords: string[], avasWords: null | string[], histogram: {
+        [k: string]: number;
+    }) => {
         this.avasWords = avasWords
         this.totalWords = totalWords
-        this.avasScore = avasWords.reduce((total, word) => total + this.calculatePoints(word).points, 0)
+        this.avasScore = !avasWords
+            ? 0
+            : avasWords.reduce((total, word) => total + this.calculatePoints(word).points, 0)
         this.totalPossibleScore = totalWords.reduce((total, word) => total + this.wordLengthToPoints(word), 0)
+        this.histogram = histogram
     }
 
     wordLengthToPoints = (word: string) => Math.floor(Math.pow(word.length, 2) / 4)
@@ -38,7 +46,7 @@ class ScoreManager {
             reason: "length"
         }]
 
-        if (!this.avasWords.includes(word)) {
+        if (this.avasWords && !this.avasWords.includes(word)) {
             points += 4
             pointsArray.push({
                 points: 4,
@@ -70,7 +78,28 @@ class ScoreManager {
         )
     }
 
-    getReveal = () => {
+    getReveal = async () => {
+        const postUrl = gameManager.playerState === "ava"
+            ? "/api/avas-words"
+            : "/api/player-words"
+
+        const postHeaders = gameManager.playerState === "player"
+            ? undefined
+            : {
+                "authorization": localStorage.getItem("admin_token") ?? ""
+            }
+
+        console.log(postHeaders)
+
+        await fetch(postUrl, {
+            method: "POST",
+            body: JSON.stringify({
+                words: gameManager.foundWords,
+                dateKey: gameManager.dateKey
+            }),
+            headers: postHeaders
+        })
+
         const playerWordSet = new Set(gameManager.foundWords);
         const totalWordSet = new Set(gameManager.totalPossibleWords);
 
