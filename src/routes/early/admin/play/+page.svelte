@@ -1,10 +1,8 @@
 <script lang="ts">
     import Game from "@/Game.svelte";
     import { browser } from "$app/environment";
+    import { page } from "$app/state";
     import { redirect } from "@sveltejs/kit";
-    import type { LayoutProps } from "../../../$types";
-
-    const { data }: LayoutProps = $props();
 
     export const verify = () => {
         const token = browser ? localStorage.getItem("admin_token") : null;
@@ -19,9 +17,7 @@
 
     let verified = $state(verify());
 
-    //@ts-ignore
-    // svelte-ignore state_referenced_locally
-    const dateKey = data.dateKey;
+    const dateKey = page.url.searchParams.get("date") ?? "";
     const dayNumber = new Date(dateKey).getDay();
 </script>
 

@@ -14,9 +14,9 @@
             <li>
                 <a href="/early/admin/play?date={date}">play</a>
             </li>
-            <li>
+            <!-- <li>
                 <a href="/early/admin/words?date={date}">edit word list</a>
-            </li>
+            </li> -->
         </ul>
     </div>
 </main>
