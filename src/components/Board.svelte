@@ -4,7 +4,10 @@
     import inputManager from "$lib/InputManager.svelte";
 
     const cells = gameManager.letters.map((letter, index) => {
-        const [x, y] = [index % gameManager.gridSize, Math.floor(index / gameManager.gridSize)];
+        const [x, y] = [
+            index % gameManager.gridSize,
+            Math.floor(index / gameManager.gridSize),
+        ];
 
         const char = letter.toUpperCase();
 
@@ -40,20 +43,29 @@
     bind:this={svgElement}
     viewBox="0 0 {gameManager.gridSize} {gameManager.gridSize}"
     class:game-over={gameManager.gameOver}
-    ontouchstart={(e) => inputManager.handleTouchStart(e, getTouchRect())}
-    ontouchmove={(e) => inputManager.handleTouchMove(e, getTouchRect())}
-    ontouchend={(e) => inputManager.handleTouchEnd(e)}
+    onpointerdown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        inputManager.handlePointerDown(e, getTouchRect());
+    }}
+    onpointermove={(e) => inputManager.handlePointerMove(e, getTouchRect())}
+    onpointerup={(e) => {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+        inputManager.handlePointerUp(e);
+    }}
+    onpointercancel={(e) => {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+        inputManager.handlePointerUp(e);
+    }}
 >
     {#each cells as { x, y, char, index }}
         <!-- svelte-ignore attribute_global_event_reference -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <g
-            onclick={() => inputManager.handleTileClick(index)}
-            {x}
-            {y}
-            transform={`translate(${x}, ${y})`}
-        >
+        <g {x} {y} transform={`translate(${x}, ${y})`}>
             <Tile
                 {char}
                 {x}

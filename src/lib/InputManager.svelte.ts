@@ -7,31 +7,12 @@ class InputManager {
     isSliding = $state(false);
 
     #lastActivatedIndex: number = -1;
-    #lastTouchClientX: number = 0;
-    #lastTouchClientY: number = 0;
+    #lastPointerClientX: number = 0;
+    #lastPointerClientY: number = 0;
 
-    inputKey = (event: KeyboardEvent) => {
-        if (gameManager.gameOver) return;
-        switch (event.key) {
-            case "Backspace":
-                gameManager.removeLast();
-                break;
-            case "Enter":
-                gameManager.submitWord();
-                break;
-            default:
-                if (event.key.match(/^[a-zA-Z]$/)) {
-                    gameManager.inputChar(event.key.toLowerCase());
-                }
-                break;
-        }
-    };
-
-    handleTileClick = (index: number) => {
-        if (gameManager.gameOver) return;
-        if (this.isSliding) return;
-        gameManager.addTile(index);
-    };
+    #startPointerClientX: number = 0;
+    #startPointerClientY: number = 0;
+    #hasMoved: boolean = false;
 
     #toSvgCoords = (
         clientX: number,
@@ -60,17 +41,39 @@ class InputManager {
         return bestIndex;
     };
 
-    handleTouchStart = (event: TouchEvent, rect: DOMRect) => {
+    inputKey = (event: KeyboardEvent) => {
         if (gameManager.gameOver) return;
+        switch (event.key) {
+            case "Backspace":
+                gameManager.removeLast();
+                break;
+            case "Enter":
+                gameManager.submitWord();
+                break;
+            default:
+                if (event.key.match(/^[a-zA-Z]$/)) {
+                    gameManager.inputChar(event.key.toLowerCase());
+                }
+                break;
+        }
+    };
+
+    handlePointerDown = (event: PointerEvent, rect: DOMRect) => {
+        if (gameManager.gameOver) return;
+        // Only accept primary button (left click) or touch
+        if (event.button !== 0 && event.pointerType === "mouse") return;
         event.preventDefault();
+
         this.isSliding = true;
+        this.#hasMoved = false;
         this.#lastActivatedIndex = -1;
 
-        const touch = event.touches[0];
-        this.#lastTouchClientX = touch.clientX;
-        this.#lastTouchClientY = touch.clientY;
+        this.#startPointerClientX = event.clientX;
+        this.#startPointerClientY = event.clientY;
+        this.#lastPointerClientX = event.clientX;
+        this.#lastPointerClientY = event.clientY;
 
-        const [svgX, svgY] = this.#toSvgCoords(touch.clientX, touch.clientY, rect);
+        const [svgX, svgY] = this.#toSvgCoords(event.clientX, event.clientY, rect);
         const index = this.#tileAtPoint(svgX, svgY);
 
         if (index !== -1) {
@@ -79,34 +82,47 @@ class InputManager {
         }
     };
 
-    handleTouchMove = (event: TouchEvent, rect: DOMRect) => {
+    handlePointerMove = (event: PointerEvent, rect: DOMRect) => {
         if (gameManager.gameOver) return;
-        event.preventDefault();
         if (!this.isSliding) return;
+        event.preventDefault();
 
-        const touch = event.touches[0];
+        const totalDist = Math.hypot(
+            event.clientX - this.#startPointerClientX,
+            event.clientY - this.#startPointerClientY
+        );
 
-        const dx = touch.clientX - this.#lastTouchClientX;
-        const dy = touch.clientY - this.#lastTouchClientY;
+        if (totalDist > MIN_MOVE_PX) {
+            this.#hasMoved = true;
+        }
+
+        const dx = event.clientX - this.#lastPointerClientX;
+        const dy = event.clientY - this.#lastPointerClientY;
         const movedPx = Math.hypot(dx, dy);
+
         if (movedPx < MIN_MOVE_PX) return;
 
-        const [svgX, svgY] = this.#toSvgCoords(touch.clientX, touch.clientY, rect);
+        const [svgX, svgY] = this.#toSvgCoords(event.clientX, event.clientY, rect);
         const index = this.#tileAtPoint(svgX, svgY);
 
         if (index !== -1 && index !== this.#lastActivatedIndex) {
             this.#lastActivatedIndex = index;
-            this.#lastTouchClientX = touch.clientX;
-            this.#lastTouchClientY = touch.clientY;
+            this.#lastPointerClientX = event.clientX;
+            this.#lastPointerClientY = event.clientY;
             gameManager.addTile(index);
         }
     };
 
-    handleTouchEnd = (event: TouchEvent) => {
+    handlePointerUp = (event: PointerEvent) => {
+        if (!this.isSliding) return;
         event.preventDefault();
+
         this.isSliding = false;
         this.#lastActivatedIndex = -1;
-        gameManager.submitWord()
+
+        if (this.#hasMoved) {
+            gameManager.submitWord();
+        }
     };
 }
 

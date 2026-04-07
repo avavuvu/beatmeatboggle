@@ -17,19 +17,20 @@
         dateKey,
         dayNumber,
         playerStatus,
-        scorePromise,
     }: {
         dateKey: string;
         dayNumber: number;
         playerStatus: "ava" | "player";
-        scorePromise: Promise<ScoreManagerInitData>;
     } = $props();
 
     // svelte-ignore state_referenced_locally
-    gameManager.init(dateKey, dayNumber, playerStatus, scorePromise);
+    gameManager.init(dateKey, dayNumber, playerStatus);
 </script>
 
-<div class="game-container text-foreground">
+<div
+    class:game-over={gameManager.gameOver}
+    class="game-container text-foreground"
+>
     <div class="game-grid">
         <div class="timer edge">
             <div class:urgent={gameManager.secondsLeft <= 30}>
@@ -39,8 +40,12 @@
         <div class="board">
             <Board />
         </div>
-        <div class="words edge">
-            <ul class="p-2 flex flex-wrap gap-2">
+        <div class="words">
+            <div class="h-12 p-2">
+                {gameManager.currentChain.getString().toUpperCase()}
+            </div>
+
+            <ul class="p-2 flex flex-wrap gap-2 overflow-y-scroll">
                 {#each gameManager.foundWords.toSorted() as word}
                     <li>
                         {word}
@@ -49,7 +54,7 @@
             </ul>
         </div>
         <div
-            class="backspace edge z-10"
+            class="backspace edge z-10 touch-manipulation"
             style={gameManager.gameOver ? "display: none;" : "display: unset;"}
         >
             <button
@@ -82,7 +87,7 @@
             </button>
         </div>
         <div
-            class="submit edge z-10"
+            class="submit edge z-10 touch-manipulation"
             style={gameManager.gameOver ? "display: none;" : "display: unset;"}
         >
             <button
@@ -110,7 +115,7 @@
                 >
             </button>
         </div>
-        <div class="gutter">
+        <div class="gutter pointer-events-none z-20">
             <Toast />
         </div>
         <div class="banner edge">
@@ -181,10 +186,14 @@
     @media (max-width: 600px) {
         .game-container {
             --cols: 4;
-            --rows: 10;
+            --rows: 7;
             max-height: unset;
             aspect-ratio: var(--cols) / var(--rows);
             padding: 0;
+        }
+
+        .game-container.game-over {
+            --rows: 10;
         }
 
         .game-grid {
@@ -192,6 +201,7 @@
             aspect-ratio: var(--cols) / var(--rows);
             grid-template-columns: repeat(var(--cols), 1fr);
             grid-template-rows: repeat(var(--rows), 1fr);
+            transition: grid-template-rows 0.2s;
             gap: 0px 0px;
             grid-template-areas:
                 "banner banner banner timer"
@@ -207,13 +217,13 @@
         }
 
         .reveal {
-            grid-area: 6 / 1 / 10 / 5;
+            grid-area: 6 / 1 / 11 / 5;
         }
         .submit {
-            grid-area: 6 / 3 / 7 / 4;
+            grid-area: 7 / 3 / 8 / 4;
         }
         .backspace {
-            grid-area: 6 / 4 / 7 / 5;
+            grid-area: 7 / 4 / 8 / 5;
         }
         .timer {
             grid-area: timer;
@@ -227,14 +237,6 @@
         .banner {
             grid-area: banner;
         }
-    }
-
-    .found {
-        color: blue;
-    }
-
-    .player {
-        background-color: blue;
     }
 
     .timer {

@@ -53,7 +53,7 @@
     });
 </script>
 
-{#await getReveal() then { scores, totalWordSet, didWin, wordsMap, avasScore, playerScore }}
+{#await getReveal() then { scores, totalWordSet, didWin, avasWordMap, totalWordsMap }}
     <div
         transition:slide={{ delay }}
         class="game-over h-full grid grid-rows-4 bg-surface border border-border"
@@ -84,9 +84,19 @@
                 </div>
             {/each}
         </div>
-        <div class="row-span-2">
-            <ul class="p-2 flex flex-wrap gap-2 h-full overflow-y-scroll">
-                {#each wordsMap as [word, wasFound]}
+        <div class="row-span-2 overflow-y-scroll p-2">
+            <h3 class="font-bold">Ava's words</h3>
+            <ul class=" flex flex-wrap gap-2 h-min">
+                {#each avasWordMap as [word, wasFound]}
+                    <li class:found={wasFound}>
+                        {word}
+                    </li>
+                {/each}
+            </ul>
+            <hr />
+            <h3 class="font-bold">All words</h3>
+            <ul class="flex flex-wrap gap-2 h-min">
+                {#each totalWordsMap as [word, wasFound]}
                     <li class:found={wasFound}>
                         {word}
                     </li>

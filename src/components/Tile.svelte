@@ -35,10 +35,10 @@
         transform: fill;
         transition-duration: 100ms;
     }
-
+    /* 
     rect:hover {
         fill: var(--color-muted);
-    }
+    } */
 
     rect.selected {
         fill: var(--color-muted);

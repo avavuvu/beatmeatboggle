@@ -10,8 +10,6 @@ export default async function logAvasWords(req: Request, context: Context) {
     // Admin auth check
     const token = req.headers.get('authorization');
     if (token !== process.env.ADMIN_TOKEN) {
-        console.log(token, process.env.ADMIN_TOKEN)
-
         return new Response('Unauthorized', { status: 401 });
     }
 

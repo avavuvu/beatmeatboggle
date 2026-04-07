@@ -1,4 +1,8 @@
-<div class="text-foreground max-w-4xl mt-10 mx-auto px-4">
+<svelte:head>
+    <title>About — Beat Me at Boggle</title>
+</svelte:head>
+
+<div class="text-foreground max-w-4xl my-10 mx-auto px-4">
     <span class="inline-flex justify-between w-full">
         <h1 class="px-2">About</h1>
         <a href="/">Return Home</a>
@@ -73,7 +77,8 @@
             If you like games (and you're also from Melbourne), you might enjoy
             my other game, <a href="https://suburble.melbourne"
                 >suburble.melbourne</a
-            >
+            >. For everything I've ever made, visit my
+            <a href="https://avavu.au">website</a>.
         </p>
     </main>
 </div>

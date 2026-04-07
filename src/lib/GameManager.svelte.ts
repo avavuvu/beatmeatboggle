@@ -90,7 +90,7 @@ class GameManager {
 
     #timerHandle: ReturnType<typeof setInterval> | undefined = undefined
 
-    init = (dateKey: string, dayNumber: number, playerState: "ava" | "player", scorePromise: Promise<ScoreManagerInitData>) => {
+    init = (dateKey: string, dayNumber: number, playerState: "ava" | "player") => {
         this.dateKey = dateKey
         this.playerState = playerState
 
@@ -133,7 +133,6 @@ class GameManager {
 
         this.letters = weekDayMap[day].generateBoard(this.dateKey, this.gridSize)
         this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
-        console.log(this.totalPossibleWords)
 
         if (this.totalPossibleWords.length < 130) {
             this.letters = weekDayMap[day].generateBoard(`${this.dateKey}-reroll`, this.gridSize)
@@ -145,14 +144,12 @@ class GameManager {
         this.foundWords = []
         this.currentChain.clear()
 
-        if (this.load()) {
-            console.log("Loaded game state")
-        }
+        const isFromLoad = this.load()
 
         scoreManager.init(
             this.totalPossibleWords,
-            scorePromise
         )
+
 
         clearInterval(this.#timerHandle)
         this.#timerHandle = setInterval(() => {
@@ -202,7 +199,6 @@ class GameManager {
             const validKeys = getAdjacentPositions(lastPosition, this.gridSize)
 
             if (!validKeys.includes(index)) {
-                console.log(`valid keys doesnt contain ${index}[${validKeys}]`)
                 return
             }
         }
@@ -216,13 +212,15 @@ class GameManager {
         if (this.gameOver) return
         const word = this.currentChain.getString()
 
+        if (word.length === 0) { return }
+
         this.currentChain.clear()
         this.isTentative = false
 
         const notLongEnough = word.length < 3
 
         if (notLongEnough) {
-            toastManager.addError("Not Long Enough")
+            toastManager.addError(`${word} is not long enough`)
             return
         }
 
@@ -323,6 +321,7 @@ class GameManager {
 
     load = () => {
         if (!browser || this.playerState !== "player") return false;
+
         const saved = localStorage.getItem(`boggle_${this.dateKey}`);
         if (saved) {
             const parsed = JSON.parse(saved);
@@ -332,8 +331,10 @@ class GameManager {
             for (const word of this.foundWords) {
                 scoreManager.loadWord(word)
             }
-            return true;
+
+            return true
         }
+
         return false;
     }
 }

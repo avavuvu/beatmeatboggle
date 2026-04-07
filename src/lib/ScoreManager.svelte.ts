@@ -1,6 +1,7 @@
 import { SvelteMap } from "svelte/reactivity"
 import toastManager from "./ToastManager.svelte"
 import gameManager from "./GameManager.svelte"
+import { browser } from "$app/environment"
 
 export type ScoreItem = {
     points: number
@@ -23,28 +24,55 @@ export type ScoreManagerInitData = {
 class ScoreManager {
     pointsMap = new SvelteMap<string, ScoreItem[]>([])
     totalWords!: string[]
-    avasScore: number = 0
-    avasWords: null | string[] = null
+    avasScore: number = $state(0)
+    avasWords: null | string[] = $state(null)
     totalPossibleScore!: number
-    average: number = 0
+    average: number = $state(0)
 
-    init = (totalWords: string[], scorePromise: Promise<ScoreManagerInitData>) => {
+    init = (totalWords: string[]) => {
         this.totalWords = totalWords
         this.totalPossibleScore = totalWords.reduce((total, word) => total + this.wordLengthToPoints(word), 0)
 
-        scorePromise.then(({ avasWords, average }) => {
+        const scoreData = browser && localStorage.getItem(`scores_${gameManager.dateKey}`);
+        if (scoreData) {
+            const {
+                average, avasWords
+            }: ScoreManagerInitData = JSON.parse(scoreData)
+
             this.avasWords = avasWords
             this.avasScore = !avasWords
                 ? 0
                 : this.calculateTotalPoints(avasWords)
-            this.average = average
 
-            // recalculate any words already played before the promise resolved
-            for (const [word, _] of this.pointsMap.entries()) {
-                const { pointsArray } = this.calculatePoints(word);
-                this.pointsMap.set(word, pointsArray);
+            this.average = average
+        } else {
+            const fetchScores = async (): Promise<ScoreManagerInitData> => {
+                const res = await fetch(`/api/player-words?dateKey=${gameManager.dateKey}`, {
+                    method: "GET",
+                });
+
+                return res.json();
             }
-        }).catch(err => console.error("Score setup failed", err));
+
+            fetchScores().then(({ avasWords, average }) => {
+                this.avasWords = avasWords
+                this.avasScore = !avasWords
+                    ? 0
+                    : this.calculateTotalPoints(avasWords)
+                this.average = average
+
+                // recalculate any words already played before the promise resolved
+                for (const [word, _] of this.pointsMap.entries()) {
+                    const { pointsArray } = this.calculatePoints(word);
+                    this.pointsMap.set(word, pointsArray);
+                }
+
+                localStorage.setItem(`scores_${gameManager.dateKey}`, JSON.stringify({
+                    avasWords: this.avasWords,
+                    average: this.average
+                }));
+            }).catch(err => console.error("Score setup failed", err));
+        }
     }
 
     wordLengthToPoints = (word: string) => Math.floor(Math.pow(word.length, 2) / 4)
@@ -124,10 +152,18 @@ class ScoreManager {
 
         const playerWordSet = new Set(gameManager.foundWords);
         const totalWordSet = new Set(gameManager.totalPossibleWords);
+        const avasWordSet = new Set(this.avasWords || []);
 
-        const wordsMap: [string, boolean][] = gameManager.totalPossibleWords
+        const sortWords = (words: string[]): [string, boolean][] => words
             .toSorted()
             .map(word => [word, playerWordSet.has(word)])
+
+        // words ava found
+        const avasWordMap = this.avasWords ? sortWords(this.avasWords) : []
+
+        // other words
+        const totalWordsMap = sortWords(gameManager.totalPossibleWords)
+            .filter(word => !avasWordSet.has(word[0]))
 
         const playerScore = this.calculateTotalPoints(gameManager.foundWords)
 
@@ -140,7 +176,8 @@ class ScoreManager {
         const didWin = playerScore > this.avasScore
 
         return {
-            wordsMap,
+            avasWordMap,
+            totalWordsMap,
             totalWordSet,
             playerWordSet,
             scores,
