@@ -1,11 +1,10 @@
 <script lang="ts">
     import Tile from "./Tile.svelte";
     import gameManager from "$lib/GameManager.svelte";
-    import { GRID_SIZE } from "$lib/constants";
     import inputManager from "$lib/InputManager.svelte";
 
     const cells = gameManager.letters.map((letter, index) => {
-        const [x, y] = [index % GRID_SIZE, Math.floor(index / GRID_SIZE)];
+        const [x, y] = [index % gameManager.gridSize, Math.floor(index / gameManager.gridSize)];
 
         const char = letter.toUpperCase();
 
@@ -15,8 +14,8 @@
     const line = $derived(
         [...gameManager.currentChain].map(([key]) => {
             const [x, y] = [
-                (key % GRID_SIZE) + 0.5,
-                Math.floor(key / GRID_SIZE) + 0.5,
+                (key % gameManager.gridSize) + 0.5,
+                Math.floor(key / gameManager.gridSize) + 0.5,
             ];
 
             return { x, y };
@@ -39,7 +38,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <svg
     bind:this={svgElement}
-    viewBox="0 0 {GRID_SIZE} {GRID_SIZE}"
+    viewBox="0 0 {gameManager.gridSize} {gameManager.gridSize}"
     class:game-over={gameManager.gameOver}
     ontouchstart={(e) => inputManager.handleTouchStart(e, getTouchRect())}
     ontouchmove={(e) => inputManager.handleTouchMove(e, getTouchRect())}

@@ -1,5 +1,5 @@
 <svg
-    class="max-w-3xl mx-auto mt-4"
+    class="max-w-3xl mx-auto"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="-10 0 740.57 279.29"
     width="100%"

@@ -1,4 +1,3 @@
-import { GRID_SIZE } from "../constants"
 import type { TrieNode } from "./trie"
 import dictionaryManager from "./trie"
 
@@ -7,12 +6,12 @@ type Board = {
     visited: boolean[][]
 }
 
-export const solve = (boardTiles: string[]) => {
+export const solve = (boardTiles: string[], gridSize: number) => {
     const results: Set<string> = new Set()
 
     const board = boardTiles.reduce((board, letter, index) => {
-        const col = index % GRID_SIZE;
-        const row = Math.floor(index / GRID_SIZE);
+        const col = index % gridSize;
+        const row = Math.floor(index / gridSize);
 
         if (!board.grid[row]) {
             board.grid[row] = [];
@@ -28,17 +27,17 @@ export const solve = (boardTiles: string[]) => {
         visited: [] as boolean[][]
     })
 
-    for (let row = 0; row < GRID_SIZE; row++) {
-        for (let col = 0; col < GRID_SIZE; col++) {
-            dfs(board, row, col, dictionaryManager.words.root, results)
+    for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+            dfs(board, row, col, dictionaryManager.words.root, results, gridSize)
         }
     }
 
     return results
 }
 
-function dfs(board: Board, row: number, col: number, node: TrieNode, results: Set<string>) {
-    if (row < 0 || col < 0 || row >= GRID_SIZE || col >= GRID_SIZE) {
+function dfs(board: Board, row: number, col: number, node: TrieNode, results: Set<string>, gridSize: number) {
+    if (row < 0 || col < 0 || row >= gridSize || col >= gridSize) {
         return
     }
 
@@ -67,7 +66,7 @@ function dfs(board: Board, row: number, col: number, node: TrieNode, results: Se
                 continue
             }
 
-            dfs(board, row + directionR, col + directionC, nextNode, results)
+            dfs(board, row + directionR, col + directionC, nextNode, results, gridSize)
         }
     }
 

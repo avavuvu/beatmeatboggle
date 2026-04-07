@@ -1,9 +1,10 @@
 import { solve } from "./dictionary/solver"
 import dictionaryManager from "./dictionary/trie"
 import { generateClassic, generateClaude, generateClusters } from "./generateBoard"
-import { GRID_SIZE, getAdjacentPositions } from "./constants"
+import { getAdjacentPositions } from "./constants"
 import toastManager from "./ToastManager.svelte"
-import scoreManager from "./ScoreManager.svelte"
+import scoreManager, { type ScoreManagerInitData } from "./ScoreManager.svelte"
+import { browser } from "$app/environment"
 export { getAdjacentPositions } from "./constants"
 
 class Chain {
@@ -15,7 +16,7 @@ class Chain {
 
     getString = () => {
         return this.#letters
-            .map(([_, letter]) => letter)
+            .map(([_, letter]) => letter === "q" ? "qu" : letter)
             .join('')
     }
 
@@ -83,26 +84,74 @@ class GameManager {
 
     playerState: "ava" | "player" = $state("player")
     dateKey: string = $state("")
+    gridSize: number = $state(4)
 
     isTentative: boolean = $state(false)
 
     #timerHandle: ReturnType<typeof setInterval> | undefined = undefined
 
-    init = (dateKey: string, playerState: "ava" | "player", avasWords: null | string[], histogram: any) => {
+    init = (dateKey: string, dayNumber: number, playerState: "ava" | "player", scorePromise: Promise<ScoreManagerInitData>) => {
         this.dateKey = dateKey
         this.playerState = playerState
 
-        this.letters = generateClusters(this.dateKey)
-        this.totalPossibleWords = [...solve(this.letters)]
+        const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
+
+        let day = weekday[dayNumber];
+
+        const weekDayMap: Record<typeof weekday[number], { size: number, generateBoard: (seed: string, gridSize: number, ...args: any[]) => string[] }> = {
+            Monday: {
+                size: 4,
+                generateBoard: generateClassic
+            },
+            Tuesday: {
+                size: 4,
+                generateBoard: generateClassic
+            },
+            Wednesday: {
+                size: 4,
+                generateBoard: generateClusters
+            },
+            Thursday: {
+                size: 4,
+                generateBoard: generateClusters
+            },
+            Friday: {
+                size: 4,
+                generateBoard: generateClusters
+            },
+            Saturday: {
+                size: 4,
+                generateBoard: generateClusters
+            },
+            Sunday: {
+                size: 5,
+                generateBoard: generateClusters
+            },
+        }
+
+        this.gridSize = weekDayMap[day].size
+
+        this.letters = weekDayMap[day].generateBoard(this.dateKey, this.gridSize)
+        this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
+        console.log(this.totalPossibleWords)
+
+        if (this.totalPossibleWords.length < 130) {
+            this.letters = weekDayMap[day].generateBoard(`${this.dateKey}-reroll`, this.gridSize)
+            this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
+        }
+
         this.secondsLeft = 3 * 60
         this.gameOver = false
         this.foundWords = []
         this.currentChain.clear()
 
+        if (this.load()) {
+            console.log("Loaded game state")
+        }
+
         scoreManager.init(
             this.totalPossibleWords,
-            avasWords,
-            histogram
+            scorePromise
         )
 
         clearInterval(this.#timerHandle)
@@ -113,11 +162,13 @@ class GameManager {
                 this.endGame()
                 clearInterval(this.#timerHandle)
             }
+            this.save()
         }, 1000)
     }
 
     endGame = () => {
         this.gameOver = true
+        this.save()
     }
 
     removeLast = () => {
@@ -148,7 +199,7 @@ class GameManager {
         if (lastLetter) {
             const lastPosition = lastLetter[0]
 
-            const validKeys = getAdjacentPositions(lastPosition)
+            const validKeys = getAdjacentPositions(lastPosition, this.gridSize)
 
             if (!validKeys.includes(index)) {
                 console.log(`valid keys doesnt contain ${index}[${validKeys}]`)
@@ -191,7 +242,7 @@ class GameManager {
 
         this.foundWords.push(word)
         scoreManager.addWord(word)
-
+        this.save()
     }
 
     findTileFromCharacter = (char: string, searchArea: [number, string][]) => {
@@ -208,8 +259,8 @@ class GameManager {
 
             const char = chars[charIdx]
             const candidates = charIdx === 0
-                ? Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, i) => i)
-                : getAdjacentPositions(path[path.length - 1])
+                ? Array.from({ length: this.gridSize * this.gridSize }, (_, i) => i)
+                : getAdjacentPositions(path[path.length - 1], this.gridSize)
 
             for (const pos of candidates) {
                 if (path.includes(pos)) continue
@@ -233,7 +284,7 @@ class GameManager {
                 .toArray()
         }
 
-        return getAdjacentPositions(this.currentChain.last()![0])
+        return getAdjacentPositions(this.currentChain.last()![0], this.gridSize)
             .map(index => [index, this.letters[index]] as [number, string])
             .filter(([index]) => !this.currentChain.containsKey(index))
 
@@ -259,6 +310,31 @@ class GameManager {
             this.currentChain.add(index, this.letters[index])
         }
         this.isTentative = true
+    }
+
+    save = () => {
+        if (!browser || this.playerState !== "player") return;
+        localStorage.setItem(`boggle_${this.dateKey}`, JSON.stringify({
+            foundWords: this.foundWords,
+            secondsLeft: this.secondsLeft,
+            gameOver: this.gameOver
+        }));
+    }
+
+    load = () => {
+        if (!browser || this.playerState !== "player") return false;
+        const saved = localStorage.getItem(`boggle_${this.dateKey}`);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            this.foundWords = parsed.foundWords;
+            this.secondsLeft = parsed.secondsLeft;
+            this.gameOver = parsed.gameOver;
+            for (const word of this.foundWords) {
+                scoreManager.loadWord(word)
+            }
+            return true;
+        }
+        return false;
     }
 }
 

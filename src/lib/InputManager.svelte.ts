@@ -1,5 +1,4 @@
 import gameManager from "./GameManager.svelte";
-import { GRID_SIZE } from "./constants";
 
 const PROXIMITY_THRESHOLD = 0.38;
 const MIN_MOVE_PX = 3;
@@ -39,8 +38,8 @@ class InputManager {
         clientY: number,
         rect: DOMRect
     ): [number, number] => {
-        const svgX = ((clientX - rect.left) / rect.width) * GRID_SIZE;
-        const svgY = ((clientY - rect.top) / rect.height) * GRID_SIZE;
+        const svgX = ((clientX - rect.left) / rect.width) * gameManager.gridSize;
+        const svgY = ((clientY - rect.top) / rect.height) * gameManager.gridSize;
         return [svgX, svgY];
     };
 
@@ -48,9 +47,9 @@ class InputManager {
         let bestIndex = -1;
         let bestDist = PROXIMITY_THRESHOLD;
 
-        for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            const cx = (i % GRID_SIZE) + 0.5;
-            const cy = Math.floor(i / GRID_SIZE) + 0.5;
+        for (let i = 0; i < gameManager.gridSize * gameManager.gridSize; i++) {
+            const cx = (i % gameManager.gridSize) + 0.5;
+            const cy = Math.floor(i / gameManager.gridSize) + 0.5;
             const dist = Math.hypot(svgX - cx, svgY - cy);
             if (dist < bestDist) {
                 bestDist = dist;

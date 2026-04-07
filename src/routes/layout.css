@@ -8,7 +8,7 @@
     --color-foreground: var(--color-border);
     --color-accent: var(--color-border);
     --color-muted: gray;
-    --default-font-family: "Sono", mono;
+    --default-font-family: "Sono", 'Courier New', Courier, monospace;
 }
 
 body {

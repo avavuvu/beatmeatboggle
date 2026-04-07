@@ -47,9 +47,7 @@ export default async function logPlayerWords(req: Request, context: Context) {
             .groupBy(playerWords.wordCount)
             .orderBy(playerWords.wordCount);
 
-        const histogram = Object.fromEntries(
-            stats.map((row) => [row.wordCount, Number(row.players)])
-        );
+        const average = stats.reduce((total, stat) => total + stat.wordCount, 1) / (stats.length ?? 1)
 
         const [ava] = await db
             .select({ words: avasWords.words })
@@ -58,7 +56,7 @@ export default async function logPlayerWords(req: Request, context: Context) {
 
         return Response.json({
             success: true,
-            histogram,
+            average,
             avasWords: ava.words ?? null,
         }, { status: 200 });
     }

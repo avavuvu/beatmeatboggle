@@ -44,11 +44,8 @@
     }
 
     .error {
-        background-color: gray;
-    }
-
-    .error > h1,
-    .error > p {
-        color: brown;
+        background-color: var(--color-foreground);
+        color: var(--color-white);
+        font-size: large;
     }
 </style>

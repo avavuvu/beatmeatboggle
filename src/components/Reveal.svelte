@@ -14,6 +14,8 @@
 
     let didWin = $state(false);
 
+    let shareButtonText = $state("Share");
+
     const shareText = $derived(
         didWin
             ? "I beat Ava at Boggle!"
@@ -28,6 +30,7 @@
             await navigator.share(data);
         } else {
             await navigator.clipboard.writeText(`${shareText}\n${url}`);
+            shareButtonText = "Copied to Clipboard";
         }
     };
 
@@ -50,23 +53,34 @@
     });
 </script>
 
-{#await getReveal() then { scores, totalWordSet, didWin, wordsMap }}
+{#await getReveal() then { scores, totalWordSet, didWin, wordsMap, avasScore, playerScore }}
     <div
         transition:slide={{ delay }}
         class="game-over h-full grid grid-rows-4 bg-surface border border-border"
     >
-        <div class="grid grid-cols-3 gap-1 w-full flex-1 min-h-0 pt-2">
+        <div class="flex gap-1 w-full min-h-0 p-2">
             {#each scores as [name, score], index}
-                <div class="flex flex-col justify-end text-sm text-center">
+                <div
+                    class="flex flex-col w-full justify-end text-sm text-center relative"
+                >
                     <div
-                        class:player={name === "You!"}
+                        class="text-center w-full text-white absolute transition-all duration-500"
+                        class:move={Number(score) < 40}
+                        style="opacity: {Number(mounted) *
+                            100}%; transition-delay: {delay + index * 400}ms;"
+                    >
+                        <p>{name}</p>
+                        <p>
+                            {Math.floor(Number(score))}
+                        </p>
+                    </div>
+                    <div
+                        class:player={score === "You!"}
                         class="bar text-xs text-white transition-all duration-500 ease-out"
                         style="height: {mounted
-                            ? (score / totalWordSet.size) * 100
+                            ? (Number(score) / totalWordSet.size) * 100
                             : 0}%; transition-delay: {delay + index * 400}ms;"
-                    >
-                        {name}
-                    </div>
+                    ></div>
                 </div>
             {/each}
         </div>
@@ -88,8 +102,11 @@
                 {/if}
                 <div class="bubble-tail"></div>
             </div>
-            <button class="imessage-bubble underline" onclick={share}>
-                Share
+            <button
+                class="imessage-bubble underline cursor-pointer"
+                onclick={share}
+            >
+                {shareButtonText}
                 <div class="bubble-tail"></div>
             </button>
         </div>
@@ -97,6 +114,11 @@
 {/await}
 
 <style>
+    .move {
+        position: unset;
+        color: var(--color-foreground);
+    }
+
     .bar {
         background-color: var(--color-foreground);
     }

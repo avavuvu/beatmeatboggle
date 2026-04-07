@@ -1,7 +1,9 @@
 <script lang="ts">
     import gameManager from "$lib/GameManager.svelte";
+    import type { ScoreManagerInitData } from "$lib/ScoreManager.svelte";
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
+    import Logo from "./Logo.svelte";
     import Reveal from "./Reveal.svelte";
     import Toast from "./Toast.svelte";
 
@@ -13,18 +15,18 @@
 
     const {
         dateKey,
+        dayNumber,
         playerStatus,
-        avasWords,
-        histogram,
+        scorePromise,
     }: {
         dateKey: string;
+        dayNumber: number;
         playerStatus: "ava" | "player";
-        avasWords: null | string[];
-        histogram: any;
+        scorePromise: Promise<ScoreManagerInitData>;
     } = $props();
 
     // svelte-ignore state_referenced_locally
-    gameManager.init(dateKey, playerStatus, avasWords, histogram);
+    gameManager.init(dateKey, dayNumber, playerStatus, scorePromise);
 </script>
 
 <div class="game-container text-foreground">
@@ -94,7 +96,10 @@
             <Toast />
         </div>
         <div class="banner edge">
-            <img class="h-full w-min p-2" src="Asset 22.svg" alt="" />
+            <!-- <img class="h-full w-min p-2" src="Asset 22.svg" alt="" /> -->
+            <a href="/">
+                <Logo />
+            </a>
         </div>
         <div class="reveal">
             {#if gameManager.gameOver}

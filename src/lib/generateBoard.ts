@@ -1,7 +1,8 @@
-import { getAdjacentPositions, GRID_SIZE } from "./constants";
+import { getAdjacentPositions } from "./constants";
 import seedrandom from "seedrandom"
 
-export const generateClassic = (): string[] => {
+export const generateClassic = (seed: string, gridSize: number): string[] => {
+    const rng = seedrandom(seed)
     const classicDice = [
         "AACIOT", "ABILTY", "ABJMOQ", "ACDEMP",
         "ACELRS", "ADENVZ", "AHMORS", "BIFORX",
@@ -10,20 +11,20 @@ export const generateClassic = (): string[] => {
     ]
 
     for (let i = classicDice.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng() * (i + 1));
         [classicDice[i], classicDice[j]] = [classicDice[j], classicDice[i]];
     }
 
 
-    return Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, index) => {
+    return Array.from({ length: gridSize * gridSize }, (_, index) => {
         const die = classicDice[index % classicDice.length]
 
-        return die[Math.floor(Math.random() * die.length)].toLowerCase()
+        return die[Math.floor(rng() * die.length)].toLowerCase()
     })
 
 }
 
-export const generateClusters = (seed: string, vowelness = 0.46): string[] => {
+export const generateClusters = (seed: string, gridSize: number, vowelness = 0.46): string[] => {
     const rng = seedrandom(seed)
 
     const clusters: Record<string, string[]> = {
@@ -59,7 +60,7 @@ export const generateClusters = (seed: string, vowelness = 0.46): string[] => {
     const randomConsonant = () => consonantPool[Math.floor(rng() * consonantPool.length)]
     const randomQualityLetter = () => qualityLetterPool[Math.floor(rng() * qualityLetterPool.length)]
 
-    const board = Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, i) => {
+    const board = Array.from({ length: gridSize * gridSize }, (_, i) => {
         if ([5, 6, 9, 10].includes(i) && rng() > 0.7) {
             return randomQualityLetter()
         }
@@ -70,20 +71,20 @@ export const generateClusters = (seed: string, vowelness = 0.46): string[] => {
         return randomConsonant()
     })
 
-    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+    for (let i = 0; i < gridSize * gridSize; i++) {
         const letter = board[i]
         if (Object.keys(clusters).includes(letter)) {
-            const positions = getAdjacentPositions(i)
+            const positions = getAdjacentPositions(i, gridSize)
             const cluster = clusters[letter][Math.floor(rng() * clusters[letter].length)]
 
             board[positions[Math.floor(rng() * positions.length)]] = cluster
         }
     }
 
-    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+    for (let i = 0; i < gridSize * gridSize; i++) {
         const letter = board[i]
         if (consonantPool.includes(letter)) {
-            const positions = getAdjacentPositions(i)
+            const positions = getAdjacentPositions(i, gridSize)
 
             if (!positions.some(x => vowelPool.includes(board[x]))) {
                 board[i] = randomVowel()
@@ -93,10 +94,10 @@ export const generateClusters = (seed: string, vowelness = 0.46): string[] => {
 
     let change = []
 
-    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+    for (let i = 0; i < gridSize * gridSize; i++) {
         const letter = board[i]
 
-        const positions = getAdjacentPositions(i)
+        const positions = getAdjacentPositions(i, gridSize)
 
         let count = 0
         for (const pos of positions) {
@@ -121,8 +122,10 @@ export const generateClusters = (seed: string, vowelness = 0.46): string[] => {
     return board
 }
 
-export const generateClaude = (): string[] => {
-    const size = GRID_SIZE * GRID_SIZE
+export const generateClaude = (seed: string, gridSize: number): string[] => {
+    const rng = seedrandom(seed)
+
+    const size = gridSize * gridSize
     const board = Array(size).fill('')
 
     // Vowels: heavy E and A bias — they unlock the most suffix patterns
@@ -157,12 +160,12 @@ export const generateClaude = (): string[] => {
         'v',
     ]
 
-    const pick = (pool: string[]) => pool[Math.floor(Math.random() * pool.length)]
+    const pick = (pool: string[]) => pool[Math.floor(rng() * pool.length)]
 
     // Sort all positions by neighbour count descending.
     // For a 4×4: inner tiles have 8, edge tiles 5, corners 3.
     const byConnectivity = Array.from({ length: size }, (_, i) => i)
-        .sort((a, b) => getAdjacentPositions(b).length - getAdjacentPositions(a).length)
+        .sort((a, b) => getAdjacentPositions(b, gridSize).length - getAdjacentPositions(a, gridSize).length)
 
     // ~38% vowels — sits in the sweet spot from the data (50% default wins but 40–60% all cluster together)
     const vowelCount = Math.round(size * 0.38)
@@ -186,7 +189,7 @@ export const generateClaude = (): string[] => {
     const tryNudge = (letter: string, partner: string) => {
         for (let i = 0; i < size; i++) {
             if (board[i] !== letter) continue
-            const neighbours = getAdjacentPositions(i).filter(p => !vowelPositions.has(p))
+            const neighbours = getAdjacentPositions(i, gridSize).filter(p => !vowelPositions.has(p))
             if (neighbours.length === 0) continue
             // Only place if the neighbour is a low-value letter (not S, T, R, N, L)
             const lowValue = new Set(['b', 'c', 'f', 'g', 'k', 'm', 'p', 'v', 'w', 'x', 'y', 'z'])
@@ -204,7 +207,7 @@ export const generateClaude = (): string[] => {
     const vowelSet = new Set(vowelPool)
     for (let i = 0; i < size; i++) {
         if (vowelSet.has(board[i])) continue
-        const hasVowelNeighbour = getAdjacentPositions(i).some(p => vowelSet.has(board[p]))
+        const hasVowelNeighbour = getAdjacentPositions(i, gridSize).some(p => vowelSet.has(board[p]))
         if (!hasVowelNeighbour) {
             board[i] = pick(vowelPool)
         }

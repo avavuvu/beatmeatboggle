@@ -10,18 +10,22 @@
         y: number;
         selected: boolean;
     } = $props();
+
+    // svelte-ignore state_referenced_locally
+    const isQ = char === "Q";
 </script>
 
 <rect class:selected stroke-width=".02px" width={1} height={1}> </rect>
 <text
     pointer-events="none"
     font-size="0.05em"
-    x="0.5"
+    x={isQ ? "0.46" : "0.5"}
     y="0.79"
     text-anchor="middle"
+    letter-spacing={isQ ? -0.1 : "unset"}
     // font-weight="bold"
 >
-    {char}
+    {isQ ? "Qu" : char}
 </text>
 
 <style>

@@ -1,30 +1,26 @@
 <script lang="ts">
+    import type { ScoreManagerInitData } from "$lib/ScoreManager.svelte";
     import Game from "@/Game.svelte";
 
     const getDateKey = () => {
         const date = new Date();
-        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+        return {
+            dateKey: `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`,
+            dayNumber: date.getDay(),
+        };
     };
 
-    const dateKey = getDateKey();
+    const { dateKey, dayNumber } = getDateKey();
 
-    const startGame = async (): Promise<{
-        avasWords: string[] | null;
-        histogram: any;
-    }> => {
+    const startGame = async (): Promise<ScoreManagerInitData> => {
         const res = await fetch(`/api/player-words?dateKey=${dateKey}`, {
             method: "GET",
         });
 
-        console.log(res);
-
-        const data = await res.json();
-        console.log("Stats derived for date:", dateKey, data);
-
-        return data;
+        return res.json();
     };
+
+    const scorePromise = startGame();
 </script>
 
-{#await startGame() then { avasWords, histogram }}
-    <Game {avasWords} {dateKey} {histogram} playerStatus="player" />
-{/await}
+<Game {dateKey} {dayNumber} playerStatus="player" {scorePromise} />
