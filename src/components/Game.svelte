@@ -48,10 +48,14 @@
                 {/each}
             </ul>
         </div>
-        <div class="backspace edge">
+        <div
+            class="backspace edge z-10"
+            style={gameManager.gameOver ? "display: none;" : "display: unset;"}
+        >
             <button
                 onclick={() => gameManager.removeLast()}
                 aria-label="backspace"
+                class="w-full h-full cursor-pointer z-10"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -70,8 +74,12 @@
                 >
             </button>
         </div>
-        <div class="submit edge">
+        <div
+            class="submit edge z-10"
+            style={gameManager.gameOver ? "display: none;" : "display: unset;"}
+        >
             <button
+                class="w-full h-full cursor-pointer z-10"
                 aria-label="submit"
                 onclick={() => gameManager.submitWord()}
             >
