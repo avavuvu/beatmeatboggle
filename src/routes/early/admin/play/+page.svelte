@@ -3,6 +3,7 @@
     import { browser } from "$app/environment";
     import { page } from "$app/state";
     import { redirect } from "@sveltejs/kit";
+    import { onMount } from "svelte";
 
     export const verify = () => {
         const token = browser ? localStorage.getItem("admin_token") : null;
@@ -17,11 +18,16 @@
 
     let verified = $state(verify());
 
-    const dateKey = page.url.searchParams.get("date") ?? "";
-    const dayNumber = new Date(dateKey).getDay();
+    let dateKey = $state("");
+    let dayNumber = $state(0);
+
+    onMount(() => {
+        dateKey = page.url.searchParams.get("date") ?? "";
+        dayNumber = new Date(dateKey).getDay();
+    });
 </script>
 
-{#if verified}
+{#if verified && dateKey !== ""}
     <Game
         playerStatus="ava"
         scorePromise={Promise.resolve({ avasWords: null, average: 1 })}
