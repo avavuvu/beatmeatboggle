@@ -3,7 +3,7 @@
 
 
 @theme {
-    --color-border: rgb(54, 108, 148);
+    --color-border: #366c94;
     --color-surface: rgb(250, 243, 234);
     --color-foreground: var(--color-border);
     --color-accent: var(--color-border);
