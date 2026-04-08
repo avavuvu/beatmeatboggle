@@ -41,9 +41,10 @@ export default async function generateShareLink(req: Request) {
 
     const ogImageUrl = `https://beatmeatboggle.com/api/badge?l=${letters}&s=${score}&a=${avasScore}&z=${width}&c=${checksum}`
 
-    const title = score > avasScore
+    const title = score < avasScore
         ? "I beat Ava at Boggle!"
         : "I couldn't quite beat Ava at Boggle :(";
+
 
     const html = `<!DOCTYPE html>
 <html>
