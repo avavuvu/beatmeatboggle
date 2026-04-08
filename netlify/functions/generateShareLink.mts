@@ -39,7 +39,7 @@ export default async function generateShareLink(req: Request) {
         })
     }
 
-    const ogImageUrl = `http://localhost:8888/api/badge?l=${letters}&s=${score}&a=${avasScore}&z=${width}&c=${checksum}`
+    const ogImageUrl = `https://beatmeatboggle.com/api/badge?l=${letters}&s=${score}&a=${avasScore}&z=${width}&c=${checksum}`
 
     const title = score > avasScore
         ? "I beat Ava at Boggle!"
@@ -53,6 +53,7 @@ export default async function generateShareLink(req: Request) {
   <meta property="og:image" content="${ogImageUrl.toString()}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Every day I play a game of Boggle. Every day you try and beat my score." />
   <meta name="twitter:card" content="summary_large_image" />
 </head>
 <body>
