@@ -1,6 +1,7 @@
 import type { Config } from '@netlify/functions'
 
 import type { Context } from '@netlify/functions'
+import { Resvg } from '@resvg/resvg-js'
 
 export default async function ogImage(req: Request, context: Context) {
     const url = new URL(req.url)
@@ -121,17 +122,26 @@ export default async function ogImage(req: Request, context: Context) {
 
   `
 
-    return new Response(svg, {
+    const resvg = new Resvg(svg, {
+        fitTo: {
+            mode: 'width',
+            value: 1200,
+        },
+        background: '#faf3ea',
+    })
+
+    const pngData = resvg.render()
+    const pngBuffer = pngData.asPng()
+
+    const pngUint8Array = new Uint8Array(pngBuffer)
+
+    return new Response(pngUint8Array, {
         status: 200,
         headers: {
-            'Content-Type': 'image/svg+xml',
+            'Content-Type': 'image/png',
             'Cache-Control': 'public, max-age=31536000',
         },
     })
-}
-
-function escapeXml(str: string) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
 export const config: Config = {

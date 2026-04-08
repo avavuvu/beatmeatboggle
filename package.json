@@ -33,6 +33,7 @@
   "dependencies": {
     "@netlify/functions": "^5.1.5",
     "@netlify/neon": "^0.1.2",
+    "@resvg/resvg-js": "^2.6.2",
     "@sveltejs/adapter-static": "^3.0.10",
     "@types/seedrandom": "^3.0.8",
     "crypto": "^1.0.1",
