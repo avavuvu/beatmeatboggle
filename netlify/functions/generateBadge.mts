@@ -1,10 +1,9 @@
 import type { Config } from '@netlify/functions'
-
 import type { Context } from '@netlify/functions'
 
-// @ts-ignore
-import init, { svg_to_png } from "svg2png-wasm-rs"
-
+import { Resvg } from '@resvg/resvg-js'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export default async function ogImage(req: Request, context: Context) {
     const url = new URL(req.url)
@@ -61,7 +60,7 @@ export default async function ogImage(req: Request, context: Context) {
                 fill: #faf3ea;
             }
             * {
-                font-family: Courier-Bold, Courier;
+                font-family: "Sono", Courier-Bold, Courier;
                 font-weight: 700;
             }
             .cls-5,
@@ -123,17 +122,30 @@ export default async function ogImage(req: Request, context: Context) {
     ></svg
 >`
 
-    await init()
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = dirname(__filename)
+    const fontPath = join(__dirname, 'fonts', 'sono.ttf')
 
-    const pngBytes = svg_to_png(svg);
+    const resvg = new Resvg(svg, {
+        fitTo: { mode: 'width', value: 1200 },
+        font: {
+            fontFiles: [fontPath],
+            loadSystemFonts: false,
+            defaultFontFamily: 'Sono'
+        }
+    })
 
-    return new Response(pngBytes, {
+    const pngData = resvg.render()
+    const pngBuffer = pngData.asPng()
+
+    return new Response(new Uint8Array(pngBuffer), {
         status: 200,
         headers: {
             'Content-Type': 'image/png',
             'Cache-Control': 'public, max-age=31536000',
         },
     })
+
 }
 
 export const config: Config = {
