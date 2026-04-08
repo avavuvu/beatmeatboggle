@@ -1,7 +1,10 @@
 import type { Config } from '@netlify/functions'
 
 import type { Context } from '@netlify/functions'
-import sharp from "sharp"
+
+// @ts-ignore
+import init, { svg_to_png } from "svg2png-wasm-rs"
+
 
 export default async function ogImage(req: Request, context: Context) {
     const url = new URL(req.url)
@@ -118,21 +121,16 @@ export default async function ogImage(req: Request, context: Context) {
             >${avasScore}</tspan
         ></text
     ></svg
->
+>`
 
-  `
+    await init()
 
-    const webpBuffer = await sharp(Buffer.from(svg))
-        .png()
-        .toBuffer()
+    const pngBytes = svg_to_png(svg);
 
-    const webpBody = new Uint8Array(webpBuffer)
-
-
-    return new Response(webpBody, {
+    return new Response(pngBytes, {
         status: 200,
         headers: {
-            'Content-Type': 'image/webp',
+            'Content-Type': 'image/png',
             'Cache-Control': 'public, max-age=31536000',
         },
     })
