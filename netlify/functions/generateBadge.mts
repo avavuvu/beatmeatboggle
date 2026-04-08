@@ -1,7 +1,7 @@
 import type { Config } from '@netlify/functions'
 
 import type { Context } from '@netlify/functions'
-import { Resvg } from '@resvg/resvg-js'
+import sharp from "sharp"
 
 export default async function ogImage(req: Request, context: Context) {
     const url = new URL(req.url)
@@ -122,23 +122,17 @@ export default async function ogImage(req: Request, context: Context) {
 
   `
 
-    const resvg = new Resvg(svg, {
-        fitTo: {
-            mode: 'width',
-            value: 1200,
-        },
-        background: '#faf3ea',
-    })
+    const webpBuffer = await sharp(Buffer.from(svg))
+        .png()
+        .toBuffer()
 
-    const pngData = resvg.render()
-    const pngBuffer = pngData.asPng()
+    const webpBody = new Uint8Array(webpBuffer)
 
-    const pngUint8Array = new Uint8Array(pngBuffer)
 
-    return new Response(pngUint8Array, {
+    return new Response(webpBody, {
         status: 200,
         headers: {
-            'Content-Type': 'image/png',
+            'Content-Type': 'image/webp',
             'Cache-Control': 'public, max-age=31536000',
         },
     })
