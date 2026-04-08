@@ -68,8 +68,6 @@
         <g {x} {y} transform={`translate(${x}, ${y})`}>
             <Tile
                 {char}
-                {x}
-                {y}
                 selected={gameManager.currentChain.containsKey(index)}
             />
         </g>

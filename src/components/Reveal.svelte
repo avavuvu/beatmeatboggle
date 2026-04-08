@@ -8,11 +8,13 @@
         const reveal = await scoreManager.getReveal();
 
         didWin = reveal.didWin;
+        shareLink = reveal.shareLink;
 
         return reveal;
     };
 
     let didWin = $state(false);
+    let shareLink = $state(page.url.origin);
 
     let shareButtonText = $state("Share");
 
@@ -29,7 +31,7 @@
         if (navigator.share) {
             await navigator.share(data);
         } else {
-            await navigator.clipboard.writeText(`${shareText}\n${url}`);
+            await navigator.clipboard.writeText(shareLink);
             shareButtonText = "Copied to Clipboard";
         }
     };

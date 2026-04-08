@@ -1,13 +1,9 @@
 <script lang="ts">
     const {
         char,
-        x,
-        y,
         selected,
     }: {
         char: string;
-        x: number;
-        y: number;
         selected: boolean;
     } = $props();
 

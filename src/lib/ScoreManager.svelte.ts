@@ -2,6 +2,7 @@ import { SvelteMap } from "svelte/reactivity"
 import toastManager from "./ToastManager.svelte"
 import gameManager from "./GameManager.svelte"
 import { browser } from "$app/environment"
+import { page } from "$app/state"
 
 export type ScoreItem = {
     points: number
@@ -183,8 +184,35 @@ class ScoreManager {
             scores,
             playerScore,
             avasScore: this.avasScore,
-            didWin
+            didWin,
+            shareLink: this.createShareLink(playerScore, this.avasScore)
         };
+    }
+
+    createShareLink = (totalScore: number, avasScore: number) => {
+        const generateChecksum = (str: string) => {
+            let check = 0x12345678;
+            for (let i = 0; i < str.length; i++) {
+                check += str.charCodeAt(i) * (i + 1);
+            }
+
+            return (check & 0xffffffff).toString(16);
+        };
+
+        const size = gameManager.gridSize
+        const letters = gameManager.letters.join("")
+
+        const checksum = generateChecksum(`${size}${letters}${totalScore}${avasScore}`);
+
+        const url = new URL(page.url.origin + "/badge")
+        url.searchParams.append("l", letters)
+        url.searchParams.append("s", `${totalScore}`)
+        url.searchParams.append("a", `${avasScore}`)
+        url.searchParams.append("z", `${size}`)
+        url.searchParams.append("c", checksum)
+
+
+        return url.toString()
     }
 }
 

@@ -4,7 +4,7 @@
 
 @theme {
     --color-border: #366c94;
-    --color-surface: rgb(250, 243, 234);
+    --color-surface: #faf3ea;
     --color-foreground: var(--color-border);
     --color-accent: var(--color-border);
     --color-muted: gray;

@@ -28,12 +28,7 @@
 </script>
 
 {#if verified && dateKey !== ""}
-    <Game
-        playerStatus="ava"
-        scorePromise={Promise.resolve({ avasWords: null, average: 1 })}
-        {dateKey}
-        {dayNumber}
-    />
+    <Game playerStatus="ava" {dateKey} {dayNumber} />
 {:else}
     ...verifying
 {/if}

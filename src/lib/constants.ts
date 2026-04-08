@@ -17,3 +17,6 @@ export const getAdjacentPositions = (index: number, gridSize: number) => {
 
     return validKeys.filter((key) => key >= 0 && key < gridSize * gridSize)
 }
+
+export const description = "Every day I play a game of Boggle. Every day you try and beat my score."
+export const title = "Beat Me At Boggle"
