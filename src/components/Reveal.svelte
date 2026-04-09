@@ -25,8 +25,7 @@
     );
 
     const share = async () => {
-        const url = page.url.origin;
-        const data = { title: "Boggle", text: shareText, url };
+        const data = { title: "Boggle", text: shareText, shareLink };
 
         if (navigator.share) {
             await navigator.share(data);
