@@ -94,7 +94,7 @@ class ScoreManager {
         if (this.avasWords && !this.avasWords.includes(word)) {
             points += 4
             pointsArray.push({
-                points: 4,
+                points: 2,
                 reason: "ava bonus"
             })
         }

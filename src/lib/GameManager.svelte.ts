@@ -98,34 +98,53 @@ class GameManager {
 
         let day = weekday[dayNumber];
 
-        const weekDayMap: Record<typeof weekday[number], { size: number, generateBoard: (seed: string, gridSize: number, ...args: any[]) => string[] }> = {
+        const threeMinutes = 3 * 60
+        const fourMinutes = 4 * 60
+
+        const weekDayMap: Record<typeof weekday[number], {
+            size: number,
+            generateBoard: (seed: string, gridSize: number, ...args: any[]) => string[],
+            time: number
+        }> = {
             Monday: {
                 size: 4,
-                generateBoard: generateClassic
+                generateBoard: generateClassic,
+                time: threeMinutes
             },
             Tuesday: {
                 size: 4,
-                generateBoard: generateClassic
+                generateBoard: generateClassic,
+                time: threeMinutes
+
             },
             Wednesday: {
                 size: 4,
-                generateBoard: generateClusters
+                generateBoard: generateClusters,
+                time: threeMinutes
+
             },
             Thursday: {
                 size: 4,
-                generateBoard: generateClusters
+                generateBoard: generateClusters,
+                time: threeMinutes
+
             },
             Friday: {
                 size: 4,
-                generateBoard: generateClusters
+                generateBoard: generateClusters,
+                time: threeMinutes
+
             },
             Saturday: {
-                size: 4,
-                generateBoard: generateClusters
+                size: 5,
+                generateBoard: generateClusters,
+                time: fourMinutes
+
             },
             Sunday: {
                 size: 5,
-                generateBoard: generateClusters
+                generateBoard: generateClusters,
+                time: fourMinutes
             },
         }
 
@@ -139,7 +158,7 @@ class GameManager {
             this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
         }
 
-        this.secondsLeft = 3 * 60
+        this.secondsLeft = weekDayMap[day].time
         this.gameOver = false
         this.foundWords = []
         this.currentChain.clear()
