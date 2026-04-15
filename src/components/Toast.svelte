@@ -21,7 +21,10 @@
 
 {#if showToast && latestToast}
     {@const { content, type } = latestToast}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
+        onclick={() => (showToast = false)}
         class:word={type === "word"}
         class:error={type === "error"}
         transition:fade={{ duration: 100 }}
@@ -45,7 +48,7 @@
 
     .error {
         background-color: var(--color-foreground);
-        color: var(--color-white);
+        color: var(--color-surface);
         font-size: large;
     }
 </style>

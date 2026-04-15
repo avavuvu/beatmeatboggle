@@ -9,8 +9,8 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Beat Me at Boggle</title>
-	<meta property="og:title" content={title} />
+	<title>{title}</title>
+	<meta property="og:title" content="{title} – Play Boggle Free Daily" />
 	<meta property="og:description" content={description} />
 	<meta property="og:image" content={`${page.url.origin}/${"img.png"}`} />
 	<meta property="og:image:width" content="1200" />

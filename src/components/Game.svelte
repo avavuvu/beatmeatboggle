@@ -7,11 +7,16 @@
     import Reveal from "./Reveal.svelte";
     import Toast from "./Toast.svelte";
 
-    const minutes = $derived(Math.floor(gameManager.secondsLeft / 60));
-    const seconds = $derived(gameManager.secondsLeft % 60);
-    const timeDisplay = $derived(
-        `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`,
-    );
+    const timeDisplay = $derived.by(() => {
+        const minutes = Math.floor(gameManager.secondsLeft / 60);
+        const seconds = gameManager.secondsLeft % 60;
+
+        if (gameManager.secondsLeft <= 60) {
+            return String(seconds).padStart(2, "0");
+        }
+
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    });
 
     const {
         dateKey,
@@ -32,15 +37,19 @@
     class="game-container text-foreground"
 >
     <div class="game-grid">
-        <div class="timer edge">
-            <div class:urgent={gameManager.secondsLeft <= 30}>
+        <div
+            class:really-urgent={gameManager.secondsLeft <= 10}
+            class:urgent={gameManager.secondsLeft <= 60}
+            class="timer edge"
+        >
+            <div>
                 {timeDisplay}
             </div>
         </div>
-        <div class="board">
+        <div class="board edge">
             <Board />
         </div>
-        <div class="words">
+        <div class="words -z-20 pointer-events-none">
             <div class="h-12 p-2">
                 {gameManager.currentChain.getString().toUpperCase()}
             </div>
@@ -53,14 +62,28 @@
                 {/each}
             </ul>
         </div>
+
+        <div class="gutter edge -z-10">
+            <Toast />
+        </div>
+        <div class="banner edge">
+            <a href="/">
+                <Logo />
+            </a>
+        </div>
+        {#if gameManager.gameOver}
+            <div class="reveal">
+                <Reveal />
+            </div>
+        {/if}
         <div
-            class="backspace edge z-10 touch-manipulation"
+            class="backspace edge touch-manipulation bg-surface"
             style={gameManager.gameOver ? "display: none;" : "display: unset;"}
         >
             <button
                 onclick={() => gameManager.removeLast()}
                 aria-label="backspace"
-                class="w-full h-full cursor-pointer z-10"
+                class="w-full h-full cursor-pointer"
             >
                 <svg
                     id="Layer_2"
@@ -87,11 +110,11 @@
             </button>
         </div>
         <div
-            class="submit edge z-10 touch-manipulation"
+            class="submit edge touch-manipulation bg-surface"
             style={gameManager.gameOver ? "display: none;" : "display: unset;"}
         >
             <button
-                class="w-full h-full cursor-pointer z-10"
+                class="w-full h-full cursor-pointer"
                 aria-label="submit"
                 onclick={() => gameManager.submitWord()}
             >
@@ -114,20 +137,6 @@
                     ></svg
                 >
             </button>
-        </div>
-        <div class="gutter pointer-events-none z-20">
-            <Toast />
-        </div>
-        <div class="banner edge">
-            <!-- <img class="h-full w-min p-2" src="Asset 22.svg" alt="" /> -->
-            <a href="/">
-                <Logo />
-            </a>
-        </div>
-        <div class="reveal">
-            {#if gameManager.gameOver}
-                <Reveal />
-            {/if}
         </div>
     </div>
 </div>
@@ -183,11 +192,13 @@
         grid-area: 1 / 6 / 5 / 8;
     }
 
+    /* MOBILE */
     @media (max-width: 600px) {
         .game-container {
             --cols: 4;
             --rows: 7;
-            max-height: unset;
+            /* height: 100dvh; */
+
             aspect-ratio: var(--cols) / var(--rows);
             padding: 0;
         }
@@ -246,5 +257,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .urgent {
+        font-size: 3rem;
+    }
+
+    .really-urgent {
+        font-size: 3rem;
+        color: var(--color-surface);
+        background-color: var(--color-foreground);
     }
 </style>

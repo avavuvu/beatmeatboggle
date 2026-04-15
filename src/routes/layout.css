@@ -11,6 +11,18 @@
     --default-font-family: "Sono", 'Courier New', Courier, monospace;
 }
 
-body {
-        background-color: var(--color-surface);
+@media (prefers-color-scheme: dark) {
+    @theme {
+        --color-border: #faf3ea;
+        --color-surface: #366c94;
+        --color-foreground: var(--color-border);
+        --color-accent: var(--color-border);
+        --color-muted: #9ca3af;
+        --default-font-family: "Sono", 'Courier New', Courier, monospace;
     }
+}
+
+body {
+    background-color: var(--color-surface);
+
+}
