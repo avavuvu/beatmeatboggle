@@ -1,7 +1,7 @@
 import { solve } from "./dictionary/solver"
 import dictionaryManager from "./dictionary/trie"
 import { generateClassic, generateClaude, generateClusters } from "./generateBoard"
-import { getAdjacentPositions } from "./constants"
+import { dateOverrides, getAdjacentPositions } from "./constants"
 import toastManager from "./ToastManager.svelte"
 import scoreManager, { type ScoreManagerInitData } from "./ScoreManager.svelte"
 import { browser } from "$app/environment"
@@ -148,17 +148,26 @@ class GameManager {
             },
         }
 
-        this.gridSize = weekDayMap[day].size
+        const override = dateOverrides[this.dateKey]
 
-        this.letters = weekDayMap[day].generateBoard(this.dateKey, this.gridSize)
+        if (override) {
+            this.gridSize = override.size
+            this.letters = override.board
+            this.secondsLeft = override.time
+        } else {
+            this.gridSize = weekDayMap[day].size
+            this.letters = weekDayMap[day].generateBoard(this.dateKey, this.gridSize)
+            this.secondsLeft = weekDayMap[day].time
+
+        }
+
         this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
 
-        if (this.totalPossibleWords.length < 130) {
+        if (!override && this.totalPossibleWords.length < 130) {
             this.letters = weekDayMap[day].generateBoard(`${this.dateKey}-reroll`, this.gridSize)
             this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
         }
 
-        this.secondsLeft = weekDayMap[day].time
         this.gameOver = false
         this.foundWords = []
         this.currentChain.clear()
