@@ -11,7 +11,7 @@
         const minutes = Math.floor(gameManager.secondsLeft / 60);
         const seconds = gameManager.secondsLeft % 60;
 
-        if (gameManager.secondsLeft <= 60) {
+        if (gameManager.secondsLeft < 60) {
             return String(seconds).padStart(2, "0");
         }
 
@@ -49,13 +49,18 @@
         <div class="board edge">
             <Board />
         </div>
-        <div class="words -z-20 pointer-events-none">
-            <div class="h-12 p-2">
+        <div
+            class="words -z-20 pointer-events-none flex flex-col
+        "
+        >
+            <div class="h-12 p-2 shrink-0">
                 {gameManager.currentChain.getString().toUpperCase()}
             </div>
 
-            <ul class="p-2 flex flex-wrap gap-2 overflow-y-scroll">
-                {#each gameManager.foundWords.toSorted() as word}
+            <ul
+                class="p-2 flex flex-wrap gap-2 overflow-y-scroll flex-1 min-h-0"
+            >
+                {#each gameManager.foundWords as word}
                     <li>
                         {word}
                     </li>

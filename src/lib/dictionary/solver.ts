@@ -47,8 +47,21 @@ function dfs(board: Board, row: number, col: number, node: TrieNode, results: Se
 
     const char = board.grid[row][col]
 
-    const alphabetIndex = char.charCodeAt(0) - 97
-    const nextNode: TrieNode | null = node.children[alphabetIndex]
+    let nextNode: TrieNode | null;
+
+    // manually do Qu
+    // we could also store it at trie creation, but that is overkill
+    if (char === "q") {
+        const Q_CODE = "q".charCodeAt(0) - 97
+        const U_CODE = "u".charCodeAt(0) - 97
+
+        const qNode: TrieNode | null = node.children[Q_CODE]
+        nextNode = qNode?.children[U_CODE] || null
+    } else {
+        const alphabetIndex = char.charCodeAt(0) - 97
+        nextNode = node.children[alphabetIndex]
+    }
+
 
     if (!nextNode) {
         return

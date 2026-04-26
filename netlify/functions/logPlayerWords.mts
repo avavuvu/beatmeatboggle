@@ -47,7 +47,9 @@ export default async function logPlayerWords(req: Request, context: Context) {
             .groupBy(playerWords.wordCount)
             .orderBy(playerWords.wordCount);
 
-        const average = stats.reduce((total, stat) => total + stat.wordCount, 1) / (stats.length ?? 1)
+        const totalWords = stats.reduce((total, stat) => total + stat.wordCount * stat.players, 0);
+        const totalPlayers = stats.reduce((total, stat) => total + stat.players, 0);
+        const average = totalPlayers > 0 ? totalWords / totalPlayers : 0;
 
         const [ava] = await db
             .select({ words: avasWords.words })

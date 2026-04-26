@@ -92,17 +92,17 @@ class ScoreManager {
         }]
 
         if (this.avasWords && !this.avasWords.includes(word)) {
-            points += 4
+            points += 1
             pointsArray.push({
-                points: 2,
+                points: 1,
                 reason: "ava bonus"
             })
         }
 
         if (DIRTY_WORDS.includes(word)) {
-            points += 7
+            points += 4
             pointsArray.push({
-                points: 7,
+                points: 4,
                 reason: "dirty bonus"
             })
         }
