@@ -43,7 +43,14 @@
     </main>
 
     <aside class="border p-4 my-4">
-        <a class="underline" href="/about"> about me </a>
+        <ul class="flex gap-6 flex-wraps">
+            <li>
+                <a class="underline" href="/settings"> settings </a>
+            </li>
+            <li>
+                <a class="underline" href="/about"> about me </a>
+            </li>
+        </ul>
     </aside>
 </div>
 

@@ -3,8 +3,16 @@
 	import favicon from "$lib/assets/favicon.svg";
 	import { description, title } from "$lib/constants";
 	import { page } from "$app/state";
+    import settingsManager from "$lib/SettingsManager.svelte"
 
 	let { children } = $props();
+
+	$effect(() => {
+		document.body!.setAttribute(
+            "data-theme",
+            settingsManager.settings.darkMode.value ? "dark" : "light"
+        )
+	})
 </script>
 
 <svelte:head>

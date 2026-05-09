@@ -1,28 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Sono:wght,MONO@200..800,1&display=swap');
-@import 'tailwindcss';
-
+@import url("https://fonts.googleapis.com/css2?family=Sono:wght,MONO@200..800,1&display=swap");
+@import "tailwindcss";
 
 @theme {
     --color-border: #366c94;
     --color-surface: #faf3ea;
+    --color-board: var(--color-surface);
+    --color-tile-letter: var(--color-surface);
     --color-foreground: var(--color-border);
     --color-accent: var(--color-border);
     --color-muted: gray;
-    --default-font-family: "Sono", 'Courier New', Courier, monospace;
+    --default-font-family: "Sono", "Courier New", Courier, monospace;
 }
 
-/* @media (prefers-color-scheme: dark) {
-    @theme {
-        --color-border: #faf3ea;
-        --color-surface: #366c94;
-        --color-foreground: var(--color-border);
-        --color-accent: var(--color-border);
-        --color-muted: #9ca3af;
-        --default-font-family: "Sono", 'Courier New', Courier, monospace;
-    }
-} */
+[data-theme="dark"] {
+    --color-foreground: #d6d6d6;
+    --color-muted: #4a6e82;
+    --color-border: var(--color-muted);
+    --color-tile-letter: var(--color-foreground);
+    --color-board: #315178;
+    --color-surface: #003154;
+    --color-accent: var(--color-surface);
+    --default-font-family: "Sono", "Courier New", Courier, monospace;
+}
 
 body {
     background-color: var(--color-surface);
-
 }

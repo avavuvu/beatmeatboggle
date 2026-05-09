@@ -3,28 +3,27 @@
     import { fade } from "svelte/transition";
 
     let latestToast: Toast | undefined = $state();
-    let showToast = $state(false);
 
     let timeOut: ReturnType<typeof setTimeout>;
 
     $effect(() => {
         latestToast = toastManager.toasts.at(-1);
-        showToast = true;
+        toastManager.showToast = true;
 
         clearTimeout(timeOut);
 
         timeOut = setTimeout(() => {
-            showToast = false;
+            toastManager.showToast = false;
         }, 3000);
     });
 </script>
 
-{#if showToast && latestToast}
+{#if toastManager.showToast && latestToast}
     {@const { content, type } = latestToast}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        onclick={() => (showToast = false)}
+        onclick={() => (toastManager.showToast = false)}
         class:word={type === "word"}
         class:error={type === "error"}
         transition:fade={{ duration: 100 }}

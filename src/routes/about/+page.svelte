@@ -3,9 +3,9 @@
 </svelte:head>
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">
-    <span class="inline-flex justify-between w-full">
-        <h1 class="px-2">About</h1>
-        <a href="/">Return Home</a>
+    <span class="inline-flex gap-4 w-full">
+        <h1 class="px-2 font-bold">About</h1>
+        <a href="/" class="underline">Return Home</a>
     </span>
 
     <main class="border p-4 *>py-2">
