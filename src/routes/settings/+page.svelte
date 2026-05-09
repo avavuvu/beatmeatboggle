@@ -2,7 +2,7 @@
     import Toggle from "@/settings/Toggle.svelte";
     import settingsManager, {
         type SettingKey,
-    } from "$lib/settingsManager.svelte";
+    } from "$lib/SettingsManager.svelte"
 
     const entries = $derived(
         Object.entries(settingsManager.settings) as [
