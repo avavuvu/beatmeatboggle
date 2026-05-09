@@ -3,6 +3,7 @@
     import JSConfetti from "js-confetti";
     import { page } from "$app/state";
     import { slide } from "svelte/transition";
+    import settingsManager from "$lib/SettingsManager.svelte"
 
     const getReveal = async () => {
         const reveal = await scoreManager.getReveal();
@@ -20,7 +21,7 @@
 
     const shareText = $derived(
         didWin
-            ? "I beat Ava at Boggle!"
+            ? `I beat Ava at Boggle!${settingsManager.settings.fairFight.value && " (And it was a fair fight!"}`
             : "I couldn't quite beat Ava at Boggle :(",
     );
 
@@ -54,7 +55,7 @@
     });
 </script>
 
-{#await getReveal() then { scores, totalWordSet, didWin, avasWordMap, totalWordsMap }}
+{#await getReveal() then { scores, totalWordSet, didWin, avasWordMap, playerWordMap, totalWordsMap }}
     <div
         transition:slide={{ delay }}
         class="game-over h-full grid grid-rows-4 bg-surface border border-border"
@@ -65,7 +66,7 @@
                     class="flex flex-col w-full justify-end text-sm text-center relative"
                 >
                     <div
-                        class="text-center w-full text-white absolute transition-all duration-500"
+                        class="text-center w-full text-surface absolute transition-all duration-500"
                         class:move={Number(score) < 40}
                         style="opacity: {Number(mounted) *
                             100}%; transition-delay: {delay + index * 400}ms;"
@@ -76,8 +77,8 @@
                         </p>
                     </div>
                     <div
-                        class:player={score === "You!"}
-                        class="bar text-xs text-white transition-all duration-500 ease-out"
+                        class:player={name === "You!"}
+                        class="bar text-xs text-surface transition-all duration-500 ease-out"
                         style="height: {mounted
                             ? (Number(score) / totalWordSet.size) * 100
                             : 0}%; transition-delay: {delay + index * 400}ms;"
@@ -94,11 +95,24 @@
                     </li>
                 {/each}
             </ul>
-            <hr />
+
+            <hr class="my-4"/>
+
+            <h3 class="font-bold">Your words</h3>
+            <ul class="flex flex-wrap gap-2 h-min">
+                {#each playerWordMap as [word, wasFound]}
+                    <li class:unique={wasFound}>
+                        {word}
+                    </li>
+                {/each}
+            </ul>
+
+            <hr class="my-4"/>
+
             <h3 class="font-bold">All words</h3>
             <ul class="flex flex-wrap gap-2 h-min">
-                {#each totalWordsMap as [word, wasFound]}
-                    <li class:found={wasFound}>
+                {#each totalWordsMap as [word]}
+                    <li>
                         {word}
                     </li>
                 {/each}
@@ -139,7 +153,30 @@
     }
 
     .found {
-        color: var(--color-black);
+	    background-color: var(--color-muted);
+	    color: var(--color-surface);
+    }
+
+    .found::after {
+    	content: "you found!";
+    	position: absolute;
+    	font-size: xx-small;
+    	left: 50%;
+    	transform: translateX(-50%);
+    	bottom: -6px;
+    }
+
+    .unique {
+    	position: relative;
+    }
+
+    .unique::after {
+    	content: "unique!";
+    	position: absolute;
+    	font-size: xx-small;
+    	left: 50%;
+    	transform: translateX(-50%);
+    	bottom: -6px;
     }
 
     .bubble-container {

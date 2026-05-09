@@ -3,22 +3,68 @@ import toastManager from "./ToastManager.svelte"
 import gameManager from "./GameManager.svelte"
 import { browser } from "$app/environment"
 import { page } from "$app/state"
+import settingsManager from "./SettingsManager.svelte"
 
 export type ScoreItem = {
     points: number
-    reason?: "ava bonus" | "length" | "dirty bonus"
+    reason?: "ava bonus" | "length" | "dirty bonus" | "unique"
 }
 
 const DIRTY_WORDS = [
-    "sex", "dick", "balls", "sexy", "fruit", "anus", "cock", "hog", "horny", "hornier", "horniest", "doggy",
-    "shit", "fuck", "ass", "bitch", "bastard", "cunt", "damn", "pussy", "tits",
-    "boobs", "cum", "twat", "wank", "wanker", "prick", "crap", "dildo", "penis",
-    "vagina", "nude", "naked", "porno", "porn", "piss", "scrotum", "testicle", "testicles", "fucker",
-    "fucking", "shitty", "shitting", "bitching", "tit", "titty", "boner", "hooker", "nob", "hoe",
+    "sex",
+    "dick",
+    "balls",
+    "sexy",
+    "fruit",
+    "anus",
+    "cock",
+    "hog",
+    "horny",
+    "hornier",
+    "horniest",
+    "doggy",
+    "shit",
+    "fuck",
+    "ass",
+    "bitch",
+    "bastard",
+    "cunt",
+    "damn",
+    "pussy",
+    "tits",
+    "boobs",
+    "cum",
+    "twat",
+    "wank",
+    "wanker",
+    "prick",
+    "crap",
+    "dildo",
+    "penis",
+    "vagina",
+    "nude",
+    "naked",
+    "porno",
+    "porn",
+    "piss",
+    "scrotum",
+    "testicle",
+    "testicles",
+    "fucker",
+    "fucking",
+    "shitty",
+    "shitting",
+    "bitching",
+    "tit",
+    "titty",
+    "boner",
+    "hooker",
+    "nob",
+    "hoe",
 ]
 
 export type ScoreManagerInitData = {
-    avasWords: null | string[],
+    avasWords: null | string[]
     average: number
 }
 
@@ -32,141 +78,210 @@ class ScoreManager {
 
     init = (totalWords: string[]) => {
         this.totalWords = totalWords
-        this.totalPossibleScore = totalWords.reduce((total, word) => total + this.wordLengthToPoints(word), 0)
+        this.totalPossibleScore = totalWords.reduce(
+            (total, word) => total + this.wordLengthToPoints(word),
+            0
+        )
 
-        const scoreData = browser && localStorage.getItem(`scores_${gameManager.dateKey}`);
+        const scoreData =
+            browser && localStorage.getItem(`scores_${gameManager.dateKey}`)
         if (scoreData) {
-            const {
-                average, avasWords
-            }: ScoreManagerInitData = JSON.parse(scoreData)
+            const { average, avasWords }: ScoreManagerInitData =
+                JSON.parse(scoreData)
 
             this.avasWords = avasWords
             this.avasScore = !avasWords
                 ? 0
-                : this.calculateTotalPoints(avasWords)
+                : this.calculateTotalPoints(avasWords, [], false)
 
             this.average = average
         } else {
             const fetchScores = async (): Promise<ScoreManagerInitData> => {
-                const res = await fetch(`/api/player-words?dateKey=${gameManager.dateKey}`, {
-                    method: "GET",
-                });
+                const res = await fetch(
+                    `/api/player-words?dateKey=${gameManager.dateKey}`,
+                    {
+                        method: "GET",
+                    }
+                )
 
-                return res.json();
+                return res.json()
             }
 
-            fetchScores().then(({ avasWords, average }) => {
-                this.avasWords = avasWords
-                this.avasScore = !avasWords
-                    ? 0
-                    : this.calculateTotalPoints(avasWords)
-                this.average = average
+            fetchScores()
+                .then(({ avasWords, average }) => {
+                    this.avasWords = avasWords
+                    this.avasScore = !avasWords
+                        ? 0
+                        : this.calculateTotalPoints(avasWords, [], false)
+                    this.average = average
 
-                // recalculate any words already played before the promise resolved
-                for (const [word, _] of this.pointsMap.entries()) {
-                    const { pointsArray } = this.calculatePoints(word);
-                    this.pointsMap.set(word, pointsArray);
-                }
+                    // recalculate any words already played before the promise resolved
+                    for (const [word, _] of this.pointsMap.entries()) {
+                        const { pointsArray } = this.calculatePoints(
+                            word,
+                            [],
+                            true
+                        )
+                        this.pointsMap.set(word, pointsArray)
+                    }
 
-                localStorage.setItem(`scores_${gameManager.dateKey}`, JSON.stringify({
-                    avasWords: this.avasWords,
-                    average: this.average
-                }));
-            }).catch(err => console.error("Score setup failed", err));
+                    localStorage.setItem(
+                        `scores_${gameManager.dateKey}`,
+                        JSON.stringify({
+                            avasWords: this.avasWords,
+                            average: this.average,
+                        })
+                    )
+                })
+                .catch((err) => console.error("Score setup failed", err))
         }
     }
 
-    wordLengthToPoints = (word: string) => Math.floor(Math.pow(word.length, 2) / 4)
+    wordLengthToPoints = (word: string) =>
+        Math.floor(Math.pow(word.length, 2) / 4)
 
-    calculateTotalPoints = (words: string[]) => words.reduce((total, word) => total + this.calculatePoints(word).points, 0)
+    calculateTotalPoints = (
+        words: string[],
+        otherPlayersWords: string[],
+        awardUniqueBonus: boolean
+    ) =>
+        words.reduce(
+            (total, word) =>
+                total +
+                this.calculatePoints(word, otherPlayersWords, awardUniqueBonus)
+                    .points,
+            0
+        )
 
-    calculatePoints = (word: string) => {
-        let points = 0;
+    calculatePoints = (
+        word: string,
+        otherPlayersWords: string[],
+        awardUniqueBonus: boolean
+    ) => {
+        let points = 0
 
         const lengthPoints = this.wordLengthToPoints(word)
         points += lengthPoints
 
-        const pointsArray: ScoreItem[] = [{
-            points: lengthPoints,
-            reason: "length"
-        }]
+        const pointsArray: ScoreItem[] = [
+            {
+                points: lengthPoints,
+                reason: "length",
+            },
+        ]
 
-        if (this.avasWords && !this.avasWords.includes(word)) {
+        if (awardUniqueBonus && !otherPlayersWords.includes(word)) {
+            const reason = settingsManager.settings.fairFight.value
+                ? "unique"
+                : "ava bonus"
+
             points += 1
             pointsArray.push({
                 points: 1,
-                reason: "ava bonus"
+                reason,
             })
+
+            console.log("unique word bonus for", word)
         }
 
         if (DIRTY_WORDS.includes(word)) {
             points += 4
             pointsArray.push({
                 points: 4,
-                reason: "dirty bonus"
+                reason: "dirty bonus",
             })
         }
 
         return {
             pointsArray,
-            points
+            points,
         }
     }
 
     addWord = (word: string) => {
-        const { points, pointsArray: scoreArray } = this.calculatePoints(word)
+        const { points, pointsArray: scoreArray } = this.calculatePoints(
+            word,
+            this.avasWords || [],
+            true
+        )
 
         this.pointsMap.set(word, scoreArray)
 
-        toastManager.addWordToast(
-            word, scoreArray, points
-        )
+        toastManager.addWordToast(word, scoreArray, points)
     }
 
     loadWord = (word: string) => {
-        const { pointsArray: scoreArray } = this.calculatePoints(word)
+        const { pointsArray: scoreArray } = this.calculatePoints(
+            word,
+            this.avasWords || [],
+            true
+        )
         this.pointsMap.set(word, scoreArray)
     }
 
     getReveal = async () => {
-        const postUrl = gameManager.playerState === "ava"
-            ? "/api/avas-words"
-            : "/api/player-words"
+        const postUrl =
+            gameManager.playerState === "ava"
+                ? "/api/avas-words"
+                : "/api/player-words"
 
-        const postHeaders = gameManager.playerState === "player"
-            ? undefined
-            : {
-                "authorization": localStorage.getItem("admin_token") ?? ""
-            }
+        const postHeaders =
+            gameManager.playerState === "player"
+                ? undefined
+                : {
+                      authorization: localStorage.getItem("admin_token") ?? "",
+                  }
 
         if (gameManager.foundWords.length > 0) {
             await fetch(postUrl, {
                 method: "POST",
                 body: JSON.stringify({
                     words: gameManager.foundWords,
-                    dateKey: gameManager.dateKey
+                    dateKey: gameManager.dateKey,
                 }),
-                headers: postHeaders
+                headers: postHeaders,
             })
         }
 
+        const playerWordSet = new Set(gameManager.foundWords)
+        const totalWordSet = new Set(gameManager.totalPossibleWords)
+        const avasWordSet = new Set(this.avasWords || [])
 
-        const playerWordSet = new Set(gameManager.foundWords);
-        const totalWordSet = new Set(gameManager.totalPossibleWords);
-        const avasWordSet = new Set(this.avasWords || []);
+        // words ava found, marked true if the player also found them
+        const avasWordMap: [string, boolean][] = this.avasWords
+            ? this.avasWords
+                  .toSorted()
+                  .map((word) => [word, playerWordSet.has(word)])
+            : []
 
-        const sortWords = (words: string[]): [string, boolean][] => words
+        // words the player found, marked true if Ava did NOT find them (unique to player)
+        const playerWordMap: [string, boolean][] = gameManager.foundWords
             .toSorted()
-            .map(word => [word, playerWordSet.has(word)])
+            .map((word) => [word, !avasWordSet.has(word)])
 
-        // words ava found
-        const avasWordMap = this.avasWords ? sortWords(this.avasWords) : []
+        // words neither ava nor the player found
+        const totalWordsMap: [string, boolean][] =
+            gameManager.totalPossibleWords
+                .toSorted()
+                .filter(
+                    (word) => !avasWordSet.has(word) && !playerWordSet.has(word)
+                )
+                .map((word) => [word, false])
 
-        // other words
-        const totalWordsMap = sortWords(gameManager.totalPossibleWords)
-            .filter(word => !avasWordSet.has(word[0]))
+        const playerScore = this.calculateTotalPoints(
+            gameManager.foundWords,
+            this.avasWords || [],
+            true
+        )
 
-        const playerScore = this.calculateTotalPoints(gameManager.foundWords)
+        // recalculate ava's score if there is a fair fight
+        if (settingsManager.settings.fairFight.value) {
+            this.avasScore = this.calculateTotalPoints(
+                this.avasWords || [],
+                gameManager.foundWords,
+                true
+            )
+        }
 
         const scores = [
             ["You!", playerScore],
@@ -178,31 +293,33 @@ class ScoreManager {
 
         return {
             avasWordMap,
+            playerWordMap,
             totalWordsMap,
             totalWordSet,
-            playerWordSet,
             scores,
             playerScore,
             avasScore: this.avasScore,
             didWin,
-            shareLink: this.createShareLink(playerScore, this.avasScore)
-        };
+            shareLink: this.createShareLink(playerScore, this.avasScore),
+        }
     }
 
     createShareLink = (totalScore: number, avasScore: number) => {
         const generateChecksum = (str: string) => {
-            let check = 0x12345678;
+            let check = 0x12345678
             for (let i = 0; i < str.length; i++) {
-                check += str.charCodeAt(i) * (i + 1);
+                check += str.charCodeAt(i) * (i + 1)
             }
 
-            return (check & 0xffffffff).toString(16);
-        };
+            return (check & 0xffffffff).toString(16)
+        }
 
         const size = gameManager.gridSize
         const letters = gameManager.letters.join("")
 
-        const checksum = generateChecksum(`${size}${letters}${totalScore}${avasScore}`);
+        const checksum = generateChecksum(
+            `${size}${letters}${totalScore}${avasScore}`
+        )
 
         const url = new URL(page.url.origin + "/badge")
         url.searchParams.append("l", letters)
@@ -210,7 +327,6 @@ class ScoreManager {
         url.searchParams.append("a", `${avasScore}`)
         url.searchParams.append("z", `${size}`)
         url.searchParams.append("c", checksum)
-
 
         return url.toString()
     }

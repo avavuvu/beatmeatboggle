@@ -26,12 +26,12 @@
 
 <style>
     rect {
-        fill: var(--color-foreground);
+        fill: var(--color-board);
         stroke: var(--color-surface);
         transform: fill;
         transition-duration: 100ms;
     }
-    /* 
+    /*
     rect:hover {
         fill: var(--color-muted);
     } */
@@ -43,7 +43,7 @@
     text {
         pointer-events: none;
         user-select: none;
-        fill: var(--color-surface);
+        fill: var(--color-tile-letter);
         font-family: var(--default-font-family);
     }
 </style>
