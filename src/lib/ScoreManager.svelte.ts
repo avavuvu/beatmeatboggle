@@ -4,6 +4,8 @@ import gameManager from "./GameManager.svelte"
 import { browser } from "$app/environment"
 import { page } from "$app/state"
 import settingsManager from "./SettingsManager.svelte"
+import streakManager from "./StreakManager.svelte"
+import { SCORE_KEY_PREFIX } from "./constants"
 
 export type ScoreItem = {
     points: number
@@ -79,12 +81,13 @@ class ScoreManager {
     init = (totalWords: string[]) => {
         this.totalWords = totalWords
         this.totalPossibleScore = totalWords.reduce(
-            (total, word) => total + this.wordLengthToPoints(word),
+            (total, word) => total + ScoreManager.wordLengthToPoints(word),
             0
         )
 
         const scoreData =
-            browser && localStorage.getItem(`scores_${gameManager.dateKey}`)
+            browser &&
+            localStorage.getItem(`${SCORE_KEY_PREFIX}${gameManager.dateKey}`)
         if (scoreData) {
             const { average, avasWords }: ScoreManagerInitData =
                 JSON.parse(scoreData)
@@ -92,7 +95,12 @@ class ScoreManager {
             this.avasWords = avasWords
             this.avasScore = !avasWords
                 ? 0
-                : this.calculateTotalPoints(avasWords, [], false)
+                : ScoreManager.calculateTotalPoints(
+                      avasWords,
+                      [],
+                      false,
+                      settingsManager.settings.fairFight.value
+                  )
 
             this.average = average
         } else {
@@ -112,21 +120,27 @@ class ScoreManager {
                     this.avasWords = avasWords
                     this.avasScore = !avasWords
                         ? 0
-                        : this.calculateTotalPoints(avasWords, [], false)
+                        : ScoreManager.calculateTotalPoints(
+                              avasWords,
+                              [],
+                              false,
+                              settingsManager.settings.fairFight.value
+                          )
                     this.average = average
 
                     // recalculate any words already played before the promise resolved
                     for (const [word, _] of this.pointsMap.entries()) {
-                        const { pointsArray } = this.calculatePoints(
+                        const { pointsArray } = ScoreManager.calculatePoints(
                             word,
                             [],
-                            true
+                            true,
+                            settingsManager.settings.fairFight.value
                         )
                         this.pointsMap.set(word, pointsArray)
                     }
 
                     localStorage.setItem(
-                        `scores_${gameManager.dateKey}`,
+                        `${SCORE_KEY_PREFIX}${gameManager.dateKey}`,
                         JSON.stringify({
                             avasWords: this.avasWords,
                             average: this.average,
@@ -137,30 +151,36 @@ class ScoreManager {
         }
     }
 
-    wordLengthToPoints = (word: string) =>
+    static wordLengthToPoints = (word: string) =>
         Math.floor(Math.pow(word.length, 2) / 4)
 
-    calculateTotalPoints = (
+    static calculateTotalPoints = (
         words: string[],
         otherPlayersWords: string[],
-        awardUniqueBonus: boolean
+        awardUniqueBonus: boolean,
+        fairFight: boolean
     ) =>
         words.reduce(
             (total, word) =>
                 total +
-                this.calculatePoints(word, otherPlayersWords, awardUniqueBonus)
-                    .points,
+                ScoreManager.calculatePoints(
+                    word,
+                    otherPlayersWords,
+                    awardUniqueBonus,
+                    fairFight
+                ).points,
             0
         )
 
-    calculatePoints = (
+    static calculatePoints = (
         word: string,
         otherPlayersWords: string[],
-        awardUniqueBonus: boolean
+        awardUniqueBonus: boolean,
+        fairFight: boolean
     ) => {
         let points = 0
 
-        const lengthPoints = this.wordLengthToPoints(word)
+        const lengthPoints = ScoreManager.wordLengthToPoints(word)
         points += lengthPoints
 
         const pointsArray: ScoreItem[] = [
@@ -171,9 +191,7 @@ class ScoreManager {
         ]
 
         if (awardUniqueBonus && !otherPlayersWords.includes(word)) {
-            const reason = settingsManager.settings.fairFight.value
-                ? "unique"
-                : "ava bonus"
+            const reason = fairFight ? "unique" : "ava bonus"
 
             points += 1
             pointsArray.push({
@@ -199,11 +217,13 @@ class ScoreManager {
     }
 
     addWord = (word: string) => {
-        const { points, pointsArray: scoreArray } = this.calculatePoints(
-            word,
-            this.avasWords || [],
-            true
-        )
+        const { points, pointsArray: scoreArray } =
+            ScoreManager.calculatePoints(
+                word,
+                this.avasWords || [],
+                true,
+                settingsManager.settings.fairFight.value
+            )
 
         this.pointsMap.set(word, scoreArray)
 
@@ -211,10 +231,11 @@ class ScoreManager {
     }
 
     loadWord = (word: string) => {
-        const { pointsArray: scoreArray } = this.calculatePoints(
+        const { pointsArray: scoreArray } = ScoreManager.calculatePoints(
             word,
             this.avasWords || [],
-            true
+            true,
+            settingsManager.settings.fairFight.value
         )
         this.pointsMap.set(word, scoreArray)
     }
@@ -268,18 +289,20 @@ class ScoreManager {
                 )
                 .map((word) => [word, false])
 
-        const playerScore = this.calculateTotalPoints(
+        const playerScore = ScoreManager.calculateTotalPoints(
             gameManager.foundWords,
             this.avasWords || [],
-            true
+            true,
+            settingsManager.settings.fairFight.value
         )
 
         // recalculate ava's score if there is a fair fight
         if (settingsManager.settings.fairFight.value) {
-            this.avasScore = this.calculateTotalPoints(
+            this.avasScore = ScoreManager.calculateTotalPoints(
                 this.avasWords || [],
                 gameManager.foundWords,
-                true
+                true,
+                settingsManager.settings.fairFight.value
             )
         }
 
@@ -290,6 +313,16 @@ class ScoreManager {
         ]
 
         const didWin = playerScore > this.avasScore
+
+        // if (gameManager.playerState === "player") {
+        //     streakManager.saveResult(
+        //         gameManager.dateKey,
+        //         playerScore,
+        //         this.avasScore,
+        //         didWin,
+        //         settingsManager.settings.fairFight.value
+        //     )
+        // }
 
         return {
             avasWordMap,
@@ -333,4 +366,5 @@ class ScoreManager {
 }
 
 const scoreManager = new ScoreManager()
+export { ScoreManager }
 export default scoreManager

@@ -1,6 +1,8 @@
 <script lang="ts">
     import gameManager from "$lib/GameManager.svelte";
     import type { ScoreManagerInitData } from "$lib/ScoreManager.svelte";
+    import { onMount, onDestroy } from "svelte"
+    import { GAME_KEY_PREFIX } from "$lib/constants"
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
     import Logo from "./Logo.svelte";
@@ -28,18 +30,38 @@
         playerStatus: "ava" | "player";
     } = $props();
 
-    // svelte-ignore state_referenced_locally
-    gameManager.init(dateKey, dayNumber, playerStatus);
+    let canAnimate = $state(false)
+
+    onMount(() => {
+   		canAnimate = true
+
+     	let introDelay = 3200
+
+      	if(localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
+     		introDelay = 0;
+     		canAnimate = false;
+       	}
+
+        gameManager.init(dateKey, dayNumber, playerStatus);
+
+        setTimeout(() => {
+            gameManager.startGame()
+        }, introDelay);
+    });
+
+    onDestroy(() => {
+        gameManager.stopTimer();
+    });
 </script>
 
 <div
-    class:game-over={gameManager.gameOver}
+    class:game-over={gameManager.gameState === "gameOver"}
     class="game-container text-foreground"
 >
     <div class="game-grid">
         <div
             class:really-urgent={gameManager.secondsLeft <= 10}
-            class:urgent={gameManager.secondsLeft <= 60}
+            class:urgent={gameManager.secondsLeft < 60}
             class="timer edge"
         >
             <div>
@@ -47,7 +69,7 @@
             </div>
         </div>
         <div class="board edge">
-            <Board />
+            <Board {canAnimate} />
         </div>
         <div
             class="words -z-20 pointer-events-none flex flex-col
@@ -76,14 +98,14 @@
                 <Logo />
             </a>
         </div>
-        {#if gameManager.gameOver}
+        {#if gameManager.gameState === "gameOver"}
             <div class="reveal">
                 <Reveal />
             </div>
         {/if}
         <div
             class="backspace edge touch-manipulation bg-surface"
-            style={gameManager.gameOver ? "display: none;" : "display: unset;"}
+            style={gameManager.isPlayingGame ? "display: unset;" : "display: none;" }
         >
             <button
                 onclick={() => gameManager.removeLast()}
@@ -116,7 +138,7 @@
         </div>
         <div
             class="submit edge touch-manipulation bg-surface"
-            style={gameManager.gameOver ? "display: none;" : "display: unset;"}
+            style={gameManager.isPlayingGame ? "display: unset;" :  "display: none;"}
         >
             <button
                 class="w-full h-full cursor-pointer"
@@ -208,10 +230,6 @@
             padding: 0;
         }
 
-        .game-container.game-over {
-            --rows: 10;
-        }
-
         .game-grid {
             display: grid;
             aspect-ratio: var(--cols) / var(--rows);
@@ -231,10 +249,6 @@
         .words {
             grid-area: 6 / 1 / 8 / 3;
         }
-
-        .reveal {
-            grid-area: 6 / 1 / 11 / 5;
-        }
         .submit {
             grid-area: 7 / 3 / 8 / 4;
         }
@@ -253,6 +267,21 @@
         .banner {
             grid-area: banner;
         }
+
+        .game-container.game-over .board {
+        	grid-area: 2 / 1 / 4 / 5;
+        }
+
+        .game-container.game-over .gutter {
+      		display: none;
+        }
+
+
+        .game-container.game-over .reveal {
+        	grid-area: 4 / 1 / 8 / 5;
+        }
+
+
     }
 
     .timer {

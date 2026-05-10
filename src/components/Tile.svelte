@@ -7,8 +7,7 @@
         selected: boolean;
     } = $props();
 
-    // svelte-ignore state_referenced_locally
-    const isQ = char === "Q";
+    const isQ = $derived(char === "Q")
 </script>
 
 <rect class:selected stroke-width=".02px" width={1} height={1}> </rect>

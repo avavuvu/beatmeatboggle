@@ -10,7 +10,9 @@ import toastManager from "./ToastManager.svelte"
 import scoreManager, { type ScoreManagerInitData } from "./ScoreManager.svelte"
 import { browser } from "$app/environment"
 import settingsManager from "./SettingsManager.svelte"
+import streakManager from "./StreakManager.svelte"
 export { getAdjacentPositions } from "./constants"
+import { GAME_KEY_PREFIX } from "./constants"
 
 class Chain {
     #letters = $state<Array<[number, string]>>([])
@@ -83,7 +85,7 @@ class GameManager {
     currentChain = $state(new Chain())
     totalPossibleWords: string[] = $state([])
     secondsLeft: number = $state(5)
-    gameOver: boolean = $state(false)
+    gameState: "playing" | "loading" | "gameOver" = $state("loading")
 
     playerState: "ava" | "player" = $state("player")
     dateKey: string = $state("")
@@ -192,14 +194,20 @@ class GameManager {
             this.totalPossibleWords = [...solve(this.letters, this.gridSize)]
         }
 
-        this.gameOver = false
         this.foundWords = []
         this.currentChain.clear()
 
         const isFromLoad = this.load()
 
         scoreManager.init(this.totalPossibleWords)
+    }
 
+    stopTimer = () => {
+        clearInterval(this.#timerHandle)
+    }
+
+    startGame = () => {
+        this.gameState = "playing"
         clearInterval(this.#timerHandle)
         this.#timerHandle = setInterval(() => {
             this.secondsLeft -= 1
@@ -213,12 +221,16 @@ class GameManager {
     }
 
     endGame = () => {
-        this.gameOver = true
+        this.gameState = "gameOver"
         this.save()
     }
 
+    get isPlayingGame() {
+        return this.gameState === "playing"
+    }
+
     removeLast = () => {
-        if (this.gameOver) return
+        if (!this.isPlayingGame) return
         this.currentChain.removeLast()
         if (this.currentChain.length === 0) {
             this.isTentative = false
@@ -226,7 +238,7 @@ class GameManager {
     }
 
     addTile = (index: number) => {
-        if (this.gameOver) return
+        if (!this.isPlayingGame) return
 
         const lastLetter = this.currentChain.last()
 
@@ -259,7 +271,7 @@ class GameManager {
     }
 
     submitWord = () => {
-        if (this.gameOver) return
+        if (!this.isPlayingGame) return
         const word = this.currentChain.getString()
 
         if (word.length === 0) {
@@ -342,7 +354,7 @@ class GameManager {
     }
 
     inputChar = (char: string) => {
-        if (this.gameOver) return
+        if (!this.isPlayingGame) return
         toastManager.showToast = false
 
         const tile = this.findTileFromCharacter(char, this.getSearchArea())
@@ -370,11 +382,11 @@ class GameManager {
     save = () => {
         if (!browser || this.playerState !== "player") return
         localStorage.setItem(
-            `boggle_${this.dateKey}`,
+            `${GAME_KEY_PREFIX}${this.dateKey}`,
             JSON.stringify({
                 foundWords: this.foundWords,
                 secondsLeft: this.secondsLeft,
-                gameOver: this.gameOver,
+                gameOver: this.gameState === "gameOver",
             })
         )
     }
@@ -382,12 +394,12 @@ class GameManager {
     load = () => {
         if (!browser || this.playerState !== "player") return false
 
-        const saved = localStorage.getItem(`boggle_${this.dateKey}`)
+        const saved = localStorage.getItem(`${GAME_KEY_PREFIX}${this.dateKey}`)
         if (saved) {
             const parsed = JSON.parse(saved)
             this.foundWords = parsed.foundWords
             this.secondsLeft = parsed.secondsLeft
-            this.gameOver = parsed.gameOver
+            this.gameState = parsed.gameOver ? "gameOver" : "playing"
             for (const word of this.foundWords) {
                 scoreManager.loadWord(word)
             }
