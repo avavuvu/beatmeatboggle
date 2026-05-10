@@ -4,7 +4,7 @@
 @theme {
     --color-border: #366c94;
     --color-surface: #faf3ea;
-    --color-board: var(--color-surface);
+    --color-board: var(--color-foreground);
     --color-tile-letter: var(--color-surface);
     --color-foreground: var(--color-border);
     --color-accent: var(--color-border);

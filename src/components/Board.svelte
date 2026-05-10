@@ -3,7 +3,17 @@
     import gameManager from "$lib/GameManager.svelte";
     import inputManager from "$lib/InputManager.svelte";
 
-    const cells = gameManager.letters.map((letter, index) => {
+
+    const { canAnimate }: {
+    	canAnimate: boolean
+    } = $props()
+
+    const shuffledIndices = Array.from(
+    	{length: gameManager.gridSize * gameManager.gridSize},
+     	(_, i) => i
+    ).sort(() => Math.random() - 0.5);
+
+    const cells = $derived(gameManager.letters.map((letter, index) => {
         const [x, y] = [
             index % gameManager.gridSize,
             Math.floor(index / gameManager.gridSize),
@@ -11,8 +21,18 @@
 
         const char = letter.toUpperCase();
 
-        return { x, y, char, index };
-    });
+        const tileAnimationMs = 200
+
+        const firstAnimationDelay = canAnimate
+        	? shuffledIndices[index] * tileAnimationMs
+         	: 0
+
+        const secondAnimationDelay = canAnimate
+        	? (tileAnimationMs * gameManager.gridSize * gameManager.gridSize) + 400 + (x + y) * 100
+         	: 0
+
+        return { x, y, char, index, firstAnimationDelay, secondAnimationDelay };
+    }));
 
     const line = $derived(
         [...gameManager.currentChain].map(([key]) => {
@@ -29,8 +49,6 @@
         line.slice(0, -2 + 1).map((_, i) => line.slice(i, i + 2)),
     );
 
-    // const searchArea = $derived(gameManager.getSearchArea().map((x) => x[0]));
-
     let svgElement: SVGSVGElement | undefined = $state();
 
     const getTouchRect = (): DOMRect => {
@@ -42,7 +60,7 @@
 <svg
     bind:this={svgElement}
     viewBox="0 0 {gameManager.gridSize} {gameManager.gridSize}"
-    class:game-over={gameManager.gameOver}
+    class:game-over={gameManager.gameState === "gameOver"}
     onpointerdown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId);
         inputManager.handlePointerDown(e, getTouchRect());
@@ -61,15 +79,26 @@
         inputManager.handlePointerUp(e);
     }}
 >
-    {#each cells as { x, y, char, index }}
+    {#each cells as { x, y, char, index, firstAnimationDelay, secondAnimationDelay }}
         <!-- svelte-ignore attribute_global_event_reference -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <g {x} {y} transform={`translate(${x}, ${y})`}>
-            <Tile
-                {char}
-                selected={gameManager.currentChain.containsKey(index)}
-            />
+        <g
+            {x}
+            {y}
+            transform={`translate(${x}, ${y})`}
+            style="--board-delay: {secondAnimationDelay}ms;"
+            class:can-animate={canAnimate}
+        >
+        	<g
+			style="--r: {Math.random() * 72 - 36}deg; --tile-delay: {firstAnimationDelay}ms;"
+         	>
+	            <Tile
+	            	{char}
+	                selected={gameManager.currentChain.containsKey(index)}
+	            />
+         	</g>
+
         </g>
     {/each}
 
@@ -107,6 +136,47 @@
         cursor: pointer;
         user-select: none;
         touch-action: none;
+    }
+
+    :global(.can-animate rect) {
+    	animation: tile-click-in 300ms ease forwards;
+     	animation-delay: var(--board-delay);
+
+     	fill: var(--color-surface);
+      	stroke: var(--color-foreground);
+    }
+
+    :global(.can-animate text) {
+           fill: var(--color-foreground);
+           animation: text-click-in 300ms ease forwards;
+           animation-delay: var(--board-delay);
+       }
+
+    g.can-animate > g {
+   		opacity: 0;
+        animation: tile-fade-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transform-origin: center;
+        transform-box: fill-box;
+        animation-delay: var(--tile-delay);
+    }
+
+    @keyframes tile-click-in {
+     	to {
+      		fill: var(--color-board);
+        	stroke: var(--color-surface);
+      	}
+    }
+
+    @keyframes text-click-in {
+     	to {
+      		fill: var(--color-tile-letter);
+      	}
+    }
+
+    @keyframes tile-fade-in {
+    		0% { opacity: 0; transform: rotate(var(--r));  }
+            25%   { opacity: 1; transform: rotate(var(--r));  }
+            100% { opacity: 1; transform: rotate(0deg); }
     }
 
     svg.game-over {
