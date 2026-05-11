@@ -104,13 +104,13 @@
 
     {#if line.length > 0}
         {@const end = line.at(-1)!}
-        <circle cx={end.x} cy={end.y} r="0.1" fill="var(--color-accent)">
+        <circle class="draw-pointer" cx={end.x} cy={end.y} r="0.1">
         </circle>
     {/if}
 
     {#each lineWindows as [{ x: x1, y: y1 }, { x: x2, y: y2 }]}
         <line
-            stroke="var(--color-accent)"
+        	class="draw-line"
             stroke-width="0.002rem"
             {x1}
             {y1}
@@ -126,6 +126,14 @@
         touch-action: none;
         width: 100%;
         height: 100%;
+    }
+
+    .draw-pointer {
+    	fill: var(--color-accent);
+    }
+
+    .draw-line {
+    	stroke: var(--color-accent);
     }
 
     line {
