@@ -31,6 +31,7 @@
     } = $props();
 
     let canAnimate = $state(false)
+    let error: null | any = $state()
 
     onMount(() => {
    		canAnimate = true
@@ -42,7 +43,13 @@
      		canAnimate = false;
        	}
 
-        gameManager.init(dateKey, dayNumber, playerStatus);
+        try {
+        	gameManager.init(dateKey, dayNumber, playerStatus);
+        }
+        catch(e) {
+        	error = e
+        }
+
 
         setTimeout(() => {
             gameManager.startGame()
@@ -53,6 +60,16 @@
         gameManager.stopTimer();
     });
 </script>
+
+{#if error}
+	<div>
+		<h1>An error has occurred</h1>
+
+		<code class="text-red-400">
+			{JSON.stringify(error)}
+		</code>
+	</div>
+{/if}
 
 <div
     class:game-over={gameManager.gameState === "gameOver"}

@@ -4,7 +4,6 @@ import gameManager from "./GameManager.svelte"
 import { browser } from "$app/environment"
 import { page } from "$app/state"
 import settingsManager from "./SettingsManager.svelte"
-import streakManager from "./StreakManager.svelte"
 import { SCORE_KEY_PREFIX } from "./constants"
 
 export type ScoreItem = {

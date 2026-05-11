@@ -10,7 +10,6 @@ import toastManager from "./ToastManager.svelte"
 import scoreManager, { type ScoreManagerInitData } from "./ScoreManager.svelte"
 import { browser } from "$app/environment"
 import settingsManager from "./SettingsManager.svelte"
-import streakManager from "./StreakManager.svelte"
 export { getAdjacentPositions } from "./constants"
 import { GAME_KEY_PREFIX } from "./constants"
 
