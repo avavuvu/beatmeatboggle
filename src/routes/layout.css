@@ -8,7 +8,7 @@
     --color-tile-letter: var(--color-surface);
     --color-foreground: var(--color-border);
     --color-muted: gray;
-    --color-accent: var(--color-foreground);
+    --color-accent: var(--color-muted);
     --default-font-family: "Sono", "Courier New", Courier, monospace;
 }
 
