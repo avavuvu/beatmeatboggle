@@ -4,6 +4,7 @@
     import { page } from "$app/state";
     import { redirect } from "@sveltejs/kit";
     import { onMount } from "svelte";
+    import { toISODateKey } from "$lib/constants"
 
     export const verify = () => {
         const token = browser ? localStorage.getItem("admin_token") : null;
@@ -18,17 +19,15 @@
 
     let verified = $state(verify());
 
-    let dateKey = $state("");
-    let dayNumber = $state(0);
+    let date: Date | undefined = $state()
 
     onMount(() => {
-        dateKey = page.url.searchParams.get("date") ?? "";
-        dayNumber = new Date(dateKey).getDay();
+        date = new Date(page.url.searchParams.get("date")!);
     });
 </script>
 
-{#if verified && dateKey !== ""}
-    <Game playerStatus="ava" {dateKey} {dayNumber} />
+{#if verified && date}
+    <Game playerStatus="ava" {date} avasWords={null}  />
 {:else}
     ...verifying
 {/if}

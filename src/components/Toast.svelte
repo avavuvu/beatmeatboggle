@@ -1,5 +1,5 @@
 <script lang="ts">
-    import toastManager, { type Toast } from "$lib/ToastManager.svelte";
+    import toaster, { type Toast } from "$lib/Toaster.svelte";
     import { fade } from "svelte/transition";
 
     let latestToast: Toast | undefined = $state();
@@ -7,23 +7,23 @@
     let timeOut: ReturnType<typeof setTimeout>;
 
     $effect(() => {
-        latestToast = toastManager.toasts.at(-1);
-        toastManager.showToast = true;
+        latestToast = toaster.toasts.at(-1);
+        toaster.showToast = true;
 
         clearTimeout(timeOut);
 
         timeOut = setTimeout(() => {
-            toastManager.showToast = false;
+            toaster.showToast = false;
         }, 3000);
     });
 </script>
 
-{#if toastManager.showToast && latestToast}
+{#if toaster.showToast && latestToast}
     {@const { content, type } = latestToast}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        onclick={() => (toastManager.showToast = false)}
+        onclick={() => (toaster.showToast = false)}
         class:word={type === "word"}
         class:error={type === "error"}
         transition:fade={{ duration: 100 }}

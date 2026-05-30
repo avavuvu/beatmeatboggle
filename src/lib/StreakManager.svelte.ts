@@ -5,7 +5,7 @@ import {
     SCORE_KEY_PREFIX,
     GAME_KEY_PREFIX,
 } from "./constants"
-import { ScoreManager } from "./ScoreManager.svelte"
+import { ScoreTracker } from "./ScoreTracker.svelte"
 
 export type DayResult = {
     playerScore: number
@@ -47,13 +47,13 @@ class StreakManager {
         avasWords: string[]
     ): { playerScore: number; avasScore: number } => {
         const avasWordSet = new Set(avasWords)
-        const playerScore = ScoreManager.calculateTotalPoints(
+        const playerScore = ScoreTracker.calculateTotalPoints(
             playerWords,
             avasWords,
             true,
             false
         )
-        const avasScore = ScoreManager.calculateTotalPoints(
+        const avasScore = ScoreTracker.calculateTotalPoints(
             avasWords,
             [],
             false,
@@ -78,7 +78,7 @@ class StreakManager {
 
     /**
      * Persist the final game result for a date and recompute all streaks.
-     * Called by ScoreManager at the end of getReveal().
+     * Called by ScoreTracker at the end of getReveal().
      */
     saveResult = (
         dateKey: string,

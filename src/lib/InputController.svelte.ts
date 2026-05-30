@@ -1,9 +1,15 @@
-import gameManager from "./GameManager.svelte"
+import type GameSession from "./GameSession.svelte"
 
 const PROXIMITY_THRESHOLD = 0.38
 const MIN_MOVE_PX = 3
 
-class InputManager {
+class InputController {
+    game: GameSession
+
+    constructor(game: GameSession) {
+        this.game = game
+    }
+
     isSliding = $state(false)
 
     #lastActivatedIndex: number = -1
@@ -19,8 +25,8 @@ class InputManager {
         clientY: number,
         rect: DOMRect
     ): [number, number] => {
-        const svgX = ((clientX - rect.left) / rect.width) * gameManager.gridSize
-        const svgY = ((clientY - rect.top) / rect.height) * gameManager.gridSize
+        const svgX = ((clientX - rect.left) / rect.width) * this.game.board.size
+        const svgY = ((clientY - rect.top) / rect.height) * this.game.board.size
         return [svgX, svgY]
     }
 
@@ -28,9 +34,9 @@ class InputManager {
         let bestIndex = -1
         let bestDist = PROXIMITY_THRESHOLD
 
-        for (let i = 0; i < gameManager.gridSize * gameManager.gridSize; i++) {
-            const cx = (i % gameManager.gridSize) + 0.5
-            const cy = Math.floor(i / gameManager.gridSize) + 0.5
+        for (let i = 0; i < this.game.board.size * this.game.board.size; i++) {
+            const cx = (i % this.game.board.size) + 0.5
+            const cy = Math.floor(i / this.game.board.size) + 0.5
             const dist = Math.hypot(svgX - cx, svgY - cy)
             if (dist < bestDist) {
                 bestDist = dist
@@ -42,25 +48,25 @@ class InputManager {
     }
 
     inputKey = (event: KeyboardEvent) => {
-        if (!gameManager.isPlayingGame) return
+        if (!this.game.isPlayingGame) return
         switch (event.key) {
             case "Backspace":
-                gameManager.removeLast()
+                this.game.removeLast()
                 break
             case "Enter":
-                gameManager.submitWord()
+                this.game.submitWord()
                 break
             default:
                 if (event.key.match(/^[a-zA-Z]$/)) {
-                    gameManager.inputChar(event.key.toLowerCase())
+                    this.game.inputChar(event.key.toLowerCase())
                 }
                 break
         }
     }
 
     handlePointerDown = (event: PointerEvent, rect: DOMRect) => {
-        if (!gameManager.isPlayingGame) return
-        // Only accept primary button (left click) or touch
+        if (!this.game.isPlayingGame) return
+
         if (event.button !== 0 && event.pointerType === "mouse") return
         event.preventDefault()
 
@@ -82,12 +88,12 @@ class InputManager {
 
         if (index !== -1) {
             this.#lastActivatedIndex = index
-            gameManager.addTile(index)
+            this.game.addTile(index)
         }
     }
 
     handlePointerMove = (event: PointerEvent, rect: DOMRect) => {
-        if (!gameManager.isPlayingGame) return
+        if (!this.game.isPlayingGame) return
         if (!this.isSliding) return
         event.preventDefault()
 
@@ -117,7 +123,7 @@ class InputManager {
             this.#lastActivatedIndex = index
             this.#lastPointerClientX = event.clientX
             this.#lastPointerClientY = event.clientY
-            gameManager.addTile(index)
+            this.game.addTile(index)
         }
     }
 
@@ -129,10 +135,9 @@ class InputManager {
         this.#lastActivatedIndex = -1
 
         if (this.#hasMoved) {
-            gameManager.submitWord()
+            this.game.submitWord()
         }
     }
 }
 
-const inputManager = new InputManager()
-export default inputManager
+export default InputController

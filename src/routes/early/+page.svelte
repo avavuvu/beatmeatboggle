@@ -71,13 +71,3 @@
         </div>
     </form>
 </main>
-
-<!-- <div>
-    <p>for date:</p>
-    <input type="date" />
-
-    <a href="early/game">play</a>
-    <a href="early/words">edit word list</a>
-</div> -->
-
-<!-- <Game /> -->

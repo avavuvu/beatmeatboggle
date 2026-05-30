@@ -3,14 +3,14 @@
 	import favicon from "$lib/assets/favicon.svg";
 	import { description, title } from "$lib/constants";
 	import { page } from "$app/state";
-    import settingsManager from "$lib/SettingsManager.svelte"
+    import preferences from "$lib/Preferences.svelte"
 
 	let { children } = $props();
 
 	$effect(() => {
 		document.body!.setAttribute(
             "data-theme",
-            settingsManager.settings.darkMode.value ? "dark" : "light"
+            preferences.settings.darkMode.value ? "dark" : "light"
         )
 	})
 </script>

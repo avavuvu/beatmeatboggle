@@ -1,27 +1,34 @@
 <script lang="ts">
-    import scoreManager from "$lib/ScoreManager.svelte";
+    import scoreTracker from "$lib/ScoreTracker.svelte";
     import JSConfetti from "js-confetti";
     import { page } from "$app/state";
-    import { slide } from "svelte/transition";
-    import settingsManager from "$lib/SettingsManager.svelte"
+    import { fade, slide } from "svelte/transition";
+    import preferences from "$lib/Preferences.svelte"
+    import type GameSession from "$lib/GameSession.svelte"
+    import favicon from "$lib/assets/favicon.svg"
 
-    const getReveal = async () => {
-        const reveal = await scoreManager.getReveal();
+    const { session }: {
+        session: GameSession
+    }  = $props()
 
-        didWin = reveal.didWin;
-        shareLink = reveal.shareLink;
+    const {
+        scores,
+        totalWordSet,
+        didWin,
+        avasWordMap,
+        playerWordMap,
+        totalWordsMap
+    } = scoreTracker.getReveal(session.foundWords, session.totalPossibleWords)
 
-        return reveal;
-    };
+    let average = $state(() => session.averageGameScore)
 
-    let didWin = $state(false);
     let shareLink = $state(page.url.origin);
 
     let shareButtonText = $state("Share");
 
     const shareText = $derived(
         didWin
-            ? `I beat Ava at Boggle!${settingsManager.settings.fairFight.value && " (And it was a fair fight!"}`
+            ? `I beat Ava at Boggle!${preferences.settings.fairFight.value && " (And it was a fair fight!)"}`
             : "I couldn't quite beat Ava at Boggle :(",
     );
 
@@ -53,90 +60,102 @@
             });
         }
     });
+
+    const getDelayStyle = (index: number) => `transition-delay: ${delay + index * 400}ms;`
 </script>
 
-{#await getReveal() then { scores, totalWordSet, didWin, avasWordMap, playerWordMap, totalWordsMap }}
+{#snippet chartBar(index: number, score: number, name: string )}
+<div
+    in:fade
+    class="flex flex-col w-full justify-end text-sm text-center relative"
+>
     <div
-        transition:slide={{ delay }}
-        class="game-over h-full grid grid-rows-4 bg-surface border border-border"
+        class="text-center w-full text-surface absolute transition-all duration-500"
+        class:move={score < 40}
+        style="opacity: {Number(mounted) * 100}%; {getDelayStyle(index)}"
     >
-        <div class="flex gap-1 w-full min-h-0 p-2">
-            {#each scores as [name, score], index}
-                <div
-                    class="flex flex-col w-full justify-end text-sm text-center relative"
-                >
-                    <div
-                        class="text-center w-full text-surface absolute transition-all duration-500"
-                        class:move={Number(score) < 40}
-                        style="opacity: {Number(mounted) *
-                            100}%; transition-delay: {delay + index * 400}ms;"
-                    >
-                        <p>{name}</p>
-                        <p>
-                            {Math.floor(Number(score))}
-                        </p>
-                    </div>
-                    <div
-                        class:player={name === "You!"}
-                        class="bar text-xs text-surface transition-all duration-500 ease-out"
-                        style="height: {mounted
-                            ? (Number(score) / totalWordSet.size) * 100
-                            : 0}%; transition-delay: {delay + index * 400}ms;"
-                    ></div>
-                </div>
-            {/each}
-        </div>
-        <div class="row-span-2 overflow-y-scroll p-2">
-            <h3 class="font-bold">Ava's words</h3>
-            <ul class=" flex flex-wrap gap-2 h-min">
-                {#each avasWordMap as [word, wasFound]}
-                    <li class:found={wasFound}>
-                        {word}
-                    </li>
-                {/each}
-            </ul>
-
-            <hr class="my-4"/>
-
-            <h3 class="font-bold">Your words</h3>
-            <ul class="flex flex-wrap gap-2 h-min">
-                {#each playerWordMap as [word, wasFound]}
-                    <li class:unique={wasFound}>
-                        {word}
-                    </li>
-                {/each}
-            </ul>
-
-            <hr class="my-4"/>
-
-            <h3 class="font-bold">All words</h3>
-            <ul class="flex flex-wrap gap-2 h-min">
-                {#each totalWordsMap as [word]}
-                    <li>
-                        {word}
-                    </li>
-                {/each}
-            </ul>
-        </div>
-        <div class="bubble-container flex gap-1 flex-col [align-items:end]">
-            <div class="imessage-bubble">
-                {#if didWin}
-                    I beat Ava at Boggle!
-                {:else}
-                    I couldn't quite beat Ava at Boggle :{"("}
-                {/if}
-                <div class="bubble-tail"></div>
-            </div>
-            <button
-                class="imessage-bubble underline cursor-pointer"
-                onclick={share}
-            >
-                {shareButtonText}
-                <div class="bubble-tail"></div>
-            </button>
-        </div>
+        <p>{name}</p>
+        <p>
+            {Math.floor(score)}
+        </p>
     </div>
-{/await}
+    <div
+        class:player={name === "You!"}
+        class="bar text-xs text-surface transition-all duration-500 ease-out"
+        style="height: {mounted
+            ? (Number(score) / totalWordSet.size) * 100
+            : 0}%; {getDelayStyle(index)}"
+    ></div>
+</div>
+{/snippet}
+
+<div
+    transition:slide={{ delay }}
+    class="game-over h-full grid grid-rows-4 bg-surface border border-border"
+>
+    <div class="flex gap-1 w-full min-h-0 p-2">
+        {@render chartBar(0, scores.you, "You!")}
+        {@render chartBar(1, scores.ava, "Ava")}
+        {#if session.averageGameScore}
+            {@render chartBar(2, session.averageGameScore, "Average")}
+        {:else}
+            <div class="w-full flex justify-center items-center">
+                <img
+                    style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
+                    src="{favicon}" alt="" class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]">
+            </div>
+        {/if}
+    </div>
+    <div class="row-span-2 overflow-y-scroll p-2">
+        <h3 class="font-bold">Ava's words</h3>
+        <ul class=" flex flex-wrap gap-2 h-min">
+            {#each avasWordMap as [word, wasFound]}
+                <li class:found={wasFound}>
+                    {word}
+                </li>
+            {/each}
+        </ul>
+
+        <hr class="my-4"/>
+
+        <h3 class="font-bold">Your words</h3>
+        <ul class="flex flex-wrap gap-2 h-min">
+            {#each playerWordMap as [word, wasFound]}
+                <li class:unique={wasFound}>
+                    {word}
+                </li>
+            {/each}
+        </ul>
+
+        <hr class="my-4"/>
+
+        <h3 class="font-bold">All words</h3>
+        <ul class="flex flex-wrap gap-2 h-min">
+            {#each totalWordsMap as [word]}
+                <li>
+                    {word}
+                </li>
+            {/each}
+        </ul>
+    </div>
+    <div class="bubble-container flex gap-1 flex-col [align-items:end]">
+        <div class="imessage-bubble">
+            {#if didWin}
+                I beat Ava at Boggle!
+            {:else}
+                I couldn't quite beat Ava at Boggle :{"("}
+            {/if}
+            <div class="bubble-tail"></div>
+        </div>
+        <button
+            class="imessage-bubble underline cursor-pointer"
+            onclick={share}
+        >
+            {shareButtonText}
+            <div class="bubble-tail"></div>
+        </button>
+    </div>
+</div>
 
 <style>
     .move {
