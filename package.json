@@ -23,6 +23,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^25.5.2",
     "drizzle-kit": "^0.31.10",
+    "openapi-typescript": "^7.13.0",
     "svelte": "^5.54.0",
     "svelte-check": "^4.4.2",
     "svelte-sitemap": "^3.0.1",
@@ -40,6 +41,7 @@
     "drizzle-orm": "^0.45.2",
     "js-confetti": "^0.13.1",
     "netlify-cli": "^26.0.1",
+    "openapi-fetch": "^0.17.0",
     "prettier": "^3.8.3",
     "seedrandom": "^3.0.5"
   }

@@ -8,6 +8,7 @@
     import Logo from "./Logo.svelte";
     import Reveal from "./Reveal.svelte";
     import Toast from "./Toast.svelte";
+    import Definition from "./Definition.svelte"
 
     const timeDisplay = $derived.by(() => {
         const minutes = Math.floor(gameManager.secondsLeft / 60);
@@ -118,6 +119,9 @@
         {#if gameManager.gameState === "gameOver"}
             <div class="reveal">
                 <Reveal />
+            </div>
+            <div class="definition edge">
+                <Definition/>
             </div>
         {/if}
         <div
@@ -235,6 +239,9 @@
     .reveal {
         grid-area: 1 / 6 / 5 / 8;
     }
+    .definition {
+        grid-area: 1 / 1 / 5 / 2;
+    }
 
     /* MOBILE */
     @media (max-width: 600px) {
@@ -292,10 +299,12 @@
         .game-container.game-over .gutter {
       		display: none;
         }
-
-
         .game-container.game-over .reveal {
         	grid-area: 4 / 1 / 8 / 5;
+        }
+        .game-container.game-over .definition {
+        	grid-area: 2 / 1 / 5 / 5;
+            z-index: 10;
         }
 
 

@@ -4,6 +4,7 @@
     import { page } from "$app/state";
     import { slide } from "svelte/transition";
     import settingsManager from "$lib/SettingsManager.svelte"
+    import definitionManaager from "$lib/DefinitionManager.svelte"
 
     const getReveal = async () => {
         const reveal = await scoreManager.getReveal();
@@ -53,7 +54,37 @@
             });
         }
     });
+
+    let selectedWord = $state("")
+    const handleDictionaryWordClick = async (word: string, section: "ava" | "player" | "total") => {
+        const id = `${word}-${section}`
+
+        if(selectedWord === id) {
+            // fetch definition
+            await definitionManaager.setWord(word)
+            return
+        }
+
+        selectedWord = id
+    }
 </script>
+
+{#snippet dictionaryWord(word: string, section: "ava" | "player" | "total")}
+    {@const isSelected = selectedWord === `${word}-${section}`}
+	<button
+        class="flex overflow-hidden"
+        class:selected-word={isSelected}
+        onclick={() => handleDictionaryWordClick(word, section)}>
+        <span class="whitespace-nowrap overflow-hidden max-w-0 transition-all duration-200"
+            class:max-w-0={!isSelected}
+            style={isSelected ? `max-width: calc(${word.length}ch + 6rem)` : ''}>
+            define "
+        </span>
+        <span>{word}</span>
+        <span class:max-w-0={!isSelected}>"</span>
+    </button>
+
+{/snippet}
 
 {#await getReveal() then { scores, totalWordSet, didWin, avasWordMap, playerWordMap, totalWordsMap }}
     <div
@@ -91,7 +122,7 @@
             <ul class=" flex flex-wrap gap-2 h-min">
                 {#each avasWordMap as [word, wasFound]}
                     <li class:found={wasFound}>
-                        {word}
+                        {@render dictionaryWord(word, "ava")}
                     </li>
                 {/each}
             </ul>
@@ -102,7 +133,7 @@
             <ul class="flex flex-wrap gap-2 h-min">
                 {#each playerWordMap as [word, wasFound]}
                     <li class:unique={wasFound}>
-                        {word}
+                        {@render dictionaryWord(word, "player")}
                     </li>
                 {/each}
             </ul>
@@ -113,7 +144,7 @@
             <ul class="flex flex-wrap gap-2 h-min">
                 {#each totalWordsMap as [word]}
                     <li>
-                        {word}
+                        {@render dictionaryWord(word, "total")}
                     </li>
                 {/each}
             </ul>
@@ -139,6 +170,21 @@
 {/await}
 
 <style>
+    li {
+        interpolate-size: allow-keywords;
+        width: max-content;
+        transition: all 200ms ease;
+
+    }
+
+    li:has(.selected-word) {
+        width: max-content;
+        /*border: 1px solid var(--color-border);*/
+        text-decoration: underline;
+        background-color: var(--color-foreground);
+        color: var(--color-surface);
+    }
+
     .move {
         position: unset;
         color: var(--color-foreground);
@@ -168,6 +214,10 @@
 
     .unique {
     	position: relative;
+    }
+
+    .unique:has(.selected-word)::after {
+        display: none;
     }
 
     .unique::after {
