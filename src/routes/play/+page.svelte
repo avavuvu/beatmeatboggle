@@ -4,7 +4,7 @@
 
     const { data }: { data: PageData } = $props()
 
-    const date = new Date()
+    const date = data.date
 
     const dateFormatted = date.toLocaleDateString("en-AU", {
         month: "long",

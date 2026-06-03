@@ -5,12 +5,17 @@ import { avasWords } from "../../../db/schema"
 import { eq } from "drizzle-orm"
 
 export const load: PageServerLoad = async () => {
-    const dateKey = toISODateKey(new Date())
+    // make date here to make sure no chance of desync
+    const date = new Date()
+    const dateKey = toISODateKey(date)
 
     const [ava] = await db
         .select({ words: avasWords.words })
         .from(avasWords)
         .where(eq(avasWords.dateKey, dateKey))
 
-    return { avasWords: ava?.words ?? null }
+    return {
+        avasWords: ava?.words ?? null,
+        date,
+    }
 }

@@ -33,7 +33,7 @@
     );
 
     const share = async () => {
-        const data = { title: "Boggle", text: shareText, shareLink };
+        const data = { title: "Beat Me At Boggle", text: shareText, shareLink };
 
         if (navigator.share) {
             await navigator.share(data);

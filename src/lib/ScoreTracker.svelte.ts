@@ -139,8 +139,6 @@ class ScoreTracker {
                 points: 1,
                 reason,
             })
-
-            console.log("unique word bonus for", word)
         }
 
         if (DIRTY_WORDS.includes(word)) {

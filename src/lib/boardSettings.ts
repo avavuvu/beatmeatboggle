@@ -85,3 +85,24 @@ export const getBoardSettings = (date: Date): BoardSettings => {
 
     return boardSettings
 }
+
+/** This will be changed in a future version so the board is retrieved from a central location
+ * rather than genreated by each users' client
+ * but we need it for now :/
+ */
+export const rerollBoard = (date: Date): BoardSettings => {
+    const dateKey = toISODateKey(date)
+    const weekday = WEEKDAYS[date.getDay()]
+
+    const todaysGeneration = weekDayMap[weekday]
+
+    const board = getBoardSettings(date)
+
+    return {
+        ...board,
+        letters: todaysGeneration.generateBoard(
+            `${dateKey}-reroll`,
+            todaysGeneration.size
+        ),
+    }
+}

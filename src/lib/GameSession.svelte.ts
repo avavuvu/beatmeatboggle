@@ -14,7 +14,11 @@ import preferences from "./Preferences.svelte"
 export { getAdjacentPositions } from "./constants"
 import { GAME_KEY_PREFIX } from "./constants"
 import Chain from "$lib/chain.svelte"
-import { getBoardSettings, type BoardSettings } from "./boardSettings"
+import {
+    getBoardSettings,
+    rerollBoard,
+    type BoardSettings,
+} from "./boardSettings"
 
 class GameSession {
     foundWords: string[] = $state([])
@@ -42,11 +46,19 @@ class GameSession {
         this.playerState = playerState
 
         this.board = getBoardSettings(date)
-        this.secondsLeft = this.board.time
-
         this.totalPossibleWords = [
             ...solve(this.board.letters, this.board.size),
         ]
+
+        // really ugly magic number that i promise will be fixed
+        if (this.totalPossibleWords.length < 130) {
+            this.board = rerollBoard(date)
+            this.totalPossibleWords = [
+                ...solve(this.board.letters, this.board.size),
+            ]
+        }
+
+        this.secondsLeft = this.board.time
 
         this.foundWords = []
         this.currentChain.clear()
