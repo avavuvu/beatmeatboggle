@@ -5,8 +5,7 @@ import { avasWords } from "../../../db/schema"
 import { eq } from "drizzle-orm"
 
 export const load: PageServerLoad = async () => {
-    // make date here to make sure no chance of desync
-    const date = new Date()
+    const date = new Date(Date.now() + 10 * 60 * 60 * 1000)
     const dateKey = toISODateKey(date)
 
     const [ava] = await db

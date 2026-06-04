@@ -17,4 +17,4 @@
     <title>{dateFormatted} — Beat Me at Boggle</title>
 </svelte:head>
 
-<Game {date} playerStatus="player" avasWords={data.avasWords} />
+<Game {date} playerStatus="player" avasWords={data.avasWords} totalWords={data.totalWords} />
