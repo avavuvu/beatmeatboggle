@@ -69,7 +69,7 @@ const weekDayMap: Record<Weekday, GenerationSettings> = {
 
 export const getBoardSettings = (date: Date): BoardSettings => {
     const dateKey = toISODateKey(date)
-    const weekday = WEEKDAYS[date.getDay()]
+    const weekday = WEEKDAYS[date.getUTCDay()]
 
     const override: BoardSettings | undefined = dateOverrides[dateKey]
     const todaysGeneration = weekDayMap[weekday]
@@ -93,7 +93,7 @@ export const getBoardSettings = (date: Date): BoardSettings => {
  */
 export const rerollBoard = (date: Date): BoardSettings => {
     const dateKey = toISODateKey(date)
-    const weekday = WEEKDAYS[date.getDay()]
+    const weekday = WEEKDAYS[date.getUTCDay()]
 
     const todaysGeneration = weekDayMap[weekday]
 

@@ -7,7 +7,7 @@ export const SCORE_KEY_PREFIX = "scores_"
 export const GAME_KEY_PREFIX = "boggle_"
 
 export const toISODateKey = (date: Date): string =>
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+    `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`
 
 export const getAdjacentPositions = (index: number, gridSize: number) => {
     const x = index % gridSize
