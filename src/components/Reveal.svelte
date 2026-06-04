@@ -141,6 +141,7 @@
             <hr class="my-4"/>
 
             <h3 class="font-bold">All words</h3>
+            <p class="italic text-accent">Click on a word to see its definition</p>
             <ul class="flex flex-wrap gap-2 h-min">
                 {#each totalWordsMap as [word]}
                     <li>
