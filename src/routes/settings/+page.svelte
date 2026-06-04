@@ -1,13 +1,13 @@
 <script lang="ts">
     import Toggle from "@/settings/Toggle.svelte";
-    import settingsManager, {
-        type SettingKey,
-    } from "$lib/SettingsManager.svelte"
+    import preferences, {
+            type SettingKey,
+        } from "$lib/Preferences.svelte"
 
     const entries = $derived(
-        Object.entries(settingsManager.settings) as [
+        Object.entries(preferences.settings) as [
             SettingKey,
-            (typeof settingsManager.settings)[SettingKey],
+            (typeof preferences.settings)[SettingKey],
         ][],
     );
 </script>
@@ -31,7 +31,7 @@
                         optionOff={setting.optionOff}
                         optionOn={setting.optionOn}
                         description={setting.description}
-                        bind:checked={settingsManager.settings[key].value}
+                        bind:checked={preferences.settings[key].value}
                     />
                 </li>
             {/each}

@@ -1,9 +1,11 @@
 <script lang="ts">
-    import inputManager from "$lib/InputManager.svelte";
+    import type InputController from "$lib/InputController.svelte";
+
+    const { inputController }: { inputController: InputController } = $props()
 
     const onkeydown = (event: KeyboardEvent) => {
         event.preventDefault()
-        inputManager.inputKey(event)
+        inputController.inputKey(event)
     }
 </script>
 

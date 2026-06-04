@@ -1,34 +1,41 @@
 <script lang="ts">
-    import gameManager from "$lib/GameManager.svelte";
-    import type { ScoreManagerInitData } from "$lib/ScoreManager.svelte";
+    import GameSession from "$lib/GameSession.svelte";
+    import InputController from "$lib/InputController.svelte";
     import { onMount, onDestroy } from "svelte"
-    import { GAME_KEY_PREFIX } from "$lib/constants"
+    import { GAME_KEY_PREFIX, toISODateKey } from "$lib/constants"
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
     import Logo from "./Logo.svelte";
     import Reveal from "./Reveal.svelte";
     import Toast from "./Toast.svelte";
 
-    const timeDisplay = $derived.by(() => {
-        const minutes = Math.floor(gameManager.secondsLeft / 60);
-        const seconds = gameManager.secondsLeft % 60;
+    const {
+        date,
+        playerStatus,
+        avasWords,
+        totalWords
+    }: {
+        date: Date;
+        playerStatus: "ava" | "player";
+        avasWords: string[] | null,
+        totalWords: string[] | null
+    } = $props()
 
-        if (gameManager.secondsLeft < 60) {
+    // svelte-ignore state_referenced_locally
+    const session = new GameSession(date, playerStatus, avasWords, totalWords)
+
+    const inputController = new InputController(session)
+
+    const timeDisplay = $derived.by(() => {
+        const minutes = Math.floor(session.secondsLeft / 60);
+        const seconds = session.secondsLeft % 60;
+
+        if (session.secondsLeft < 60) {
             return String(seconds).padStart(2, "0");
         }
 
         return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     });
-
-    const {
-        dateKey,
-        dayNumber,
-        playerStatus,
-    }: {
-        dateKey: string;
-        dayNumber: number;
-        playerStatus: "ava" | "player";
-    } = $props();
 
     let canAnimate = $state(false)
     let error: null | any = $state()
@@ -38,26 +45,24 @@
 
      	let introDelay = 3200
 
+        const dateKey = toISODateKey(date)
+
       	if(localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
      		introDelay = 0;
      		canAnimate = false;
        	}
 
-        try {
-        	gameManager.init(dateKey, dayNumber, playerStatus);
-        }
-        catch(e) {
-        	error = e
+        // dont bother starting the game if we are coming from a load
+        if(session.gameState !== "gameOver") {
+            setTimeout(() => {
+                session.startGame()
+            }, introDelay);
         }
 
-
-        setTimeout(() => {
-            gameManager.startGame()
-        }, introDelay);
     });
 
     onDestroy(() => {
-        gameManager.stopTimer();
+        session.stopTimer();
     });
 </script>
 
@@ -72,13 +77,13 @@
 {/if}
 
 <div
-    class:game-over={gameManager.gameState === "gameOver"}
+    class:game-over={session.gameState === "gameOver"}
     class="game-container text-foreground"
 >
     <div class="game-grid">
         <div
-            class:really-urgent={gameManager.secondsLeft <= 10}
-            class:urgent={gameManager.secondsLeft < 60}
+            class:really-urgent={session.secondsLeft <= 10}
+            class:urgent={session.secondsLeft < 60}
             class="timer edge"
         >
             <div>
@@ -86,20 +91,20 @@
             </div>
         </div>
         <div class="board edge">
-            <Board {canAnimate} />
+            <Board {canAnimate} {session} {inputController} />
         </div>
         <div
             class="words -z-20 pointer-events-none flex flex-col
         "
         >
             <div class="h-12 p-2 shrink-0">
-                {gameManager.currentChain.getString().toUpperCase()}
+                {session.currentChain.getString().toUpperCase()}
             </div>
 
             <ul
                 class="p-2 flex flex-wrap gap-2 overflow-y-scroll flex-1 min-h-0"
             >
-                {#each gameManager.foundWords as word}
+                {#each session.foundWords as word}
                     <li>
                         {word}
                     </li>
@@ -115,17 +120,17 @@
                 <Logo />
             </a>
         </div>
-        {#if gameManager.gameState === "gameOver"}
+        {#if session.gameState === "gameOver"}
             <div class="reveal">
-                <Reveal />
+                <Reveal {session} />
             </div>
         {/if}
         <div
             class="backspace edge touch-manipulation bg-surface"
-            style={gameManager.isPlayingGame ? "display: unset;" : "display: none;" }
+            style={session.isPlayingGame ? "display: unset;" : "display: none;" }
         >
             <button
-                onclick={() => gameManager.removeLast()}
+                onclick={() => session.removeLast()}
                 aria-label="backspace"
                 class="w-full h-full cursor-pointer"
             >
@@ -155,12 +160,12 @@
         </div>
         <div
             class="submit edge touch-manipulation bg-surface"
-            style={gameManager.isPlayingGame ? "display: unset;" :  "display: none;"}
+            style={session.isPlayingGame ? "display: unset;" :  "display: none;"}
         >
             <button
                 class="w-full h-full cursor-pointer"
                 aria-label="submit"
-                onclick={() => gameManager.submitWord()}
+                onclick={() => session.submitWord()}
             >
                 <svg
                     id="Layer_2"
@@ -185,7 +190,7 @@
     </div>
 </div>
 
-<Input />
+<Input {inputController} />
 
 <style>
     .game-container {

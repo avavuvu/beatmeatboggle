@@ -13,7 +13,7 @@ export type Setting = {
 
 export type SettingKey = "fairFight" | "extraTime" | "darkMode"
 
-class SettingsManager {
+class Preferences {
     settings: Record<SettingKey, Setting> = $state({
         fairFight: {
             heading: "Difficulty",
@@ -79,6 +79,5 @@ class SettingsManager {
     }
 }
 
-const settingsManager = new SettingsManager()
-
-export default settingsManager
+const preferences = new Preferences()
+export default preferences

@@ -1,8 +1,11 @@
+import type { BoardSettings } from "./boardSettings"
+
+export type PlayerState = "ava" | "player"
+
 export const RESULT_KEY_PREFIX = "result_"
 export const SCORE_KEY_PREFIX = "scores_"
 export const GAME_KEY_PREFIX = "boggle_"
 
-/** Format a Date as a YYYY-MM-DD key using local time. */
 export const toISODateKey = (date: Date): string =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 
@@ -29,17 +32,10 @@ export const description =
     "Every day I play a game of Boggle. Every day you try and beat my score."
 export const title = "Beat Me At Boggle"
 
-export const dateOverrides: Record<
-    string,
-    {
-        size: number
-        board: string[]
-        time: number
-    }
-> = {
+export const dateOverrides: Record<string, BoardSettings> = {
     "2026-04-20": {
         size: 4,
-        board: "hapybdayriasingh".split(""),
+        letters: "hapybdayriasingh".split(""),
         time: 3 * 60,
     },
 }

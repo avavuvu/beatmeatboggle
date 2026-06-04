@@ -1,23 +1,16 @@
-import type { ScoreItem } from "./ScoreManager.svelte"
+import type { ScoreItem } from "./ScoreTracker.svelte"
 
 export type Toast = {
     content: string[]
     type: "word" | "error"
 }
 
-class ToastManager {
+class Toaster {
     toasts = $state<Toast[]>([])
     showToast = $state(false)
 
     GOOD_WORDS = [
-        "Nice",
-        "Awesome",
-        "Good",
-        "Wowza",
-        "Yup",
-        "Wow",
-        "Cool",
-        "Sick",
+        "Nice", "Awesome", "Good", "Wowza", "Yup", "Wow", "Cool", "Sick",
     ]
 
     addError = (content: string) => {
@@ -41,16 +34,11 @@ class ToastManager {
                 ({ points, reason }) =>
                     `+${points}: ${(() => {
                         switch (reason) {
-                            case "unique":
-                                return "Unique word bonus"
-                            case "ava bonus":
-                                return "'Ava didn't find that' bonus"
-                            case "dirty bonus":
-                                return "Dirty word bonus"
-                            case "length":
-                                return `${word.length} letter word`
-                            default:
-                                return ""
+                            case "unique":        return "Unique word bonus"
+                            case "ava bonus":     return "'Ava didn't find that' bonus"
+                            case "dirty bonus":   return "Dirty word bonus"
+                            case "length":        return `${word.length} letter word`
+                            default:              return ""
                         }
                     })()}`
             ),
@@ -63,5 +51,5 @@ class ToastManager {
     }
 }
 
-const toastManager = new ToastManager()
-export default toastManager
+const toaster = new Toaster()
+export default toaster
