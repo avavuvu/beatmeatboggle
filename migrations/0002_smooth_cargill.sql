@@ -1,0 +1,1 @@
+ALTER TABLE "avas_words" ADD COLUMN "total_words" jsonb;

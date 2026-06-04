@@ -8,7 +8,7 @@ import {
     type PlayerState,
 } from "./constants"
 import toaster from "./Toaster.svelte"
-import scoreTracker from "./ScoreTracker.svelte"
+import scoreTracker, { ScoreTracker } from "./ScoreTracker.svelte"
 import { browser } from "$app/environment"
 import preferences from "./Preferences.svelte"
 export { getAdjacentPositions } from "./constants"
@@ -35,27 +35,44 @@ class GameSession {
 
     #timerHandle: ReturnType<typeof setInterval> | undefined = undefined
 
-    averageGameScore: number | undefined = $state()
+    #averageGameScore: number | undefined = $state()
+
+    get averageGameScore(): number | undefined {
+        return this.#averageGameScore
+    }
+    set averageGameScore(score: number) {
+        this.#averageGameScore = score
+        this.save()
+    }
 
     constructor(
         date: Date,
         playerState: "ava" | "player",
-        avasWords: string[] | null
+        avasWords: string[] | null,
+        totalWords: string[] | null
     ) {
         this.dateKey = toISODateKey(date)
         this.playerState = playerState
 
         this.board = getBoardSettings(date)
-        this.totalPossibleWords = [
-            ...solve(this.board.letters, this.board.size),
-        ]
 
-        // really ugly magic number that i promise will be fixed
-        if (this.totalPossibleWords.length < 130) {
-            this.board = rerollBoard(date)
+        // generate total words on the client
+        // only do that if nothing was recieved from the db
+        // only happens when either ava didnt play or it's avas admin gameOver
+        if (!totalWords) {
             this.totalPossibleWords = [
                 ...solve(this.board.letters, this.board.size),
             ]
+
+            // really ugly magic number that i promise will be fixed
+            if (this.totalPossibleWords.length < 130) {
+                this.board = rerollBoard(date)
+                this.totalPossibleWords = [
+                    ...solve(this.board.letters, this.board.size),
+                ]
+            }
+        } else {
+            this.totalPossibleWords = totalWords
         }
 
         this.secondsLeft = this.board.time
@@ -94,24 +111,45 @@ class GameSession {
         this.gameState = "gameOver"
         this.save()
 
-        const postUrl =
-            this.playerState === "ava" ? "/api/avas-words" : "/api/player-words"
+        // Ava
 
-        let postHeaders = undefined
         if (this.playerState === "ava") {
-            postHeaders = {
+            const headers = {
                 authorization: localStorage.getItem("admin_token") ?? "",
             }
-        }
 
-        if (this.foundWords.length > 0) {
-            const response = await fetch(postUrl, {
+            const _response = await fetch("/api/avas-words", {
                 method: "POST",
                 body: JSON.stringify({
                     words: this.foundWords,
                     dateKey: this.dateKey,
+                    totalWords: this.totalPossibleWords,
                 }),
-                headers: postHeaders,
+                headers,
+            })
+
+            return
+        }
+
+        // Player
+
+        if (this.foundWords.length > 0) {
+            const fairFight = preferences.settings.fairFight.value
+            const score = ScoreTracker.calculateTotalPoints(
+                this.foundWords,
+                scoreTracker.avasWords || [],
+                true,
+                fairFight
+            )
+
+            const response = await fetch("/api/player-words", {
+                method: "POST",
+                body: JSON.stringify({
+                    words: this.foundWords,
+                    dateKey: this.dateKey,
+                    score,
+                    fairFight,
+                }),
             })
 
             const data: {
@@ -300,6 +338,7 @@ class GameSession {
                 foundWords: this.foundWords,
                 secondsLeft: this.secondsLeft,
                 gameOver: this.gameState === "gameOver",
+                average: this.#averageGameScore,
             })
         )
     }
@@ -314,6 +353,10 @@ class GameSession {
             this.foundWords = parsed.foundWords
             this.secondsLeft = parsed.secondsLeft
             this.gameState = parsed.gameOver ? "gameOver" : "playing"
+
+            if ("average" in parsed) {
+                this.averageGameScore = parsed.average
+            }
 
             for (const word of this.foundWords) {
                 scoreTracker.loadWord(word)

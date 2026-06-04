@@ -27,7 +27,7 @@
 </script>
 
 {#if verified && date}
-    <Game playerStatus="ava" {date} avasWords={null}  />
+    <Game playerStatus="ava" {date} avasWords={null} totalWords={null}  />
 {:else}
     ...verifying
 {/if}

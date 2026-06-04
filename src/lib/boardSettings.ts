@@ -81,7 +81,8 @@ export const getBoardSettings = (date: Date): BoardSettings => {
     }
 
     const extraTime = preferences.settings.extraTime.value ? 2 * 60 : 0
-    boardSettings.time + extraTime
+
+    boardSettings.time += extraTime
 
     return boardSettings
 }

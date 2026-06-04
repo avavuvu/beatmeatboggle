@@ -12,14 +12,17 @@
     const {
         date,
         playerStatus,
-        avasWords
+        avasWords,
+        totalWords
     }: {
         date: Date;
         playerStatus: "ava" | "player";
         avasWords: string[] | null,
-    } = $props();
+        totalWords: string[] | null
+    } = $props()
 
-    const session = new GameSession(date, playerStatus, avasWords)
+    // svelte-ignore state_referenced_locally
+    const session = new GameSession(date, playerStatus, avasWords, totalWords)
 
     const inputController = new InputController(session)
 
@@ -49,9 +52,13 @@
      		canAnimate = false;
        	}
 
-        setTimeout(() => {
-            session.startGame()
-        }, introDelay);
+        // dont bother starting the game if we are coming from a load
+        if(session.gameState !== "gameOver") {
+            setTimeout(() => {
+                session.startGame()
+            }, introDelay);
+        }
+
     });
 
     onDestroy(() => {

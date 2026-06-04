@@ -10,12 +10,16 @@ export const load: PageServerLoad = async () => {
     const dateKey = toISODateKey(date)
 
     const [ava] = await db
-        .select({ words: avasWords.words })
+        .select({
+            words: avasWords.words,
+            totalWords: avasWords.totalWords,
+        })
         .from(avasWords)
         .where(eq(avasWords.dateKey, dateKey))
 
     return {
         avasWords: ava?.words ?? null,
+        totalWords: ava?.totalWords ?? null,
         date,
     }
 }

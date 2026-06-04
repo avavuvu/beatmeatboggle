@@ -1,21 +1,29 @@
 import type { Config, Context } from "@netlify/functions"
 import { db } from "../../db"
 import { playerWords, avasWords } from "../../db/schema"
-import { eq, count } from "drizzle-orm"
+import { eq, avg, gte, and } from "drizzle-orm"
 
 export default async function logPlayerWords(req: Request, context: Context) {
     if (req.method === "POST") {
         let dateKey: string
         let words: string[]
+        let score: number
+        let fairFight: boolean
 
         try {
             const body = await req.json()
             dateKey = body.dateKey
             words = body.words
+            score = typeof body.score === "number" ? body.score : -1
+            fairFight = body.fairFight ?? false
 
-            if (!dateKey || !Array.isArray(words)) {
+            if (
+                !dateKey ||
+                !Array.isArray(words) ||
+                typeof score !== "number"
+            ) {
                 return Response.json(
-                    { error: "Missing dateKey or words" },
+                    { error: "Missing dateKey, words, or score" },
                     { status: 400 }
                 )
             }
@@ -27,31 +35,24 @@ export default async function logPlayerWords(req: Request, context: Context) {
             await db.insert(playerWords).values({
                 dateKey,
                 words,
-                wordCount: words.length,
+                score,
+                fairFight,
+                country: context.geo?.country?.name ?? null,
+                city: context.geo?.city ?? null,
             })
         }
 
-        const stats = await db
-            .select({
-                wordCount: playerWords.wordCount,
-                players: count(),
-            })
+        const [{ average }] = await db
+            .select({ average: avg(playerWords.score) })
             .from(playerWords)
-            .where(eq(playerWords.dateKey, dateKey))
-            .groupBy(playerWords.wordCount)
-            .orderBy(playerWords.wordCount)
+            .where(
+                and(eq(playerWords.dateKey, dateKey), gte(playerWords.score, 0))
+            )
 
-        const totalWords = stats.reduce(
-            (total, stat) => total + stat.wordCount * stat.players,
-            0
+        return Response.json(
+            { success: true, average: Number(average ?? 0) },
+            { status: 201 }
         )
-        const totalPlayers = stats.reduce(
-            (total, stat) => total + stat.players,
-            0
-        )
-        const average = totalPlayers > 0 ? totalWords / totalPlayers : 0
-
-        return Response.json({ success: true, average }, { status: 201 })
     }
 
     if (req.method === "GET") {
@@ -61,25 +62,6 @@ export default async function logPlayerWords(req: Request, context: Context) {
         if (!dateKey) {
             return Response.json({ error: "Missing dateKey" }, { status: 400 })
         }
-
-        const stats = await db
-            .select({
-                wordCount: playerWords.wordCount,
-                players: count(),
-            })
-            .from(playerWords)
-            .where(eq(playerWords.dateKey, dateKey))
-            .groupBy(playerWords.wordCount)
-            .orderBy(playerWords.wordCount)
-
-        const totalWords = stats.reduce(
-            (total, stat) => total + stat.wordCount * stat.players,
-            0
-        )
-        const totalPlayers = stats.reduce(
-            (total, stat) => total + stat.players,
-            0
-        )
 
         const [ava] = await db
             .select({ words: avasWords.words })

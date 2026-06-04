@@ -11,6 +11,7 @@
         session: GameSession
     }  = $props()
 
+    // svelte-ignore state_referenced_locally
     const {
         scores,
         totalWordSet,
@@ -19,8 +20,6 @@
         playerWordMap,
         totalWordsMap
     } = scoreTracker.getReveal(session.foundWords, session.totalPossibleWords)
-
-    let average = $state(() => session.averageGameScore)
 
     let shareLink = $state(page.url.origin);
 
