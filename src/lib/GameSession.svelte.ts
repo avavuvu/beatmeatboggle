@@ -1,8 +1,6 @@
 import { solve } from "./dictionary/solver"
-import dictionaryManager from "./dictionary/trie"
-import { generateClassic, generateClusters } from "./generateBoard"
+import dictionaryManager from "./dictionary/DictionaryManager.svelte"
 import {
-    dateOverrides,
     getAdjacentPositions,
     toISODateKey,
     type PlayerState,

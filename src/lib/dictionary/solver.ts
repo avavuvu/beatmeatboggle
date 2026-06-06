@@ -1,5 +1,5 @@
 import type { TrieNode } from "./trie"
-import dictionaryManager from "./trie"
+import dictionaryManager from "./DictionaryManager.svelte"
 
 type Board = {
     grid: string[][]
@@ -9,34 +9,51 @@ type Board = {
 export const solve = (boardTiles: string[], gridSize: number) => {
     const results: Set<string> = new Set()
 
-    const board = boardTiles.reduce((board, letter, index) => {
-        const col = index % gridSize;
-        const row = Math.floor(index / gridSize);
+    const board = boardTiles.reduce(
+        (board, letter, index) => {
+            const col = index % gridSize
+            const row = Math.floor(index / gridSize)
 
-        if (!board.grid[row]) {
-            board.grid[row] = [];
-            board.visited[row] = [];
+            if (!board.grid[row]) {
+                board.grid[row] = []
+                board.visited[row] = []
+            }
+
+            board.grid[row][col] = letter
+            board.visited[row][col] = false
+
+            return board
+        },
+        {
+            grid: [] as string[][],
+            visited: [] as boolean[][],
         }
-
-        board.grid[row][col] = letter;
-        board.visited[row][col] = false;
-
-        return board;
-    }, {
-        grid: [] as string[][],
-        visited: [] as boolean[][]
-    })
+    )
 
     for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col < gridSize; col++) {
-            dfs(board, row, col, dictionaryManager.words.root, results, gridSize)
+            dfs(
+                board,
+                row,
+                col,
+                dictionaryManager.words.root,
+                results,
+                gridSize
+            )
         }
     }
 
     return results
 }
 
-function dfs(board: Board, row: number, col: number, node: TrieNode, results: Set<string>, gridSize: number) {
+function dfs(
+    board: Board,
+    row: number,
+    col: number,
+    node: TrieNode,
+    results: Set<string>,
+    gridSize: number
+) {
     if (row < 0 || col < 0 || row >= gridSize || col >= gridSize) {
         return
     }
@@ -47,7 +64,7 @@ function dfs(board: Board, row: number, col: number, node: TrieNode, results: Se
 
     const char = board.grid[row][col]
 
-    let nextNode: TrieNode | null;
+    let nextNode: TrieNode | null
 
     // manually do Qu
     // we could also store it at trie creation, but that is overkill
@@ -61,7 +78,6 @@ function dfs(board: Board, row: number, col: number, node: TrieNode, results: Se
         const alphabetIndex = char.charCodeAt(0) - 97
         nextNode = node.children[alphabetIndex]
     }
-
 
     if (!nextNode) {
         return
@@ -79,7 +95,14 @@ function dfs(board: Board, row: number, col: number, node: TrieNode, results: Se
                 continue
             }
 
-            dfs(board, row + directionR, col + directionC, nextNode, results, gridSize)
+            dfs(
+                board,
+                row + directionR,
+                col + directionC,
+                nextNode,
+                results,
+                gridSize
+            )
         }
     }
 

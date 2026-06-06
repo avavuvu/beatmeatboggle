@@ -9,7 +9,7 @@ export class Trie {
         let node = this.root
 
         for (let i = 0; i < word.length; i++) {
-            const character = word[i];
+            const character = word[i]
             const alphabetIndex = character.charCodeAt(0) - 97
 
             let childNode: TrieNode | null = node.children[alphabetIndex]
@@ -35,7 +35,8 @@ export class Trie {
 
             let childNode: TrieNode | null = node.children[alphabetIndex]
 
-            if (!childNode) { //node does not have this letter, therefore its not real
+            if (!childNode) {
+                //node does not have this letter, therefore its not real
                 return false
             }
 
@@ -56,33 +57,4 @@ export class TrieNode {
         this.character = character
         this.isEnd = isEnd
     }
-
 }
-
-import { wordList } from "./word_list";
-
-class DictionaryManager {
-    words: Trie = new Trie()
-
-    init = () => {
-        const lines: string[] = wordList.toLowerCase().split(/\r?\n/);
-
-        lines.forEach(line => {
-            if (line.length < 3) {
-                return
-            }
-
-            this.words.insert(line)
-        })
-    }
-
-    tryWord = (word: string) => {
-        return this.words.search(word)
-    }
-}
-
-
-const dictionaryManager = new DictionaryManager()
-dictionaryManager.init()
-export default dictionaryManager
-
