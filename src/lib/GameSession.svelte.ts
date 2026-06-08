@@ -54,21 +54,16 @@ class GameSession {
 
         this.board = getBoardSettings(date)
 
-        // generate total words on the client
-        // only do that if nothing was recieved from the db
-        // only happens when either ava didnt play or it's avas admin gameOver
+        // QUICK FIX: DO PROPER FIX LATER
+        const initialWords = [...solve(this.board.letters, this.board.size)]
+        if (initialWords.length < 130) {
+            this.board = rerollBoard(date)
+        }
+
         if (!totalWords) {
             this.totalPossibleWords = [
                 ...solve(this.board.letters, this.board.size),
             ]
-
-            // really ugly magic number that i promise will be fixed
-            if (this.totalPossibleWords.length < 130) {
-                this.board = rerollBoard(date)
-                this.totalPossibleWords = [
-                    ...solve(this.board.letters, this.board.size),
-                ]
-            }
         } else {
             this.totalPossibleWords = totalWords
         }

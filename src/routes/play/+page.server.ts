@@ -16,6 +16,8 @@ export const load: PageServerLoad = async () => {
         .from(avasWords)
         .where(eq(avasWords.dateKey, dateKey))
 
+    console.log(date)
+
     return {
         avasWords: ava?.words ?? null,
         totalWords: ava?.totalWords ?? null,
