@@ -17,6 +17,7 @@
 <svelte:head>
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<link rel="icon" type="image/png" sizes="48x48" href="/favicon.png" />
+	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
 	<meta name="author" content="Ava Dinh-Vu" />
 
