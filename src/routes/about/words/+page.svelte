@@ -1,7 +1,13 @@
 <script>
+    import Head from "@/styling/Head.svelte"
     import TextBlock from "@/styling/TextBlock.svelte"
 
 </script>
+
+<Head
+    title="About the Dictionary"
+    description="What counts as a word? How the dictionary is defined for Beat Me at Boggle"/>
+
 <TextBlock title="About the Dictionary">
     <p>
         The English language is constantly evolving, and as such, defining what counts as a word is like shooting a moving target. Unfortunately, it is also a requirement for <i>Beat Me At Boggle</i>.

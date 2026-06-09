@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Head from "@/styling/Head.svelte"
     import type { PageData } from "./$types"
     import Game from "@/Game.svelte"
 
@@ -13,8 +14,8 @@
     })
 </script>
 
-<svelte:head>
-    <title>{dateFormatted} — Beat Me at Boggle</title>
-</svelte:head>
+<Head
+    title="{dateFormatted} — Beat Me at Boggle"
+    />
 
 <Game {date} playerStatus="player" avasWords={data.avasWords} totalWords={data.totalWords} />

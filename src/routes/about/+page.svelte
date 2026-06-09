@@ -1,10 +1,15 @@
 <script>
+    import Head from "@/styling/Head.svelte"
     import TextBlock from "@/styling/TextBlock.svelte"
 
 </script>
 
+<Head
+    title="About"
+    description="What is Beat Me At Boggle? How do you play? How does the Boggle work?"/>
+
 <TextBlock title={"About"}>
-        <p>Hello, my name is Ava.</p>
+        <p>Hello, my name is Ava Dinh-Vu.</p>
         <p>I'm a web developer and, apparently, a boggle enthusiast.</p>
         <p>
             I made this game because the fun part of boggle is the competition,

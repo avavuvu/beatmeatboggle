@@ -1,9 +1,9 @@
-import type { OptionsSvelteSitemap } from 'svelte-sitemap';
+import type { OptionsSvelteSitemap } from "svelte-sitemap"
 
 const config: OptionsSvelteSitemap = {
-    domain: 'https://beatmeatboggle.com',
+    domain: "https://beatmeatboggle.com",
     trailingSlashes: true,
-    ignore: ['**/early/**']
-};
+    ignore: ["**/early/**", "**/early"],
+}
 
-export default config;
+export default config

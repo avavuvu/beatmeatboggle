@@ -3,6 +3,7 @@
     import preferences, {
             type SettingKey,
         } from "$lib/Preferences.svelte"
+    import Head from "@/styling/Head.svelte"
 
     const entries = $derived(
         Object.entries(preferences.settings) as [
@@ -12,9 +13,9 @@
     );
 </script>
 
-<svelte:head>
-    <title>Settings — Beat Me at Boggle</title>
-</svelte:head>
+<Head
+    title={"Settings"}
+    />
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">
     <span class="inline-flex gap-4 w-full">

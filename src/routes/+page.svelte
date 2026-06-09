@@ -1,5 +1,12 @@
 <script lang="ts">
+    import Head from "@/styling/Head.svelte"
+
 </script>
+
+<Head
+    title="Beat Me At Boggle"
+
+    />
 
 <svg
     class="max-w-3xl mx-auto mt-4"
