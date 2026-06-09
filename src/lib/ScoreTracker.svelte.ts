@@ -12,14 +12,11 @@ const DIRTY_WORDS = [
     "dick",
     "balls",
     "sexy",
-    "fruit",
     "anus",
     "cock",
-    "hog",
     "horny",
     "hornier",
     "horniest",
-    "doggy",
     "shit",
     "fuck",
     "ass",
@@ -34,7 +31,6 @@ const DIRTY_WORDS = [
     "twat",
     "wank",
     "wanker",
-    "prick",
     "crap",
     "dildo",
     "penis",
@@ -56,8 +52,9 @@ const DIRTY_WORDS = [
     "titty",
     "boner",
     "hooker",
-    "nob",
     "hoe",
+    "gonad",
+    "gonads",
 ]
 
 class ScoreTracker {

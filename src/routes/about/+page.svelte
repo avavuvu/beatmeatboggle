@@ -1,14 +1,9 @@
-<svelte:head>
-    <title>About — Beat Me at Boggle</title>
-</svelte:head>
+<script>
+    import TextBlock from "@/styling/TextBlock.svelte"
 
-<div class="text-foreground max-w-4xl my-10 mx-auto px-4">
-    <span class="inline-flex gap-4 w-full">
-        <h1 class="px-2 font-bold">About</h1>
-        <a href="/" class="underline">Return Home</a>
-    </span>
+</script>
 
-    <main class="border p-4 *>py-2">
+<TextBlock title={"About"}>
         <p>Hello, my name is Ava.</p>
         <p>I'm a web developer and, apparently, a boggle enthusiast.</p>
         <p>
@@ -80,17 +75,4 @@
             >. For everything I've ever made, visit my
             <a href="https://avavu.au">website</a>.
         </p>
-    </main>
-</div>
-
-<style>
-    a {
-        text-decoration: underline;
-    }
-    th,
-    td {
-        border: 1px solid #ddd;
-        padding: 8px 12px;
-        text-align: left;
-    }
-</style>
+</TextBlock>

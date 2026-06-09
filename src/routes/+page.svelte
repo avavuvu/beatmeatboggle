@@ -50,6 +50,9 @@
             <li>
                 <a class="underline" href="/about"> about me </a>
             </li>
+            <li>
+                <a class="underline" href="/about"> about the dictionary </a>
+            </li>
         </ul>
     </aside>
 
