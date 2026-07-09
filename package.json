@@ -19,12 +19,15 @@
         "postbuild": "npx svelte-sitemap"
     },
     "devDependencies": {
-        "@sveltejs/adapter-auto": "^7.0.0",
+        "@sveltejs/adapter-netlify": "^6.0.4",
         "@sveltejs/kit": "^2.50.2",
         "@sveltejs/vite-plugin-svelte": "^6.2.4",
         "@tailwindcss/vite": "^4.1.18",
         "@types/node": "^25.5.2",
+        "@types/seedrandom": "^3.0.8",
         "drizzle-kit": "^0.31.10",
+        "netlify-cli": "^26.0.1",
+        "prettier": "^3.8.3",
         "svelte": "^5.54.0",
         "svelte-check": "^4.4.2",
         "svelte-sitemap": "^3.0.1",
@@ -35,14 +38,12 @@
     "dependencies": {
         "@netlify/functions": "^5.1.5",
         "@netlify/neon": "^0.1.2",
-        "@resvg/resvg-js": "^2.6.2",
-        "@sveltejs/adapter-static": "^3.0.10",
-        "@types/seedrandom": "^3.0.8",
-        "crypto": "^1.0.1",
         "drizzle-orm": "^0.45.2",
         "js-confetti": "^0.13.1",
-        "netlify-cli": "^26.0.1",
-        "prettier": "^3.8.3",
         "seedrandom": "^3.0.5"
-    }
+    },
+    "trustedDependencies": [
+        "esbuild",
+        "@esbuild/darwin-arm64"
+    ]
 }

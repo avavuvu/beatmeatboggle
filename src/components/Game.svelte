@@ -8,6 +8,7 @@
     import Logo from "./Logo.svelte";
     import Reveal from "./Reveal.svelte";
     import Toast from "./Toast.svelte";
+    import toaster from "$lib/Toaster.svelte"
 
     const {
         date,
@@ -63,6 +64,7 @@
 
     onDestroy(() => {
         session.stopTimer();
+        toaster.showToast = false;
     });
 </script>
 
