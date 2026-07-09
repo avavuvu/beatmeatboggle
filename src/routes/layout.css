@@ -10,6 +10,7 @@
     --color-muted: gray;
     --color-accent: var(--color-muted);
     --default-font-family: "Sono", "Courier New", Courier, monospace;
+    --font-compat: "Courier New", Courier, monospace;
 }
 
 [data-theme="dark"] {
