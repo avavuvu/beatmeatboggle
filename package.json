@@ -39,6 +39,7 @@
         "@netlify/neon": "^0.1.2",
         "drizzle-orm": "^0.45.2",
         "js-confetti": "^0.13.1",
+        "openapi-fetch": "^0.17.0",
         "seedrandom": "^3.0.5"
     },
     "trustedDependencies": [
