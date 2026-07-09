@@ -1,6 +1,8 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
 
+    const playedBefore = localStorage.length > 1
+
 </script>
 
 <Head
@@ -35,25 +37,40 @@
     </h1>
 
     <main class="border p-4 *>py-2">
-        <h2 class="font-bold">My name is Ava and I like Boggle</h2>
-        <p>So much so, I decided to made this online version.</p>
-        <p>
-            Every day, I play a game of Boggle. The next day, you try and beat
-            my score.
-        </p>
-        <p>
-            If you manage to beat me—— well you don't get anything. Except maybe
-            the satisfaction of knowing you're better at Boggle than me.
-        </p>
-        <br />
-        <a class="underline" href="/play"> play </a>
+        {#if playedBefore}
+            <h2 class="font-bold">Want to play past puzzles?</h2>
+
+            <p>Previous puzzles are available to Patreon subscribers. If you like BM@B, consider subscribing. It would mean the world. </p>
+
+            <br />
+            <nav class="flex gap-6 flex-wrap">
+                <a class="underline" href="/play"> play </a>
+                <a class="underline" href="/archive"> archive </a>
+                <a class="underline" href="/settings"> settings </a>
+            </nav>
+        {:else}
+            <h2 class="font-bold">My name is Ava and I like Boggle</h2>
+            <p>So much so, I decided to made this online version.</p>
+            <p>
+                Every day, I play a game of Boggle. The next day, you try and beat
+                my score.
+            </p>
+            <p>
+                If you manage to beat me—— well you don't get anything. Except maybe
+                the satisfaction of knowing you're better at Boggle than me.
+            </p>
+            <br />
+            <nav class="flex gap-6 flex-wrap">
+                <a class="underline" href="/play"> play </a>
+                <a class="underline" href="/archive"> archive </a>
+                <a class="underline" href="/settings"> settings </a>
+            </nav>
+        {/if}
+
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wraps">
-            <li>
-                <a class="underline" href="/settings"> settings </a>
-            </li>
+        <ul class="flex gap-6 flex-wrap">
             <li>
                 <a class="underline" href="/about"> about me </a>
             </li>

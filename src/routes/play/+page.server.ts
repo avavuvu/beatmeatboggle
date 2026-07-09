@@ -4,7 +4,10 @@ import { db } from "../../../db"
 import { avasWords } from "../../../db/schema"
 import { eq } from "drizzle-orm"
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ setHeaders }) => {
+    setHeaders({
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=82800",
+    })
     const date = new Date(Date.now() + 10 * 60 * 60 * 1000)
     const dateKey = toISODateKey(date)
 

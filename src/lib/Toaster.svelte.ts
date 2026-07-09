@@ -10,7 +10,18 @@ class Toaster {
     showToast = $state(false)
 
     GOOD_WORDS = [
-        "Nice", "Awesome", "Good", "Wowza", "Yup", "Wow", "Cool", "Sick",
+        "Nice",
+        "Awesome",
+        "Good",
+        "Wowza",
+        "Yup",
+        "Wow",
+        "Cool",
+        "Sick",
+        "Hello",
+        "Bang Bang",
+        "Fab",
+        "Hot",
     ]
 
     addError = (content: string) => {
@@ -34,11 +45,16 @@ class Toaster {
                 ({ points, reason }) =>
                     `+${points}: ${(() => {
                         switch (reason) {
-                            case "unique":        return "Unique word bonus"
-                            case "ava bonus":     return "'Ava didn't find that' bonus"
-                            case "dirty bonus":   return "Dirty word bonus"
-                            case "length":        return `${word.length} letter word`
-                            default:              return ""
+                            case "unique":
+                                return "Unique word bonus"
+                            case "ava bonus":
+                                return "'Ava didn't find that' bonus"
+                            case "dirty bonus":
+                                return "Dirty word bonus"
+                            case "length":
+                                return `${word.length} letter word`
+                            default:
+                                return ""
                         }
                     })()}`
             ),
