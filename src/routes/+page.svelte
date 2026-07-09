@@ -1,7 +1,8 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
+    import { browser } from '$app/environment'
 
-    const playedBefore = localStorage.length > 1
+    const playedBefore = browser && localStorage.length > 1
 
 </script>
 
