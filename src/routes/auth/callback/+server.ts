@@ -59,8 +59,6 @@ export const GET = async ({ url, cookies }: RequestEvent) => {
 
     const { data, included } = await identityRes.json()
 
-    console.log(included, data)
-
     type MemberInclude = {
         type: string
         attributes?: {

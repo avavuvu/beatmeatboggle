@@ -20,5 +20,12 @@ export const handle: Handle = async ({ event, resolve }) => {
         if (session?.tier !== "paid") redirect(303, "/archive?kickback")
     }
 
+    if ((id as string | null) === "/practice/play") {
+        const session = parseSession<PatronSession>(
+            event.cookies.get("patron_session")
+        )
+        if (session?.tier !== "paid") redirect(303, "/practice?kickback")
+    }
+
     return resolve(event)
 }

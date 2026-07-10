@@ -4,6 +4,8 @@ import preferences from "$lib/Preferences.svelte"
 import toaster from "$lib/Toaster.svelte"
 import Chain from "$lib/chain.svelte"
 import GameSession from "$lib/GameSession.svelte"
+import { getBoardSettings } from "$lib/boardSettings"
+import { toISODateKey } from "$lib/constants"
 
 beforeEach(() => {
     scoreTracker.pointsMap.clear()
@@ -17,7 +19,15 @@ beforeEach(() => {
 })
 
 const createDummySession = (avasWords: string[] = []) => {
-    const session = new GameSession(new Date("2026-01-01"), "player", avasWords)
+    const date = new Date("2026-01-01")
+    const board = getBoardSettings(date)
+    const session = new GameSession(
+        board,
+        "player",
+        avasWords,
+        null,
+        toISODateKey(date)
+    )
 
     session.startGame()
 

@@ -29,6 +29,17 @@
     /></svg
 >
 
+{#snippet nav()}
+	<nav class="flex gap-6 flex-wrap justify-between">
+        <a class="underline" href="/play"> play </a>
+	    <div>
+            <a class="underline" href="/archive"> archive </a>
+            <a class="underline" href="/practice"> practice </a>
+            <a class="underline" href="/settings"> settings </a>
+		</div>
+    </nav>
+{/snippet}
+
 <div class="text-foreground max-w-4xl mx-auto px-4">
     <h1 class="px-2">
         <span> Beat </span>
@@ -44,11 +55,9 @@
             <p>Previous puzzles are available to Patreon subscribers. If you like BM@B, consider subscribing. It would mean the world. </p>
 
             <br />
-            <nav class="flex gap-6 flex-wrap">
-                <a class="underline" href="/play"> play </a>
-                <a class="underline" href="/archive"> archive </a>
-                <a class="underline" href="/settings"> settings </a>
-            </nav>
+
+            {@render nav()}
+
         {:else}
             <h2 class="font-bold">My name is Ava and I like Boggle</h2>
             <p>So much so, I decided to made this online version.</p>
@@ -61,11 +70,8 @@
                 the satisfaction of knowing you're better at Boggle than me.
             </p>
             <br />
-            <nav class="flex gap-6 flex-wrap">
-                <a class="underline" href="/play"> play </a>
-                <a class="underline" href="/archive"> archive </a>
-                <a class="underline" href="/settings"> settings </a>
-            </nav>
+
+            {@render nav()}
         {/if}
 
     </main>

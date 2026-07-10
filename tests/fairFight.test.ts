@@ -1,15 +1,21 @@
 import Chain from "$lib/chain.svelte"
 import GameSession from "$lib/GameSession.svelte"
 import { ScoreTracker } from "$lib/ScoreTracker.svelte"
+import { getBoardSettings } from "$lib/boardSettings"
+import { toISODateKey } from "$lib/constants"
 
 import { expect, test } from "vitest"
 
 const createDummySession = () => {
-    const session = new GameSession(new Date("2026-01-01"), "player", [
-        "one",
-        "two",
-        "three",
-    ])
+    const date = new Date("2026-01-01")
+    const board = getBoardSettings(date)
+    const session = new GameSession(
+        board,
+        "player",
+        ["one", "two", "three"],
+        null,
+        toISODateKey(date)
+    )
 
     session.startGame()
 
