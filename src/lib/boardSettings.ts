@@ -1,6 +1,7 @@
 import { dateOverrides, toISODateKey } from "$lib/constants"
 import { generateClassic, generateClusters } from "$lib/generateBoard"
 import preferences from "$lib/Preferences.svelte"
+import { solve } from "./dictionary/solver"
 
 const WEEKDAYS = [
     "Sunday",
@@ -80,6 +81,15 @@ export const getBoardSettings = (date: Date): BoardSettings => {
         time: todaysGeneration.time,
     }
 
+    // QUICK FIX: DO PROPER FIX LATER
+    const initialWords = [...solve(boardSettings.letters, boardSettings.size)]
+    if (initialWords.length < 130) {
+        boardSettings.letters = todaysGeneration.generateBoard(
+            `${dateKey}-reroll`,
+            todaysGeneration.size
+        )
+    }
+
     const extraTime = preferences.settings.extraTime.value ? 2 * 60 : 0
 
     boardSettings.time += extraTime
@@ -87,23 +97,30 @@ export const getBoardSettings = (date: Date): BoardSettings => {
     return boardSettings
 }
 
-/** This will be changed in a future version so the board is retrieved from a central location
- * rather than genreated by each users' client
- * but we need it for now :/
- */
-export const rerollBoard = (date: Date): BoardSettings => {
-    const dateKey = toISODateKey(date)
-    const weekday = WEEKDAYS[date.getUTCDay()]
+export const getPracticeBoardSettings = (params: {
+    size: 4 | 5
+    time: number
+    dice: "classic" | "clusters" | "custom"
+    override?: string
+    seed?: string
+}): BoardSettings => {
+    if (params.dice === "custom" && params.override) {
+        return {
+            size: params.size,
+            letters: params.override
+                .split("")
+                .slice(0, params.size * params.size),
+            time: params.time * 60,
+        }
+    }
 
-    const todaysGeneration = weekDayMap[weekday]
-
-    const board = getBoardSettings(date)
+    const generateBoard =
+        params.dice === "classic" ? generateClassic : generateClusters
+    const seed = params.seed ?? String(Date.now())
 
     return {
-        ...board,
-        letters: todaysGeneration.generateBoard(
-            `${dateKey}-reroll`,
-            todaysGeneration.size
-        ),
+        size: params.size,
+        letters: generateBoard(seed, params.size),
+        time: params.time * 60,
     }
 }

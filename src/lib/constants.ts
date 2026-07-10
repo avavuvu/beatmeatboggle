@@ -1,6 +1,6 @@
 import type { BoardSettings } from "./boardSettings"
 
-export type PlayerState = "ava" | "player"
+export type PlayerState = "ava" | "player" | "practice"
 
 export const RESULT_KEY_PREFIX = "result_"
 export const SCORE_KEY_PREFIX = "scores_"

@@ -13,23 +13,10 @@ export const load = async ({ cookies, url }: RequestEvent) => {
     const fullName = session?.fullName ?? null
     const thumbUrl = session?.thumbUrl ?? null
 
-    const HOUR = 60 * 60 * 1000
-    const today = toISODateKey(new Date(Date.now() + 10 * HOUR))
-    const tomorrow = toISODateKey(new Date(Date.now() + 10 * HOUR + 24 * HOUR))
-
-    const rows = await db
-        .select({ dateKey: avasWords.dateKey })
-        .from(avasWords)
-        .orderBy(desc(avasWords.dateKey))
-
     return {
         tier,
         fullName,
         thumbUrl,
         error,
-        dates: rows
-            .map((r) => r.dateKey)
-            .filter((d) => d !== today)
-            .filter((d) => d !== tomorrow),
     }
 }

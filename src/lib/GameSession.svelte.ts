@@ -1,10 +1,5 @@
-import { solve } from "./dictionary/solver"
 import dictionaryManager from "./dictionary/DictionaryManager.svelte"
-import {
-    getAdjacentPositions,
-    toISODateKey,
-    type PlayerState,
-} from "./constants"
+import { getAdjacentPositions, type PlayerState } from "./constants"
 import toaster from "./Toaster.svelte"
 import scoreTracker, { ScoreTracker } from "./ScoreTracker.svelte"
 import { browser } from "$app/environment"
@@ -12,11 +7,8 @@ import preferences from "./Preferences.svelte"
 export { getAdjacentPositions } from "./constants"
 import { GAME_KEY_PREFIX } from "./constants"
 import Chain from "$lib/chain.svelte"
-import {
-    getBoardSettings,
-    rerollBoard,
-    type BoardSettings,
-} from "./boardSettings"
+import { solve } from "./dictionary/solver"
+import type { BoardSettings } from "./boardSettings"
 
 class GameSession {
     foundWords: string[] = $state([])
@@ -44,21 +36,15 @@ class GameSession {
     }
 
     constructor(
-        date: Date,
-        playerState: "ava" | "player",
+        board: BoardSettings,
+        playerState: PlayerState,
         avasWords: string[] | null,
-        totalWords: string[] | null
+        totalWords: string[] | null,
+        dateKey: string | null = null
     ) {
-        this.dateKey = toISODateKey(date)
+        this.dateKey = dateKey ?? ""
         this.playerState = playerState
-
-        this.board = getBoardSettings(date)
-
-        // QUICK FIX: DO PROPER FIX LATER
-        const initialWords = [...solve(this.board.letters, this.board.size)]
-        if (initialWords.length < 130) {
-            this.board = rerollBoard(date)
-        }
+        this.board = board
 
         if (!totalWords) {
             this.totalPossibleWords = [
@@ -103,6 +89,10 @@ class GameSession {
     endGame = async () => {
         this.gameState = "gameOver"
         this.save()
+
+        if (this.playerState === "practice") {
+            return
+        }
 
         // Ava
 
@@ -323,8 +313,11 @@ class GameSession {
         this.isTentative = true
     }
 
+    #persists = () =>
+        this.playerState === "player" || this.playerState === "practice"
+
     save = () => {
-        if (!browser || this.playerState !== "player") return
+        if (!browser || !this.#persists() || !this.dateKey) return
         localStorage.setItem(
             `${GAME_KEY_PREFIX}${this.dateKey}`,
             JSON.stringify({
@@ -337,7 +330,7 @@ class GameSession {
     }
 
     load = () => {
-        if (!browser || this.playerState !== "player") return false
+        if (!browser || !this.#persists() || !this.dateKey) return false
 
         const saved = localStorage.getItem(`${GAME_KEY_PREFIX}${this.dateKey}`)
         if (saved) {

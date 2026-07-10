@@ -18,8 +18,10 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
         })
         .from(avasWords)
         .where(eq(avasWords.dateKey, dateKey))
-
-    console.log(date)
+        .catch((e) => {
+            console.error("DB error", e)
+            throw e
+        })
 
     return {
         avasWords: ava?.words ?? null,

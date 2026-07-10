@@ -1,29 +1,27 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
     import type { PatronTier } from "$lib/session"
-    import Dates from "@/Dates.svelte"
-    import { page } from "$app/state"
+    import PracticeForm from "@/PracticeForm.svelte"
+    import { page } from "$app/state";
 
     const { data }: {
         data: {
             tier: PatronTier | null
             fullName: string | null
             thumbUrl: string | null
-            dates: string[]
             error: string | null
         }
     } = $props()
 
     const kickback = $derived(page.url.searchParams.get("kickback") !== null)
-
 </script>
 
-<Head title="Archive — Beat Me At Boggle" description="Past puzzles from Beat Me At Boggle" />
+<Head title="Practice — Beat Me At Boggle" description="Play unlimited Boggle" />
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">
     <span class="inline-flex justify-between gap-[2ch] w-full">
         <span class="inline-flex gap-[2ch] flex-wrap">
-            <h1 class="px-2 font-bold">Archive</h1>
+            <h1 class="px-2 font-bold">Practice</h1>
             <a href="/" class="underline">Return Home</a>
         </span>
 
@@ -48,7 +46,7 @@
 
         <div class="py-4">
             {#if kickback}
-            <p class="text-red-400">You must subscribe to play practice games.</p>
+                <p class="text-red-400">You must subscribe to play practice games.</p>
                 <p>
                     <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
                 </p>
@@ -63,10 +61,11 @@
                 {/if}
             {/if}
 
+
         </div>
 
         <div style:opacity={data.tier !== 'paid' ? 0.5 : 1}>
-            <Dates dates={data.dates} paid={data.tier === 'paid'}/>
+            <PracticeForm/>
         </div>
     </main>
 </div>

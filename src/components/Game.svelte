@@ -2,7 +2,8 @@
     import GameSession from "$lib/GameSession.svelte";
     import InputController from "$lib/InputController.svelte";
     import { onMount, onDestroy } from "svelte"
-    import { GAME_KEY_PREFIX, toISODateKey } from "$lib/constants"
+    import { GAME_KEY_PREFIX, type PlayerState } from "$lib/constants"
+    import type { BoardSettings } from "$lib/boardSettings"
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
     import Logo from "./Logo.svelte";
@@ -12,19 +13,21 @@
     import Definition from "./Definition.svelte"
 
     const {
-        date,
+        board,
         playerStatus,
         avasWords,
-        totalWords
+        totalWords,
+        dateKey = null
     }: {
-        date: Date;
-        playerStatus: "ava" | "player";
+        board: BoardSettings;
+        playerStatus: PlayerState;
         avasWords: string[] | null,
-        totalWords: string[] | null
+        totalWords: string[] | null,
+        dateKey?: string | null
     } = $props()
 
     // svelte-ignore state_referenced_locally
-    const session = new GameSession(date, playerStatus, avasWords, totalWords)
+    const session = new GameSession(board, playerStatus, avasWords, totalWords, dateKey)
 
     const inputController = new InputController(session)
 
@@ -47,9 +50,7 @@
 
      	let introDelay = 3200
 
-        const dateKey = toISODateKey(date)
-
-      	if(localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
+      	if(dateKey && localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
      		introDelay = 0;
      		canAnimate = false;
        	}

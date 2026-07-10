@@ -19,17 +19,23 @@
         didWin,
         avasWordMap,
         playerWordMap,
-        totalWordsMap
+        totalWordsMap,
+        hasComparison
     } = scoreTracker.getReveal(session.foundWords, session.totalPossibleWords)
+
+    // svelte-ignore state_referenced_locally
+    const isPractice = session.playerState === "practice"
 
     let shareLink = $state(page.url.origin);
 
     let shareButtonText = $state("Share");
 
     const shareText = $derived(
-        didWin
-            ? `I beat Ava at Boggle!${preferences.settings.fairFight.value && " (And it was a fair fight!)"}`
-            : "I couldn't quite beat Ava at Boggle :(",
+        !hasComparison
+            ? "I just played a practice game of Boggle!"
+            : didWin
+                ? `I beat Ava at Boggle!${preferences.settings.fairFight.value && " (And it was a fair fight!)"}`
+                : "I couldn't quite beat Ava at Boggle :(",
     );
 
     const share = async () => {
@@ -124,29 +130,42 @@
     class="game-over h-full grid grid-rows-4 bg-surface border border-border"
 >
     <div class="flex gap-1 w-full min-h-0 p-2">
-        {@render chartBar(0, scores.you, "You!")}
-        {@render chartBar(1, scores.ava, "Ava")}
-        {#if session.averageGameScore}
-            {@render chartBar(2, session.averageGameScore, "Average")}
+        {#if isPractice}
+            {@render chartBar(0, scores.you, "You!")}
+            <a
+                href="/practice"
+                class="w-full flex justify-center items-center underline text-center"
+                style="opacity: {Number(mounted) * 100}%; {getDelayStyle(1)}"
+            >
+                Play Again
+            </a>
         {:else}
-            <div class="w-full flex justify-center items-center">
-                <img
-                    style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
-                    src="{favicon}" alt="" class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]">
-            </div>
+            {@render chartBar(0, scores.you, "You!")}
+            {@render chartBar(1, scores.ava, "Ava")}
+            {#if session.averageGameScore}
+                {@render chartBar(2, session.averageGameScore, "Average")}
+            {:else}
+                <div class="w-full flex justify-center items-center">
+                    <img
+                        style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
+                        src="{favicon}" alt="" class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]">
+                </div>
+            {/if}
         {/if}
     </div>
     <div class="row-span-2 overflow-y-scroll p-2">
-        <h3 class="font-bold">Ava's words</h3>
-        <ul class=" flex flex-wrap gap-2 h-min">
-            {#each avasWordMap as [word, wasFound]}
-                <li class:found={wasFound}>
-                    {@render dictionaryWord(word, "ava")}
-                </li>
-            {/each}
-        </ul>
+        {#if !isPractice}
+            <h3 class="font-bold">Ava's words</h3>
+            <ul class=" flex flex-wrap gap-2 h-min">
+                {#each avasWordMap as [word, wasFound]}
+                    <li class:found={wasFound}>
+                        {@render dictionaryWord(word, "ava")}
+                    </li>
+                {/each}
+            </ul>
 
-        <hr class="my-4"/>
+            <hr class="my-4"/>
+        {/if}
 
         <h3 class="font-bold">Your words</h3>
         <ul class="flex flex-wrap gap-2 h-min">
@@ -171,7 +190,9 @@
     </div>
     <div class="bubble-container flex gap-1 flex-col [align-items:end]">
         <div class="imessage-bubble">
-            {#if didWin}
+            {#if isPractice}
+                Nice game!
+            {:else if didWin}
                 I beat Ava at Boggle!
             {:else}
                 I couldn't quite beat Ava at Boggle :{"("}
