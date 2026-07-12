@@ -49,6 +49,8 @@ class InputController {
 
     inputKey = (event: KeyboardEvent) => {
         if (!this.game.isPlayingGame) return
+        event.preventDefault()
+
         switch (event.key) {
             case "Backspace":
                 this.game.removeLast()

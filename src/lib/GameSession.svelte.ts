@@ -4,6 +4,7 @@ import {
     getAdjacentPositions,
     toISODateKey,
     type PlayerState,
+    type AvasPayload,
 } from "./constants"
 import toaster from "./Toaster.svelte"
 import scoreTracker, { ScoreTracker } from "./ScoreTracker.svelte"
@@ -26,6 +27,8 @@ class GameSession {
     playerState: PlayerState = $state("player")
     dateKey: string = $state("")
 
+    avasPayload: AvasPayload | null = null
+
     board: BoardSettings = $state(undefined!)
     secondsLeft = $state(180)
 
@@ -45,12 +48,12 @@ class GameSession {
 
     constructor(
         date: Date,
-        playerState: "ava" | "player",
-        avasWords: string[] | null,
-        totalWords: string[] | null
+        playerState: PlayerState,
+        avasPayload: AvasPayload | null
     ) {
         this.dateKey = toISODateKey(date)
         this.playerState = playerState
+        this.avasPayload = avasPayload
 
         this.board = getBoardSettings(date)
 
@@ -60,12 +63,12 @@ class GameSession {
             this.board = rerollBoard(date)
         }
 
-        if (!totalWords) {
+        if (!avasPayload?.totalWords) {
             this.totalPossibleWords = [
                 ...solve(this.board.letters, this.board.size),
             ]
         } else {
-            this.totalPossibleWords = totalWords
+            this.totalPossibleWords = avasPayload.totalWords
         }
 
         this.secondsLeft = this.board.time
@@ -75,7 +78,11 @@ class GameSession {
 
         this.load()
 
-        scoreTracker.init(this.totalPossibleWords, this.dateKey, avasWords)
+        scoreTracker.init(
+            this.totalPossibleWords,
+            this.dateKey,
+            avasPayload?.words ?? null
+        )
     }
 
     stopTimer = () => {
@@ -100,32 +107,38 @@ class GameSession {
         }, 1000)
     }
 
+    submitAva = async (message: string, image: File | Blob | null) => {
+        const headers = {
+            authorization: localStorage.getItem("admin_token") ?? "",
+        }
+
+        const formData = new FormData()
+        formData.set("words", JSON.stringify(this.foundWords))
+        formData.set("dateKey", this.dateKey)
+        formData.set("totalWords", JSON.stringify(this.totalPossibleWords))
+        formData.set("message", message)
+        if (image) {
+            formData.set("image", image)
+        }
+
+        const _response = await fetch("/api/avas-words", {
+            method: "POST",
+            body: formData,
+            headers,
+        })
+
+        return
+    }
+
     endGame = async () => {
         this.gameState = "gameOver"
         this.save()
 
-        // Ava
-
         if (this.playerState === "ava") {
-            const headers = {
-                authorization: localStorage.getItem("admin_token") ?? "",
-            }
-
-            const _response = await fetch("/api/avas-words", {
-                method: "POST",
-                body: JSON.stringify({
-                    words: this.foundWords,
-                    dateKey: this.dateKey,
-                    totalWords: this.totalPossibleWords,
-                }),
-                headers,
-            })
-
             return
         }
 
-        // Player
-
+        // Player, ava handled not at game end to support messages
         if (this.foundWords.length > 0) {
             const fairFight = preferences.settings.fairFight.value
             const score = ScoreTracker.calculateTotalPoints(

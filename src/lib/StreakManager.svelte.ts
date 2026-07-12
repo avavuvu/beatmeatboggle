@@ -7,6 +7,8 @@ import {
 } from "./constants"
 import { ScoreTracker } from "./ScoreTracker.svelte"
 
+/// this was never used
+
 export type DayResult = {
     playerScore: number
     avasScore: number

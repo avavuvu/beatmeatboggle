@@ -7,10 +7,15 @@
     import definitionManaager from "$lib/DefinitionManager.svelte"
     import type GameSession from "$lib/GameSession.svelte"
     import favicon from "$lib/assets/favicon.svg"
+    import { camera } from "./icons/camera.svelte"
+    import EarlySubmitForm from "./EarlySubmitForm.svelte"
 
     const { session }: {
         session: GameSession
     }  = $props()
+
+    // svelte-ignore state_referenced_locally
+    const payload = session.avasPayload
 
     // svelte-ignore state_referenced_locally
     const {
@@ -116,7 +121,6 @@
         <span>{word}</span>
         <span class:max-w-0={!isSelected}>"</span>
     </button>
-
 {/snippet}
 
 <div
@@ -136,7 +140,34 @@
             </div>
         {/if}
     </div>
+
     <div class="row-span-2 overflow-y-scroll p-2">
+        {#if session.playerState === "player"}
+            {#if payload}
+                <div
+                    class="grid grid-cols-3 gap-1 py-2 transition-opacity duration-500"
+                    style="opacity: {Number(mounted) * 100}%; {getDelayStyle(3)}">
+                    <div class="flex justify-center">
+                        <div class="w-20">
+                            {#if payload.imageData}
+                                <img class="border p-0.5" src={payload?.imageData} alt="Ava Dinh-Vu"/>
+                            {:else}
+                                {@render camera()}
+
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="col-span-2 italic">
+                        <p class="indent-[-0.4em]">
+                            "{payload?.message}"
+
+                        </p>
+                    </div>
+                </div>
+            {/if}
+        {:else}
+            <EarlySubmitForm {session}/>
+        {/if}
         <h3 class="font-bold">Ava's words</h3>
         <ul class=" flex flex-wrap gap-2 h-min">
             {#each avasWordMap as [word, wasFound]}

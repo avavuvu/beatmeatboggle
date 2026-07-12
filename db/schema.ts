@@ -5,12 +5,15 @@ import {
     jsonb,
     boolean,
     timestamp,
+    text,
 } from "drizzle-orm/pg-core"
 
 export const avasWords = pgTable("avas_words", {
     dateKey: varchar("date_key", { length: 10 }).primaryKey(), // YYYY-MM-DD
     words: jsonb("words").$type<string[]>().notNull(),
     totalWords: jsonb("total_words").$type<string[]>(),
+    imageData: text("image_data"),
+    message: varchar("message", { length: 500 }),
 })
 
 export const playerWords = pgTable("player_words", {

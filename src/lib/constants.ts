@@ -1,6 +1,15 @@
 import type { BoardSettings } from "./boardSettings"
 
+/// this is such a bs file. just like everything else in here
+
 export type PlayerState = "ava" | "player"
+
+export type AvasPayload = {
+    words: string[] | null
+    totalWords: string[] | null
+    message: string | null
+    imageData: string | null
+}
 
 export const RESULT_KEY_PREFIX = "result_"
 export const SCORE_KEY_PREFIX = "scores_"

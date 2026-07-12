@@ -3,6 +3,7 @@
     import InputController from "$lib/InputController.svelte";
     import { onMount, onDestroy } from "svelte"
     import { GAME_KEY_PREFIX, toISODateKey } from "$lib/constants"
+    import type { PlayerState, AvasPayload } from "$lib/constants"
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
     import Logo from "./Logo.svelte";
@@ -13,17 +14,15 @@
     const {
         date,
         playerStatus,
-        avasWords,
-        totalWords
+        avasPayload
     }: {
         date: Date;
-        playerStatus: "ava" | "player";
-        avasWords: string[] | null,
-        totalWords: string[] | null
+        playerStatus: PlayerState;
+        avasPayload: AvasPayload | null
     } = $props()
 
     // svelte-ignore state_referenced_locally
-    const session = new GameSession(date, playerStatus, avasWords, totalWords)
+    const session = new GameSession(date, playerStatus, avasPayload)
 
     const inputController = new InputController(session)
 

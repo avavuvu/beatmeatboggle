@@ -12,6 +12,8 @@ export const load: PageServerLoad = async () => {
         .select({
             words: avasWords.words,
             totalWords: avasWords.totalWords,
+            imageData: avasWords.imageData,
+            message: avasWords.message,
         })
         .from(avasWords)
         .where(eq(avasWords.dateKey, dateKey))
@@ -19,8 +21,14 @@ export const load: PageServerLoad = async () => {
     console.log(date)
 
     return {
-        avasWords: ava?.words ?? null,
-        totalWords: ava?.totalWords ?? null,
+        avasPayload: ava
+            ? {
+                  words: ava.words,
+                  totalWords: ava.totalWords,
+                  message: ava.message,
+                  imageData: ava.imageData,
+              }
+            : null,
         date,
     }
 }

@@ -18,4 +18,6 @@
     title="{dateFormatted} — Beat Me at Boggle"
     />
 
-<Game {date} playerStatus="player" avasWords={data.avasWords} totalWords={data.totalWords} />
+<Game {date}
+    playerStatus="player"
+    avasPayload={data.avasPayload} />

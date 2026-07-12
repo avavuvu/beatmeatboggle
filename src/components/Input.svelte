@@ -4,7 +4,6 @@
     const { inputController }: { inputController: InputController } = $props()
 
     const onkeydown = (event: KeyboardEvent) => {
-        event.preventDefault()
         inputController.inputKey(event)
     }
 </script>

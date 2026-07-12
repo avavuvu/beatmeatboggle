@@ -5,11 +5,12 @@ import { ScoreTracker } from "$lib/ScoreTracker.svelte"
 import { expect, test } from "vitest"
 
 const createDummySession = () => {
-    const session = new GameSession(new Date("2026-01-01"), "player", [
-        "one",
-        "two",
-        "three",
-    ])
+    const session = new GameSession(new Date("2026-01-01"), "player", {
+        words: ["one", "two", "three"],
+        totalWords: null,
+        message: null,
+        imageData: null,
+    })
 
     session.startGame()
 

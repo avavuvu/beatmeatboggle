@@ -17,7 +17,12 @@ beforeEach(() => {
 })
 
 const createDummySession = (avasWords: string[] = []) => {
-    const session = new GameSession(new Date("2026-01-01"), "player", avasWords)
+    const session = new GameSession(new Date("2026-01-01"), "player", {
+        words: avasWords,
+        totalWords: null,
+        message: null,
+        imageData: null,
+    })
 
     session.startGame()
 
