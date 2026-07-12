@@ -55,10 +55,16 @@
                 <a class="underline" href="/settings"> settings </a>
             </li>
             <li>
+                <a class="underline" href="/howtoplay"> how to play</a>
+            </li>
+            <li>
                 <a class="underline" href="/about"> about me </a>
             </li>
             <li>
                 <a class="underline" href="/about/words"> about the dictionary </a>
+            </li>
+            <li>
+                <a class="underline" href="/checker"> word checker </a>
             </li>
         </ul>
     </aside>
