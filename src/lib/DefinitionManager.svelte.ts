@@ -32,6 +32,10 @@ class DefinitionManager {
             }
         }
     }
+
+    clearWord = () => {
+        this.currentDefinition = null
+    }
 }
 
 const definitionManaager = new DefinitionManager()
