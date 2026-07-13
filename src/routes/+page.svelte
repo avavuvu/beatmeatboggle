@@ -50,7 +50,7 @@
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wraps">
+        <ul class="flex gap-6 flex-wrap justify-between">
             <li>
                 <a class="underline" href="/settings"> settings </a>
             </li>
