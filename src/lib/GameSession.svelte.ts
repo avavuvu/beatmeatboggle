@@ -22,7 +22,8 @@ class GameSession {
     foundWords: string[] = $state([])
     currentChain = $state(new Chain())
     totalPossibleWords: string[] = $state([])
-    gameState: "playing" | "loading" | "gameOver" = $state("loading")
+    gameState: "playing" | "loading" | "gameOver" | "paused" | "backgrounded" =
+        $state("loading")
     playerState: PlayerState = $state("player")
     dateKey: string = $state("")
 
@@ -78,8 +79,34 @@ class GameSession {
         scoreTracker.init(this.totalPossibleWords, this.dateKey, avasWords)
     }
 
+    get isPaused() {
+        return this.gameState === "paused" || this.gameState === "backgrounded"
+    }
+
     stopTimer = () => {
         clearInterval(this.#timerHandle)
+    }
+
+    pause = () => {
+        if (this.gameState !== "playing") return
+
+        this.stopTimer()
+        this.gameState = "paused"
+        this.save()
+    }
+
+    suspend = () => {
+        if (this.gameState !== "playing") return
+
+        this.stopTimer()
+        this.gameState = "backgrounded"
+        this.save()
+    }
+
+    resume = () => {
+        if (!this.isPaused) return
+
+        this.startGame()
     }
 
     startGame = () => {
