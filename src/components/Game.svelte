@@ -49,6 +49,16 @@
     const startOrResumeTimer = () => {
         if (!hasStartedOnce) {
             hasStartedOnce = true
+
+            const dateKey = toISODateKey(date)
+
+            if (localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
+                introDelay = 0
+                canAnimate = false
+            } else {
+                canAnimate = true
+            }
+
             session.gameState = "loading"
             setTimeout(() => {
                 session.startGame()
@@ -81,15 +91,6 @@
     }
 
     onMount(() => {
-   		canAnimate = true
-
-        const dateKey = toISODateKey(date)
-
-      	if(localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
-     		introDelay = 0;
-     		canAnimate = false;
-       	}
-
         // start blurred/suspended until the tab is actually focused
         if (session.gameState !== "gameOver") {
             session.gameState = "backgrounded"
