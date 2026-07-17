@@ -62,6 +62,7 @@
     bind:this={svgElement}
     viewBox="0 0 {session.board.size} {session.board.size}"
     class:game-over={session.gameState === "gameOver"}
+    class:paused={session.isPaused}
     onpointerdown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId);
         inputController.handlePointerDown(e, getTouchRect());
@@ -127,6 +128,7 @@
         touch-action: none;
         width: 100%;
         height: 100%;
+
     }
 
     .draw-pointer {
@@ -192,5 +194,11 @@
         opacity: 0.4;
         pointer-events: none;
         transition: opacity 0.5s ease;
+    }
+
+    svg.paused {
+        filter: blur(24px);
+        pointer-events: none;
+        transition: filter 0.3s ease;
     }
 </style>

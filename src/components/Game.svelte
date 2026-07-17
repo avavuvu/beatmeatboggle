@@ -2,6 +2,7 @@
     import GameSession from "$lib/GameSession.svelte";
     import InputController from "$lib/InputController.svelte";
     import { onMount, onDestroy } from "svelte"
+    import { browser } from "$app/environment"
     import { GAME_KEY_PREFIX, toISODateKey } from "$lib/constants"
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
@@ -9,6 +10,7 @@
     import Reveal from "./Reveal.svelte";
     import Toast from "./Toast.svelte";
     import Definition from "./Definition.svelte"
+    import { pause } from "./icons/pause.svelte"
 
     const {
         date,
@@ -41,10 +43,45 @@
     let canAnimate = $state(false)
     let error: null | any = $state()
 
+    let introDelay = 3200
+    let hasStartedOnce = false
+
+    const startOrResumeTimer = () => {
+        if (!hasStartedOnce) {
+            hasStartedOnce = true
+            session.gameState = "loading"
+            setTimeout(() => {
+                session.startGame()
+            }, introDelay);
+        } else {
+            session.resume()
+        }
+    }
+
+    const attemptAutoResume = () => {
+        if (session.gameState === "gameOver" || session.gameState === "paused") return
+
+        startOrResumeTimer()
+    }
+
+    const handleVisibilityChange = (event: Event) => {
+        if (document.hidden) {
+            session.suspend()
+        } else {
+            attemptAutoResume()
+        }
+    }
+
+    const toggleTimer = () => {
+        if (session.gameState === "playing") {
+            session.pause()
+        } else if (session.isPaused) {
+            startOrResumeTimer()
+        }
+    }
+
     onMount(() => {
    		canAnimate = true
-
-     	let introDelay = 3200
 
         const dateKey = toISODateKey(date)
 
@@ -53,16 +90,22 @@
      		canAnimate = false;
        	}
 
-        // dont bother starting the game if we are coming from a load
-        if(session.gameState !== "gameOver") {
-            setTimeout(() => {
-                session.startGame()
-            }, introDelay);
+        // start blurred/suspended until the tab is actually focused
+        if (session.gameState !== "gameOver") {
+            session.gameState = "backgrounded"
         }
 
+        document.addEventListener("visibilitychange", handleVisibilityChange)
+
+        if (!document.hidden) {
+            attemptAutoResume()
+        }
     });
 
     onDestroy(() => {
+        if (browser) {
+            document.removeEventListener("visibilitychange", handleVisibilityChange)
+        }
         session.stopTimer();
     });
 </script>
@@ -87,9 +130,21 @@
             class:urgent={session.secondsLeft < 60}
             class="timer edge"
         >
-            <div>
-                {timeDisplay}
-            </div>
+            <button
+                type="button"
+                class="timer-button"
+                onclick={toggleTimer}
+                aria-label={session.gameState === "playing" ? "Pause timer" : "Resume timer"}
+            >
+                {#if session.gameState === "paused"}
+                    <div class="h-16 w-16">
+                        {@render pause()}
+
+                    </div>
+                {:else}
+                    {timeDisplay}
+                {/if}
+            </button>
         </div>
         <div class="board edge">
             <Board {canAnimate} {session} {inputController} />
@@ -222,6 +277,7 @@
     }
     .board {
         grid-area: 1 / 2 / 5 / 6;
+        overflow: hidden;
     }
     .banner {
         grid-area: 1 / 1 / 5 / 2;
@@ -322,6 +378,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .timer-button {
+        all: unset;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
     }
 
     .urgent {
