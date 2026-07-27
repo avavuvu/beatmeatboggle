@@ -18,10 +18,12 @@
 
     let data: ChallengeSession | undefined = $state()
 
-    const token = page.url.searchParams.get("token")
-    const challengeData = decodeChallenge(token || "")
+    let token = $state("")
+    const challengeData = $derived(decodeChallenge(token))
 
     onMount(async () => {
+        token = page.url.searchParams.get("token") || ""
+
         if (!token) {
             challengeState = "error"
             return
