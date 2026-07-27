@@ -1,10 +1,11 @@
 import { SvelteMap } from "svelte/reactivity"
 import toaster from "./Toaster.svelte"
 import preferences from "./Preferences.svelte"
+import { encodeChallenge } from "./challenge/challengeToken"
 
 export type ScoreItem = {
     points: number
-    reason?: "ava bonus" | "length" | "dirty bonus" | "unique"
+    reason?: "opponent bonus" | "length" | "dirty bonus" | "unique"
 }
 
 const DIRTY_WORDS = [
@@ -60,32 +61,38 @@ const DIRTY_WORDS = [
 class ScoreTracker {
     pointsMap = new SvelteMap<string, ScoreItem[]>([])
     totalWords!: string[]
-    avasScore: number = $state(0)
-    avasWords: null | string[] = $state(null)
+    opponentScore: number = $state(0)
+    opponentWords: null | string[] = $state(null)
+    opponentName: string = $state("Ava")
+    forceFairFight: boolean = $state(false)
     totalPossibleScore!: number
 
-    #dateKey: string = ""
+    get fairFight(): boolean {
+        return this.forceFairFight || preferences.settings.fairFight.value
+    }
 
     init = (
         totalWords: string[],
-        dateKey: string,
-        avasWords: string[] | null
+        opponentWords: string[] | null,
+        opponentName: string = "Ava",
+        forceFairFight: boolean = false
     ) => {
-        this.#dateKey = dateKey
         this.totalWords = totalWords
         this.totalPossibleScore = totalWords.reduce(
             (total, word) => total + ScoreTracker.wordLengthToPoints(word),
             0
         )
 
-        this.avasWords = avasWords
-        this.avasScore = !avasWords
+        this.opponentWords = opponentWords
+        this.opponentName = opponentName
+        this.forceFairFight = forceFairFight
+        this.opponentScore = !opponentWords
             ? 0
             : ScoreTracker.calculateTotalPoints(
-                  avasWords,
+                  opponentWords,
                   [],
                   false,
-                  preferences.settings.fairFight.value
+                  this.fairFight
               )
     }
 
@@ -129,7 +136,7 @@ class ScoreTracker {
         ]
 
         if (awardUniqueBonus && !otherPlayersWords.includes(word)) {
-            const reason = fairFight ? "unique" : "ava bonus"
+            const reason = fairFight ? "unique" : "opponent bonus"
 
             points += 1
             pointsArray.push({
@@ -156,22 +163,22 @@ class ScoreTracker {
         const { points, pointsArray: scoreArray } =
             ScoreTracker.calculatePoints(
                 word,
-                this.avasWords || [],
+                this.opponentWords || [],
                 true,
-                preferences.settings.fairFight.value
+                this.fairFight
             )
 
         this.pointsMap.set(word, scoreArray)
 
-        toaster.addWordToast(word, scoreArray, points)
+        toaster.addWordToast(word, scoreArray, points, this.opponentName)
     }
 
     loadWord = (word: string) => {
         const { pointsArray: scoreArray } = ScoreTracker.calculatePoints(
             word,
-            this.avasWords || [],
+            this.opponentWords || [],
             true,
-            preferences.settings.fairFight.value
+            this.fairFight
         )
         this.pointsMap.set(word, scoreArray)
     }
@@ -179,57 +186,59 @@ class ScoreTracker {
     getReveal = (foundWords: string[], totalPossibleWords: string[]) => {
         const playerWordSet = new Set(foundWords)
         const totalWordSet = new Set(totalPossibleWords)
-        const avasWordSet = new Set(this.avasWords || [])
+        const opponentWordSet = new Set(this.opponentWords || [])
 
-        const avasWordMap: [string, boolean][] = this.avasWords
-            ? this.avasWords
+        type WordMap = [string, boolean][]
+
+        const opponentWordMap: WordMap = this.opponentWords
+            ? this.opponentWords
                   .toSorted()
                   .map((word) => [word, playerWordSet.has(word)])
             : []
 
-        const playerWordMap: [string, boolean][] = foundWords
+        const playerWordMap: WordMap = foundWords
             .toSorted()
-            .map((word) => [word, !avasWordSet.has(word)])
+            .map((word) => [word, !opponentWordSet.has(word)])
 
-        const totalWordsMap: [string, boolean][] = totalPossibleWords
+        const totalWordsMap: WordMap = totalPossibleWords
             .toSorted()
             .filter(
-                (word) => !avasWordSet.has(word) && !playerWordSet.has(word)
+                (word) => !opponentWordSet.has(word) && !playerWordSet.has(word)
             )
             .map((word) => [word, false])
 
         const playerScore = ScoreTracker.calculateTotalPoints(
             foundWords,
-            this.avasWords || [],
+            this.opponentWords || [],
             true,
-            preferences.settings.fairFight.value
+            this.fairFight
         )
 
-        if (preferences.settings.fairFight.value) {
-            this.avasScore = ScoreTracker.calculateTotalPoints(
-                this.avasWords || [],
+        if (this.fairFight) {
+            this.opponentScore = ScoreTracker.calculateTotalPoints(
+                this.opponentWords || [],
                 foundWords,
                 true,
-                preferences.settings.fairFight.value
+                this.fairFight
             )
         }
 
         const scores = {
             you: playerScore,
-            ava: this.avasScore,
+            opponent: this.opponentScore,
         }
 
-        const didWin = playerScore > this.avasScore
+        const didWin = playerScore > this.opponentScore
 
         return {
-            avasWordMap,
+            opponentWordMap,
             playerWordMap,
             totalWordsMap,
             totalWordSet,
             scores,
             playerScore,
-            avasScore: this.avasScore,
             didWin,
+            opponentName: this.opponentName,
         }
     }
 }

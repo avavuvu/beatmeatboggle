@@ -5,6 +5,7 @@ export type PlayerState = "ava" | "player"
 export const RESULT_KEY_PREFIX = "result_"
 export const SCORE_KEY_PREFIX = "scores_"
 export const GAME_KEY_PREFIX = "boggle_"
+export const PLAYER_ID_KEY = "playerId"
 
 export const toISODateKey = (date: Date): string =>
     `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`

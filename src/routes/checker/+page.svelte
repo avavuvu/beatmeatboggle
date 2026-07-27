@@ -27,7 +27,7 @@
 
         definitionManaager.clearWord()
 
-        word = word.toLowerCase()
+        word = word.toLowerCase().trim()
 
         outcome = {
             word,

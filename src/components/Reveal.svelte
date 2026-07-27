@@ -5,11 +5,13 @@
     import { fade, slide } from "svelte/transition";
     import preferences from "$lib/Preferences.svelte"
     import definitionManaager from "$lib/DefinitionManager.svelte"
-    import type GameSession from "$lib/GameSession.svelte"
+    import type GameManager from "$lib/GameManager.svelte"
     import favicon from "$lib/assets/favicon.svg"
+    import { encodeChallenge } from "$lib/challenge/challengeToken"
+    import { challengeManager } from "$lib/challenge/challenge.svelte"
 
-    const { session }: {
-        session: GameSession
+    const { game }: {
+        game: GameManager
     }  = $props()
 
     // svelte-ignore state_referenced_locally
@@ -17,31 +19,11 @@
         scores,
         totalWordSet,
         didWin,
-        avasWordMap,
+        opponentWordMap,
         playerWordMap,
-        totalWordsMap
-    } = scoreTracker.getReveal(session.foundWords, session.totalPossibleWords)
-
-    let shareLink = $state(page.url.origin);
-
-    let shareButtonText = $state("Share");
-
-    const shareText = $derived(
-        didWin
-            ? `I beat Ava at Boggle!${preferences.settings.fairFight.value && " (And it was a fair fight!)"}`
-            : "I couldn't quite beat Ava at Boggle :(",
-    );
-
-    const share = async () => {
-        const data = { title: "Beat Me At Boggle", text: shareText, shareLink };
-
-        if (navigator.share) {
-            await navigator.share(data);
-        } else {
-            await navigator.clipboard.writeText(shareLink);
-            shareButtonText = "Copied to Clipboard";
-        }
-    };
+        totalWordsMap,
+        opponentName
+    } = scoreTracker.getReveal(game.foundWords, game.session.totalPossibleWords)
 
     const delay = 1000;
 
@@ -64,7 +46,7 @@
     const getDelayStyle = (index: number) => `transition-delay: ${delay + index * 400}ms;`
 
     let selectedWord = $state("")
-    const handleDictionaryWordClick = async (word: string, section: "ava" | "player" | "total") => {
+    const handleDictionaryWordClick = async (word: string, section: "opponent" | "player" | "total") => {
         const id = `${word}-${section}`
 
         if(selectedWord === id) {
@@ -102,7 +84,7 @@
 </div>
 {/snippet}
 
-{#snippet dictionaryWord(word: string, section: "ava" | "player" | "total")}
+{#snippet dictionaryWord(word: string, section: "opponent" | "player" | "total")}
     {@const isSelected = selectedWord === `${word}-${section}`}
 	<button
         class="flex overflow-hidden cursor-pointer"
@@ -116,7 +98,6 @@
         <span>{word}</span>
         <span class:max-w-0={!isSelected}>"</span>
     </button>
-
 {/snippet}
 
 <div
@@ -125,9 +106,9 @@
 >
     <div class="flex gap-1 w-full min-h-0 p-2">
         {@render chartBar(0, scores.you, "You!")}
-        {@render chartBar(1, scores.ava, "Ava")}
-        {#if session.averageGameScore}
-            {@render chartBar(2, session.averageGameScore, "Average")}
+        {@render chartBar(1, scores.opponent, opponentName)}
+        {#if game.averageGameScore}
+            {@render chartBar(2, game.averageGameScore, "Average")}
         {:else}
             <div class="w-full flex justify-center items-center">
                 <img
@@ -137,11 +118,11 @@
         {/if}
     </div>
     <div class="row-span-2 overflow-y-scroll p-2">
-        <h3 class="font-bold">Ava's words</h3>
+        <h3 class="font-bold">{opponentName}'s words</h3>
         <ul class=" flex flex-wrap gap-2 h-min">
-            {#each avasWordMap as [word, wasFound]}
+            {#each opponentWordMap as [word, wasFound]}
                 <li class:found={wasFound}>
-                    {@render dictionaryWord(word, "ava")}
+                    {@render dictionaryWord(word, "opponent")}
                 </li>
             {/each}
         </ul>
@@ -172,17 +153,17 @@
     <div class="bubble-container flex gap-1 flex-col [align-items:end]">
         <div class="imessage-bubble">
             {#if didWin}
-                I beat Ava at Boggle!
+                I beat {opponentName} at Boggle!
             {:else}
-                I couldn't quite beat Ava at Boggle :{"("}
+                I couldn't quite beat {opponentName} at Boggle :{"("}
             {/if}
             <div class="bubble-tail"></div>
         </div>
         <button
             class="imessage-bubble underline cursor-pointer"
-            onclick={share}
+            onclick={() => challengeManager.showChallenge = true}
         >
-            {shareButtonText}
+            Challenge someone else!
             <div class="bubble-tail"></div>
         </button>
     </div>
@@ -248,11 +229,11 @@
     	bottom: -6px;
     }
 
-    .bubble-container {
+    :global(.bubble-container) {
         padding: 0.5rem;
     }
 
-    .imessage-bubble {
+    :global(.imessage-bubble) {
         position: relative;
         background: var(--color-foreground);
         color: var(--color-surface);
@@ -266,7 +247,7 @@
         line-height: 1.3;
     }
 
-    .bubble-tail {
+    :global(.bubble-tail) {
         position: absolute;
         bottom: 0;
         right: -6px;

@@ -1,3 +1,11 @@
 [build]
   command = "bun run build"
   publish = "build"
+
+[dev]
+  watchIgnore = ["node_modules", ".svelte-kit", "build", ".netlify", "./scripts"]
+
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
