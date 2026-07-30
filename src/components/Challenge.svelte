@@ -1,12 +1,30 @@
 <script lang="ts">
+    import { browser } from "$app/environment"
     import { page } from "$app/state"
     import { challengeManager } from "$lib/challenge/challenge.svelte";
     import { decodeChallenge, encodeChallenge } from "$lib/challenge/challengeToken"
     import type GameManager from "$lib/GameManager.svelte"
+    import { onMount } from "svelte"
 
     const { game }: { game: GameManager } = $props()
 
     let name = $state("")
+
+    const setLocalName = () => {
+        if(browser) {
+            localStorage.setItem("playerName", name)
+        }
+    }
+
+    onMount(() => {
+        if(browser) {
+            const localName = localStorage.getItem("playerName")
+
+            if(localName) {
+                name = localName
+            }
+        }
+    })
 
     let id = $derived(encodeChallenge({
         date: game.session.dateKey,
@@ -20,11 +38,13 @@
         event.preventDefault()
 
         const shareLink = `${page.url.origin}/challenge?token=${id}`
-        const shareText = `${name} wants to challenge you at Boggle!\n${shareLink}`
+        const shareText = `${name} has challenged you to a game of Boggle!\n${shareLink}`
         const shareData = {
             title: "Beat Me At Boggle",
             text: shareText
         }
+
+        setLocalName()
 
         if (navigator.canShare?.(shareData)) {
             await navigator.share(shareData)
@@ -49,7 +69,7 @@
                         placeholder="your name"
                         required
                         type="text"
-                        bind:value={name}/> wants to challenge you at Boggle!
+                        bind:value={name}/> has challenged you to a game of Boggle!
                     <div class="bubble-tail"></div>
                 </div>
                 <div class="imessage-bubble">
@@ -60,13 +80,6 @@
                 </div>
             </div>
         </form>
-
-        <code class="break-all">
-        {id}
-
-
-        {JSON.stringify(decodeChallenge(id))}
-        </code>
 
         <div class="w-full  bg-foreground text-surface  px-2 text-right">
         </div>

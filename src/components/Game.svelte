@@ -288,6 +288,10 @@
         grid-area: 1 / 2 / 5 / 6;
         overflow: hidden;
     }
+    .challenge {
+        grid-area: 1 / 2 / 5 / 6;
+        z-index: 10;
+    }
     .banner {
         grid-area: 1 / 1 / 5 / 2;
     }
@@ -309,7 +313,7 @@
     .reveal {
         grid-area: 1 / 6 / 5 / 8;
     }
-    .challenge, .definition {
+    .definition {
         grid-area: 1 / 1 / 5 / 2;
     }
 
@@ -377,7 +381,7 @@
             z-index: 10;
         }
         .game-container.game-over .challenge {
-        	grid-area: 2 / 1 / 7 / 5;
+        	grid-area: 2 / 1 / 5 / 5;
             z-index: 10;
         }
 
