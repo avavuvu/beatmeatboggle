@@ -13,7 +13,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "difficulty": "bunx tsx src/lib/scripts/boardDifficulty.ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "netlify dev:exec drizzle-kit migrate",
+    "db:migrate": "bunx drizzle-kit migrate",
     "db:studio": "netlify dev:exec drizzle-kit studio",
     "postbuild": "npx svelte-sitemap"
   },
