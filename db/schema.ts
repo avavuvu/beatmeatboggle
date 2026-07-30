@@ -22,4 +22,6 @@ export const playerWords = pgTable("player_words", {
     country: varchar("country", { length: 100 }),
     city: varchar("city", { length: 100 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
+    challengedBy: varchar("challenged_by"),
+    playerId: varchar("player_id")
 })

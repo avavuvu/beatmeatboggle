@@ -9,6 +9,8 @@ export default async function logPlayerWords(req: Request, context: Context) {
         let words: string[]
         let score: number
         let fairFight: boolean
+        let playerId: string | null
+        let challengedBy: string | null
 
         try {
             const body = await req.json()
@@ -16,6 +18,8 @@ export default async function logPlayerWords(req: Request, context: Context) {
             words = body.words
             score = typeof body.score === "number" ? body.score : -1
             fairFight = body.fairFight ?? false
+            playerId = body.playerId ?? null
+            challengedBy = body.challengedBy ?? null
 
             if (
                 !dateKey ||
@@ -39,6 +43,8 @@ export default async function logPlayerWords(req: Request, context: Context) {
                 fairFight,
                 country: context.geo?.country?.name ?? null,
                 city: context.geo?.city ?? null,
+                playerId,
+                challengedBy,
             })
         }
 
