@@ -24,3 +24,5 @@ vite.config.ts.timestamp-*
 
 #data
 scripts/viz/data
+scripts/viz/pd/__pycache__
+scripts/viz/pd/.venv
