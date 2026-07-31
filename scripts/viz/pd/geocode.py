@@ -7,6 +7,7 @@ from countrystatecity_countries import (
     search_cities,
     search_countries,
 )
+from timezonefinder import TimezoneFinder
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
@@ -53,6 +54,27 @@ def find_country_coords(country_code: str) -> tuple[float, float] | None:
     if not country or not country.latitude or not country.longitude:
         return None
     return float(country.latitude), float(country.longitude)
+
+
+def find_timezones(pairs: pd.DataFrame) -> pd.DataFrame:
+    finder = TimezoneFinder()
+    rows = []
+    unresolved = 0
+
+    for lat, lon in zip(pairs["lat"], pairs["lon"]):
+        if pd.isna(lat) or pd.isna(lon):
+            rows.append({"lat": lat, "lon": lon, "timezone": None})
+            continue
+
+        tz_name = finder.timezone_at(lat=lat, lng=lon)
+        if tz_name is None:
+            unresolved += 1
+        rows.append({"lat": lat, "lon": lon, "timezone": tz_name})
+
+    if unresolved:
+        print(f"Could not resolve timezone for {unresolved} of {len(pairs)} coordinate pairs")
+
+    return pd.DataFrame(rows)
 
 
 def build_location_lookup(pairs: pd.DataFrame) -> pd.DataFrame:
@@ -108,13 +130,18 @@ def main():
 
     lookup = build_location_lookup(pairs)
 
+    coord_pairs = cast(pd.DataFrame, lookup[["lat", "lon"]].drop_duplicates())
+    tz_lookup = find_timezones(coord_pairs)
+    lookup = lookup.merge(tz_lookup, on=["lat", "lon"], how="left")
+
     merged = players.merge(lookup, on=["country", "city"], how="left")
 
     out_path = DATA_DIR / "players_geocoded.csv"
     merged.to_csv(out_path, index=False)
 
     n_located = sum(merged["lat"].notna())
-    print(f"Wrote {out_path} ({n_located} of {len(merged)} rows have coordinates)")
+    n_timezoned = sum(merged["timezone"].notna())
+    print(f"Wrote {out_path} ({n_located} of {len(merged)} rows have coordinates, {n_timezoned} have a timezone)")
 
 
 if __name__ == "__main__":
