@@ -34,19 +34,23 @@
         <span> Boggle </span>
     </h1>
 
-    <main class="border p-4 *>py-2">
-        <h2 class="font-bold">My name is Ava and I like Boggle</h2>
-        <p>So much so, I decided to made this online version.</p>
-        <p>
-            Every day, I play a game of Boggle. The next day, you try and beat
-            my score.
-        </p>
-        <p>
-            If you manage to beat me—— well you don't get anything. Except maybe
-            the satisfaction of knowing you're better at Boggle than me.
-        </p>
-        <br />
-        <a class="underline" href="/play"> play </a>
+    <main class="border ">
+        <div class="p-4 *>py-2">
+            <h2 class="font-bold">My name is Ava and I like Boggle</h2>
+            <p>So much so, I decided to made this online version.</p>
+            <p>
+                Every day, I play a game of Boggle. The next day, you try and beat
+                my score.
+            </p>
+            <p>
+                If you manage to beat me-- well you don't get anything. Except maybe
+                the satisfaction of knowing you're better at Boggle than me.
+            </p>
+        </div>
+        <div class="w-full bg-foreground flex  justify-center text-surface">
+            <a class="" href="/play"> {">"} PLAY TODAY {"<"} </a>
+         </div>
+
     </main>
 
     <aside class="border p-4 my-4">
@@ -65,6 +69,9 @@
             </li>
             <li>
                 <a class="underline" href="/checker"> word checker </a>
+            </li>
+            <li>
+                <a class="underline" href="/solver"> solver </a>
             </li>
         </ul>
     </aside>
