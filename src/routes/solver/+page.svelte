@@ -6,7 +6,7 @@
     import Head from "@/styling/Head.svelte"
     import { fade, slide } from "svelte/transition"
 
-
+    let size = $state(4)
 
     const onsubmit = (event: SubmitEvent) => {
 
@@ -31,6 +31,10 @@
         <form
             {onsubmit}
             class="border p-4 min-h-48 flex justify-center items-center flex-col gap-4">
+
+            {#each {length: size * size} as index}
+                <input type="text" bind:value={}/>
+            {/each}
 
             <button class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer">Check</button>
         </form>
