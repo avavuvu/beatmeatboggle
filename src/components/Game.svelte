@@ -177,11 +177,12 @@
         <div class="gutter edge -z-10">
             <Toast />
         </div>
-        <div class="banner edge">
+        <h1 class="banner block edge">
             <a href="/">
+                <span class="sr-only">Play Beat Me At Boggle</span>
                 <Logo />
             </a>
-        </div>
+        </h1>
         {#if game.gameState === "gameOver"}
             <div class="reveal">
                 <Reveal {game} />

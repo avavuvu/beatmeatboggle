@@ -33,6 +33,8 @@ export const description =
     "Every day I play a game of Boggle. Every day you try and beat my score."
 export const title = "Beat Me At Boggle"
 
+export const siteUrl = "https://beatmeatboggle.com"
+
 export const dateOverrides: Record<string, BoardSettings> = {
     "2026-04-20": {
         size: 4,

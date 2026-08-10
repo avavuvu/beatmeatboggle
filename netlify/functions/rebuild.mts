@@ -1,7 +1,8 @@
 import type { Config } from "@netlify/functions"
+import { purgeCache } from "@netlify/functions"
 
 export default async function (): Promise<Response> {
-    await fetch(process.env.BUILD_HOOK_URL!, { method: "POST" })
+    await purgeCache({ tags: ["play-page"] })
     return new Response("OK", { status: 200 })
 }
 

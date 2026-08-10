@@ -11,7 +11,12 @@
         {#if entry.type === "definition"}
             <div in:slide class="w-full h-full overflow-y-scroll flex flex-col justify-between ">
                 <div class="p-2">
-                   	<h2 class="font-bold">{entry.data.word}</h2>
+                    <div class="flex justify-between">
+                       	<h2 class="font-bold">{entry.data.word}</h2>
+
+                        <button class="cursor-pointer underline" onclick={() => definitionManaager.clearWord()}>Close</button>
+
+                    </div>
                     <ul class="flex gap-x-2 flex-wrap font-compat">
                         {#each entry.data.ipa as ipa}
                             <li >{ipa}</li>
@@ -32,8 +37,9 @@
                 </div>
             </div>
         {:else if entry.type === "error"}
-            <div class="p-2 italic text-accent">
-                <h2>{entry.error}</h2>
+            <div class="p-2 ">
+                <h2 class="italic text-accent">{entry.error}</h2>
+                <button class="cursor-pointer underline" onclick={() => definitionManaager.clearWord()}>Close</button>
             </div>
         {:else}
             <div class="p-2 w-full h-full flex justify-center items-center">

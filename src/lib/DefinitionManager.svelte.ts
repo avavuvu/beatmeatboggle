@@ -28,7 +28,7 @@ class DefinitionManager {
         } catch (e) {
             this.currentDefinition = {
                 type: "error",
-                error: `No definition found for ${word}`,
+                error: `No definition found for ${word}\n(${e})`,
             }
         }
     }
