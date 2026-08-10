@@ -1,35 +1,21 @@
 import { solve } from "./dictionary/solver"
 import dictionaryManager from "./dictionary/DictionaryManager.svelte"
-import {
-    getAdjacentPositions,
-    toISODateKey,
-    type PlayerState,
-} from "./constants"
+import { getAdjacentPositions } from "./constants"
+export { getAdjacentPositions } from "./constants"
 import toaster from "./Toaster.svelte"
 import scoreTracker, { ScoreTracker } from "./ScoreTracker.svelte"
-import { browser } from "$app/environment"
-import preferences from "./Preferences.svelte"
-export { getAdjacentPositions } from "./constants"
-import { GAME_KEY_PREFIX } from "./constants"
 import Chain from "$lib/chain.svelte"
-import {
-    getBoardSettings,
-    rerollBoard,
-    type BoardSettings,
-} from "./boardSettings"
+import { saveGameState, loadGameState } from "$lib/session"
+import type { GameSession } from "./gameSession"
 
-class GameSession {
+class GameManager {
+    session: GameSession
+
     foundWords: string[] = $state([])
     currentChain = $state(new Chain())
-    totalPossibleWords: string[] = $state([])
     gameState: "playing" | "loading" | "gameOver" | "paused" | "backgrounded" =
         $state("loading")
-    playerState: PlayerState = $state("player")
-    dateKey: string = $state("")
-
-    board: BoardSettings = $state(undefined!)
     secondsLeft = $state(180)
-
     isTentative: boolean = $state(false)
 
     #timerHandle: ReturnType<typeof setInterval> | undefined = undefined
@@ -45,38 +31,25 @@ class GameSession {
     }
 
     constructor(
-        date: Date,
-        playerState: "ava" | "player",
-        avasWords: string[] | null,
-        totalWords: string[] | null
+        session: GameSession,
+        opponentWords: string[] | null,
+        opponentName: string = "Ava"
     ) {
-        this.dateKey = toISODateKey(date)
-        this.playerState = playerState
+        this.session = session
 
-        this.board = getBoardSettings(date)
-
-        // QUICK FIX: DO PROPER FIX LATER
-        const initialWords = [...solve(this.board.letters, this.board.size)]
-        if (initialWords.length < 130) {
-            this.board = rerollBoard(date)
-        }
-
-        if (!totalWords) {
-            this.totalPossibleWords = [
-                ...solve(this.board.letters, this.board.size),
-            ]
-        } else {
-            this.totalPossibleWords = totalWords
-        }
-
-        this.secondsLeft = this.board.time
+        this.secondsLeft = session.board.time
 
         this.foundWords = []
         this.currentChain.clear()
 
         this.load()
 
-        scoreTracker.init(this.totalPossibleWords, this.dateKey, avasWords)
+        scoreTracker.init(
+            session.totalPossibleWords,
+            opponentWords,
+            opponentName,
+            session.challengedBy !== null
+        )
     }
 
     get isPaused() {
@@ -133,7 +106,7 @@ class GameSession {
 
         // Ava
 
-        if (this.playerState === "ava") {
+        if (this.session.playerState === "ava") {
             const headers = {
                 authorization: localStorage.getItem("admin_token") ?? "",
             }
@@ -142,8 +115,8 @@ class GameSession {
                 method: "POST",
                 body: JSON.stringify({
                     words: this.foundWords,
-                    dateKey: this.dateKey,
-                    totalWords: this.totalPossibleWords,
+                    dateKey: this.session.dateKey,
+                    totalWords: this.session.totalPossibleWords,
                 }),
                 headers,
             })
@@ -154,10 +127,10 @@ class GameSession {
         // Player
 
         if (this.foundWords.length > 0) {
-            const fairFight = preferences.settings.fairFight.value
+            const fairFight = scoreTracker.fairFight
             const score = ScoreTracker.calculateTotalPoints(
                 this.foundWords,
-                scoreTracker.avasWords || [],
+                scoreTracker.opponentWords || [],
                 true,
                 fairFight
             )
@@ -166,9 +139,11 @@ class GameSession {
                 method: "POST",
                 body: JSON.stringify({
                     words: this.foundWords,
-                    dateKey: this.dateKey,
+                    dateKey: this.session.dateKey,
                     score,
                     fairFight,
+                    playerId: this.session.playerId,
+                    challengedBy: this.session.challengedBy,
                 }),
             })
 
@@ -218,7 +193,7 @@ class GameSession {
 
             const validKeys = getAdjacentPositions(
                 lastPosition,
-                this.board.size
+                this.session.board.size
             )
 
             if (!validKeys.includes(index)) {
@@ -226,7 +201,7 @@ class GameSession {
             }
         }
 
-        const letter = this.board.letters[index]
+        const letter = this.session.board.letters[index]
 
         this.currentChain.add(index, letter)
     }
@@ -284,17 +259,21 @@ class GameSession {
             const candidates =
                 charIndex === 0
                     ? Array.from(
-                          { length: this.board.size * this.board.size },
+                          {
+                              length:
+                                  this.session.board.size *
+                                  this.session.board.size,
+                          },
                           (_, i) => i
                       )
                     : getAdjacentPositions(
                           path[path.length - 1],
-                          this.board.size
+                          this.session.board.size
                       )
 
             for (const pos of candidates) {
                 if (path.includes(pos)) continue
-                if (this.board.letters[pos] !== char) continue
+                if (this.session.board.letters[pos] !== char) continue
 
                 path.push(pos)
                 if (dfs(charIndex + 1)) return true
@@ -309,16 +288,19 @@ class GameSession {
 
     getSearchArea = (): [number, string][] => {
         if (this.currentChain.length === 0) {
-            return this.board.letters.entries().toArray()
+            return this.session.board.letters.entries().toArray()
         }
 
         return getAdjacentPositions(
             this.currentChain.last()![0],
-            this.board.size
+            this.session.board.size
         )
             .map(
                 (index) =>
-                    [index, this.board.letters[index]] as [number, string]
+                    [index, this.session.board.letters[index]] as [
+                        number,
+                        string,
+                    ]
             )
             .filter(([index]) => !this.currentChain.containsKey(index))
     }
@@ -345,48 +327,42 @@ class GameSession {
 
         this.currentChain.clear()
         for (const index of path) {
-            this.currentChain.add(index, this.board.letters[index])
+            this.currentChain.add(index, this.session.board.letters[index])
         }
         this.isTentative = true
     }
 
     save = () => {
-        if (!browser || this.playerState !== "player") return
-        localStorage.setItem(
-            `${GAME_KEY_PREFIX}${this.dateKey}`,
-            JSON.stringify({
-                foundWords: this.foundWords,
-                secondsLeft: this.secondsLeft,
-                gameOver: this.gameState === "gameOver",
-                average: this.#averageGameScore,
-            })
-        )
+        if (this.session.playerState !== "player") return
+
+        saveGameState(this.session.dateKey, {
+            foundWords: this.foundWords,
+            secondsLeft: this.secondsLeft,
+            gameOver: this.gameState === "gameOver",
+            average: this.#averageGameScore,
+        })
     }
 
     load = () => {
-        if (!browser || this.playerState !== "player") return false
+        if (this.session.playerState !== "player") return false
 
-        const saved = localStorage.getItem(`${GAME_KEY_PREFIX}${this.dateKey}`)
-        if (saved) {
-            const parsed = JSON.parse(saved)
+        const state = loadGameState(this.session.dateKey)
+        if (!state) return false
 
-            this.foundWords = parsed.foundWords
-            this.secondsLeft = parsed.secondsLeft
-            this.gameState = parsed.gameOver ? "gameOver" : "playing"
+        this.foundWords = state.foundWords
+        this.secondsLeft = state.secondsLeft
+        this.gameState = state.gameOver ? "gameOver" : "playing"
 
-            if ("average" in parsed) {
-                this.averageGameScore = parsed.average
-            }
-
-            for (const word of this.foundWords) {
-                scoreTracker.loadWord(word)
-            }
-
-            return true
+        if (state.average !== undefined) {
+            this.averageGameScore = state.average
         }
 
-        return false
+        for (const word of this.foundWords) {
+            scoreTracker.loadWord(word)
+        }
+
+        return true
     }
 }
 
-export default GameSession
+export default GameManager

@@ -10,14 +10,16 @@
     import Toggle from "@/settings/Toggle.svelte"
     import { preventDefault } from "svelte/legacy"
 
-    const { preloaded }: {
-        preloaded?: string
+    const { preloaded, loadWithScrabble = false }: {
+        preloaded?: string,
+        loadWithScrabble?: boolean
     } = $props()
 
     const officialList = new Set(wordList.split("\n"))
     const scrabbleList = new Set(scrabble.split("\n"))
 
-    let useScrabble = $state(false)
+    // svelte-ignore state_referenced_locally
+    let useScrabble = $state(loadWithScrabble)
 
     // svelte-ignore state_referenced_locally
     let input = $state(preloaded ?? "")
@@ -88,9 +90,13 @@
                             {outcome.word}
 
                             {#if outcome.isWord}
-                                <span> is a word</span>
+                                is a word
                             {:else}
-                                <span> is NOT a word</span>
+                                is NOT a word
+                            {/if}
+
+                            {#if useScrabble}
+                                in Scrabble
                             {/if}
                         </span>
 

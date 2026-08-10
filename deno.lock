@@ -30,9 +30,10 @@
         "npm:openapi-typescript@^7.13.0",
         "npm:prettier@^3.9.6",
         "npm:seedrandom@^3.0.5",
-        "npm:svelte-check@^4.4.2",
-        "npm:svelte@^5.54.0",
-        "npm:tailwindcss@^4.1.18",
+        "npm:svelte-check@^4.7.3",
+        "npm:svelte-sitemap@^3.2.0",
+        "npm:svelte@^5.56.8",
+        "npm:tailwindcss@^4.3.3",
         "npm:typescript@^5.9.3",
         "npm:vite@^7.3.6"
       ],

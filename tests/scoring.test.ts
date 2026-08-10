@@ -3,12 +3,13 @@ import scoreTracker from "$lib/ScoreTracker.svelte"
 import preferences from "$lib/Preferences.svelte"
 import toaster from "$lib/Toaster.svelte"
 import Chain from "$lib/chain.svelte"
-import GameSession from "$lib/GameSession.svelte"
+import { createGameSession } from "$lib/gameSession"
+import GameManager from "$lib/GameManager.svelte"
 
 beforeEach(() => {
     scoreTracker.pointsMap.clear()
-    scoreTracker.avasWords = null
-    scoreTracker.avasScore = 0
+    scoreTracker.opponentWords = null
+    scoreTracker.opponentScore = 0
 
     preferences.settings.fairFight.value = false
 
@@ -16,24 +17,25 @@ beforeEach(() => {
     toaster.showToast = false
 })
 
-const createDummySession = (avasWords: string[] = []) => {
-    const session = new GameSession(new Date("2026-01-01"), "player", avasWords)
+const createDummyGame = (avasWords: string[] = []) => {
+    const session = createGameSession(new Date("2026-01-01"), "player", avasWords)
+    const game = new GameManager(session, avasWords)
 
-    session.startGame()
+    game.startGame()
 
     const chain = new Chain()
     chain.add(0, "o")
     chain.add(1, "n")
     chain.add(2, "e")
 
-    session.currentChain = chain
-    session.submitWord()
+    game.currentChain = chain
+    game.submitWord()
 
-    return session
+    return game
 }
 
 test("word found by ava gets no uniqueness bonus", () => {
-    const session = createDummySession(["one"])
+    const game = createDummyGame(["one"])
     const points = scoreTracker.pointsMap.get("one")
     expect(points).not.toContainEqual(
         expect.objectContaining({ reason: "ava bonus" })
@@ -44,15 +46,15 @@ test("word found by ava gets no uniqueness bonus", () => {
 })
 
 test("duplicate word is not added twice", () => {
-    const session = createDummySession()
+    const game = createDummyGame()
 
-    session.submitWord()
-    expect(session.foundWords).toHaveLength(1)
+    game.submitWord()
+    expect(game.foundWords).toHaveLength(1)
 })
 
 test("fair fight setting flows through to scoring", () => {
     preferences.settings.fairFight.value = true
-    const session = createDummySession([])
+    const game = createDummyGame([])
 
     expect(scoreTracker.pointsMap.get("one")).toContainEqual(
         expect.objectContaining({ reason: "unique" })
@@ -60,7 +62,7 @@ test("fair fight setting flows through to scoring", () => {
 })
 
 test("submitting a word fires a toast", () => {
-    createDummySession()
+    createDummyGame()
     expect(toaster.toasts).toHaveLength(1)
     expect(toaster.toasts[0].type).toBe("word")
 })

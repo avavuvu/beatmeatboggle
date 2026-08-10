@@ -1,6 +1,7 @@
 import type { RouteParams } from "$app/types"
 import wordList from "$lib/dictionary/wordList.txt?raw"
 import scrabble from "$lib/dictionary/scrabble.txt?raw"
+import type { PageLoad } from "./$types"
 
 const checkerWords = new Set(
         [
@@ -21,6 +22,11 @@ export const entries = () => {
 	return paths
 }
 
-export const load = async ({ params }: any) => {
-	return { word: params.word}
+export const load: PageLoad = async ({ params, url }) => {
+    const loadWithScrabble =(url.searchParams.has("scrabble"))
+
+    return {
+        loadWithScrabble,
+        word: params.word
+    }
 }

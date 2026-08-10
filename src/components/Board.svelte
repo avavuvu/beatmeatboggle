@@ -1,23 +1,23 @@
 <script lang="ts">
     import Tile from "./Tile.svelte";
-    import type GameSession from "$lib/GameSession.svelte";
+    import type GameManager from "$lib/GameManager.svelte";
     import type InputController from "$lib/InputController.svelte";
 
-    const { canAnimate, session, inputController }: {
+    const { canAnimate, game, inputController }: {
     	canAnimate: boolean
-        session: GameSession
+        game: GameManager
         inputController: InputController
     } = $props()
 
     const shuffledIndices = Array.from(
-    	{length: session.board.size * session.board.size},
+    	{length: game.session.board.size * game.session.board.size},
      	(_, i) => i
     ).sort(() => Math.random() - 0.5);
 
-    const cells = $derived(session.board.letters.map((letter, index) => {
+    const cells = $derived(game.session.board.letters.map((letter, index) => {
         const [x, y] = [
-            index % session.board.size,
-            Math.floor(index / session.board.size),
+            index % game.session.board.size,
+            Math.floor(index / game.session.board.size),
         ];
 
         const char = letter.toUpperCase();
@@ -29,17 +29,17 @@
          	: 0
 
         const secondAnimationDelay = canAnimate
-        	? (tileAnimationMs * session.board.size * session.board.size) + 400 + (x + y) * 100
+        	? (tileAnimationMs * game.session.board.size * game.session.board.size) + 400 + (x + y) * 100
          	: 0
 
         return { x, y, char, index, firstAnimationDelay, secondAnimationDelay };
     }));
 
     const line = $derived(
-        [...session.currentChain].map(([key]) => {
+        [...game.currentChain].map(([key]) => {
             const [x, y] = [
-                (key % session.board.size) + 0.5,
-                Math.floor(key / session.board.size) + 0.5,
+                (key % game.session.board.size) + 0.5,
+                Math.floor(key / game.session.board.size) + 0.5,
             ];
 
             return { x, y };
@@ -60,9 +60,9 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <svg
     bind:this={svgElement}
-    viewBox="0 0 {session.board.size} {session.board.size}"
-    class:game-over={session.gameState === "gameOver"}
-    class:paused={session.isPaused}
+    viewBox="0 0 {game.session.board.size} {game.session.board.size}"
+    class:game-over={game.gameState === "gameOver"}
+    class:paused={game.isPaused}
     onpointerdown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId);
         inputController.handlePointerDown(e, getTouchRect());
@@ -97,7 +97,7 @@
          	>
 	            <Tile
 	            	{char}
-	                selected={session.currentChain.containsKey(index)}
+	                selected={game.currentChain.containsKey(index)}
 	            />
          	</g>
 

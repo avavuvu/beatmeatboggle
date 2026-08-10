@@ -1,9 +1,10 @@
 <script lang="ts">
-    import GameSession from "$lib/GameSession.svelte";
+    import { createGameSession } from "$lib/gameSession";
+    import GameManager from "$lib/GameManager.svelte";
     import InputController from "$lib/InputController.svelte";
     import { onMount, onDestroy } from "svelte"
     import { browser } from "$app/environment"
-    import { GAME_KEY_PREFIX, toISODateKey } from "$lib/constants"
+    import { loadGameState } from "$lib/session"
     import Board from "./Board.svelte";
     import Input from "./Input.svelte";
     import Logo from "./Logo.svelte";
@@ -11,29 +12,35 @@
     import Toast from "./Toast.svelte";
     import Definition from "./Definition.svelte"
     import { pause } from "./icons/pause.svelte"
+    import Challenge from "./Challenge.svelte"
 
     const {
         date,
         playerStatus,
-        avasWords,
-        totalWords
+        opponentWords,
+        opponentName = "Ava",
+        totalWords,
+        challengedBy = null
     }: {
         date: Date;
         playerStatus: "ava" | "player";
-        avasWords: string[] | null,
-        totalWords: string[] | null
+        opponentWords: string[] | null,
+        opponentName?: string,
+        totalWords: string[] | null,
+        challengedBy?: string | null
     } = $props()
 
     // svelte-ignore state_referenced_locally
-    const session = new GameSession(date, playerStatus, avasWords, totalWords)
+    const session = createGameSession(date, playerStatus, totalWords, challengedBy)
+    const game = new GameManager(session, opponentWords, opponentName)
 
-    const inputController = new InputController(session)
+    const inputController = new InputController(game)
 
     const timeDisplay = $derived.by(() => {
-        const minutes = Math.floor(session.secondsLeft / 60);
-        const seconds = session.secondsLeft % 60;
+        const minutes = Math.floor(game.secondsLeft / 60);
+        const seconds = game.secondsLeft % 60;
 
-        if (session.secondsLeft < 60) {
+        if (game.secondsLeft < 60) {
             return String(seconds).padStart(2, "0");
         }
 
@@ -50,50 +57,48 @@
         if (!hasStartedOnce) {
             hasStartedOnce = true
 
-            const dateKey = toISODateKey(date)
-
-            if (localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)) {
+            if (loadGameState(session.dateKey)) {
                 introDelay = 0
                 canAnimate = false
             } else {
                 canAnimate = true
             }
 
-            session.gameState = "loading"
+            game.gameState = "loading"
             setTimeout(() => {
-                session.startGame()
+                game.startGame()
             }, introDelay);
         } else {
-            session.resume()
+            game.resume()
         }
     }
 
     const attemptAutoResume = () => {
-        if (session.gameState === "gameOver" || session.gameState === "paused") return
+        if (game.gameState === "gameOver" || game.gameState === "paused") return
 
         startOrResumeTimer()
     }
 
     const handleVisibilityChange = (event: Event) => {
         if (document.hidden) {
-            session.suspend()
+            game.suspend()
         } else {
             attemptAutoResume()
         }
     }
 
     const toggleTimer = () => {
-        if (session.gameState === "playing") {
-            session.pause()
-        } else if (session.isPaused) {
+        if (game.gameState === "playing") {
+            game.pause()
+        } else if (game.isPaused) {
             startOrResumeTimer()
         }
     }
 
     onMount(() => {
         // start blurred/suspended until the tab is actually focused
-        if (session.gameState !== "gameOver") {
-            session.gameState = "backgrounded"
+        if (game.gameState !== "gameOver") {
+            game.gameState = "backgrounded"
         }
 
         document.addEventListener("visibilitychange", handleVisibilityChange)
@@ -107,7 +112,7 @@
         if (browser) {
             document.removeEventListener("visibilitychange", handleVisibilityChange)
         }
-        session.stopTimer();
+        game.stopTimer();
     });
 </script>
 
@@ -122,22 +127,22 @@
 {/if}
 
 <div
-    class:game-over={session.gameState === "gameOver"}
+    class:game-over={game.gameState === "gameOver"}
     class="game-container text-foreground"
 >
     <div class="game-grid">
         <div
-            class:really-urgent={session.secondsLeft <= 10}
-            class:urgent={session.secondsLeft < 60}
+            class:really-urgent={game.secondsLeft <= 10}
+            class:urgent={game.secondsLeft < 60}
             class="timer edge"
         >
             <button
                 type="button"
                 class="timer-button"
                 onclick={toggleTimer}
-                aria-label={session.gameState === "playing" ? "Pause timer" : "Resume timer"}
+                aria-label={game.gameState === "playing" ? "Pause timer" : "Resume timer"}
             >
-                {#if session.gameState === "paused"}
+                {#if game.gameState === "paused"}
                     <div class="h-16 w-16">
                         {@render pause()}
 
@@ -148,20 +153,20 @@
             </button>
         </div>
         <div class="board edge">
-            <Board {canAnimate} {session} {inputController} />
+            <Board {canAnimate} {game} {inputController} />
         </div>
         <div
             class="words -z-20 pointer-events-none flex flex-col
         "
         >
             <div class="h-12 p-2 shrink-0">
-                {session.currentChain.getString().toUpperCase()}
+                {game.currentChain.getString().toUpperCase()}
             </div>
 
             <ul
                 class="p-2 flex flex-wrap gap-2 overflow-y-scroll flex-1 min-h-0"
             >
-                {#each session.foundWords as word}
+                {#each game.foundWords as word}
                     <li>
                         {word}
                     </li>
@@ -178,20 +183,23 @@
                 <Logo />
             </a>
         </h1>
-        {#if session.gameState === "gameOver"}
+        {#if game.gameState === "gameOver"}
             <div class="reveal">
-                <Reveal {session} />
+                <Reveal {game} />
             </div>
             <div class="definition edge">
                 <Definition/>
             </div>
+            <div class="challenge edge">
+                <Challenge {game}/>
+            </div>
         {/if}
         <div
             class="backspace edge touch-manipulation bg-surface"
-            style={session.isPlayingGame ? "display: unset;" : "display: none;" }
+            style={game.isPlayingGame ? "display: unset;" : "display: none;" }
         >
             <button
-                onclick={() => session.removeLast()}
+                onclick={() => game.removeLast()}
                 aria-label="backspace"
                 class="w-full h-full cursor-pointer"
             >
@@ -221,12 +229,12 @@
         </div>
         <div
             class="submit edge touch-manipulation bg-surface"
-            style={session.isPlayingGame ? "display: unset;" :  "display: none;"}
+            style={game.isPlayingGame ? "display: unset;" :  "display: none;"}
         >
             <button
                 class="w-full h-full cursor-pointer"
                 aria-label="submit"
-                onclick={() => session.submitWord()}
+                onclick={() => game.submitWord()}
             >
                 <svg
                     id="Layer_2"
@@ -280,6 +288,10 @@
     .board {
         grid-area: 1 / 2 / 5 / 6;
         overflow: hidden;
+    }
+    .challenge {
+        grid-area: 1 / 2 / 5 / 6;
+        z-index: 10;
     }
     .banner {
         grid-area: 1 / 1 / 5 / 2;
@@ -365,7 +377,11 @@
         .game-container.game-over .reveal {
         	grid-area: 4 / 1 / 8 / 5;
         }
-        .game-container.game-over .definition {
+        .game-container.game-over .definition, .game-container.game-over .challenge {
+        	grid-area: 2 / 1 / 5 / 5;
+            z-index: 10;
+        }
+        .game-container.game-over .challenge {
         	grid-area: 2 / 1 / 5 / 5;
             z-index: 10;
         }

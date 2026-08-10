@@ -1,41 +1,43 @@
 import Chain from "$lib/chain.svelte"
-import GameSession from "$lib/GameSession.svelte"
+import { createGameSession } from "$lib/gameSession"
+import GameManager from "$lib/GameManager.svelte"
 import { ScoreTracker } from "$lib/ScoreTracker.svelte"
 
 import { expect, test } from "vitest"
 
-const createDummySession = () => {
-    const session = new GameSession(new Date("2026-01-01"), "player", [
+const createDummyGame = () => {
+    const session = createGameSession(new Date("2026-01-01"), "player", [
         "one",
         "two",
         "three",
     ])
+    const game = new GameManager(session, ["one", "two", "three"])
 
-    session.startGame()
+    game.startGame()
 
     const chain = new Chain()
     chain.add(0, "o")
     chain.add(1, "n")
     chain.add(2, "e")
 
-    session.currentChain = chain
+    game.currentChain = chain
 
-    session.submitWord()
+    game.submitWord()
 
-    return session
+    return game
 }
 
 test("words can be submitted", () => {
-    const session = createDummySession()
+    const game = createDummyGame()
 
-    expect(session.foundWords).toStrictEqual(["one"])
+    expect(game.foundWords).toStrictEqual(["one"])
 })
 
-test("'fair fight' off labels unique words as ava bonus", () => {
+test("'fair fight' off labels unique words as opponent bonus", () => {
     const { pointsArray } = ScoreTracker.calculatePoints("cat", [], true, false)
 
     expect(pointsArray).toContainEqual(
-        expect.objectContaining({ reason: "ava bonus" })
+        expect.objectContaining({ reason: "opponent bonus" })
     )
 })
 
@@ -59,7 +61,7 @@ test("'fair fight' on checks if ava has a word", () => {
         expect.objectContaining({ reason: "unique" })
     )
     expect(pointsArray).not.toContainEqual(
-        expect.objectContaining({ reason: "ava bonus" })
+        expect.objectContaining({ reason: "opponent bonus" })
     )
 })
 
@@ -75,6 +77,6 @@ test("'fair fight' off checks if ava has a word", () => {
         expect.objectContaining({ reason: "unique" })
     )
     expect(pointsArray).not.toContainEqual(
-        expect.objectContaining({ reason: "ava bonus" })
+        expect.objectContaining({ reason: "opponent bonus" })
     )
 })
