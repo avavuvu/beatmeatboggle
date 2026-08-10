@@ -60,7 +60,7 @@
 
             {#each {length: size * size}, i}
                     <div class="tile aspect-square min-w-0 border-surface bg-board focus-within:bg-muted transition-colors">
-                        <label for="input-{i}" class="w-full min-w-0 min-h-0 h-full text-center text-tile-letter inline-flex justify-center items-center">
+                        <label for="input-{i}" class="w-full min-h-0 min-w-12 sm:min-w-24 h-full text-center text-tile-letter inline-flex justify-center items-center">
                             <input
                                 id="input-{i}"
                                 size="1"
@@ -92,9 +92,9 @@
 
         {#if showOptions}
             <div class="border p-4 my-4 flex flex-col gap-4" transition:slide>
-                <div class="border flex items-center justify-center gap-2 px-2 w-min">
+                <div class="border flex items-center  gap-2 px-2 w-min">
                     <label for="size">Size</label>
-                    <input name="size" id="size" class="px-4 outline-0 w-12" type="number" bind:value={size} min="2" max="7"/>
+                    <input name="size" id="size" class="px-4 outline-0 w-20" type="number" bind:value={size} min="2" max="7"/>
                 </div>
 
                 <div class="flex flex-col gap-2">
