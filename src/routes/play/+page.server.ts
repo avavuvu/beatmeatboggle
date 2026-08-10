@@ -4,9 +4,15 @@ import { db } from "../../../db"
 import { avasWords } from "../../../db/schema"
 import { eq } from "drizzle-orm"
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ setHeaders }) => {
     const date = new Date(Date.now() + 10 * 60 * 60 * 1000)
     const dateKey = toISODateKey(date)
+
+    setHeaders({
+        "netlify-cdn-cache-control":
+            "public, s-maxage=86400, stale-while-revalidate=3600",
+        "netlify-cache-tag": "play-page",
+    })
 
     const [ava] = await db
         .select({
