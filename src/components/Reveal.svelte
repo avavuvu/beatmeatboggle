@@ -4,9 +4,9 @@
     import { page } from "$app/state";
     import { fade, slide } from "svelte/transition";
     import preferences from "$lib/Preferences.svelte"
-    import definitionManaager from "$lib/DefinitionManager.svelte"
     import type GameSession from "$lib/GameSession.svelte"
     import favicon from "$lib/assets/favicon.svg"
+    import WordList from "./WordList.svelte"
 
     const { session }: {
         session: GameSession
@@ -63,18 +63,17 @@
 
     const getDelayStyle = (index: number) => `transition-delay: ${delay + index * 400}ms;`
 
-    let selectedWord = $state("")
-    const handleDictionaryWordClick = async (word: string, section: "ava" | "player" | "total") => {
-        const id = `${word}-${section}`
+    const avasWords = $derived(avasWordMap.map(([word]) => word))
+    const avasFoundWords = $derived(
+        new Set(avasWordMap.filter(([, wasFound]) => wasFound).map(([word]) => word))
+    )
 
-        if(selectedWord === id) {
-            // fetch definition
-            await definitionManaager.setWord(word)
-            return
-        }
+    const playerWords = $derived(playerWordMap.map(([word]) => word))
+    const playerUniqueWords = $derived(
+        new Set(playerWordMap.filter(([, isUnique]) => isUnique).map(([word]) => word))
+    )
 
-        selectedWord = id
-    }
+    const totalWords = $derived(totalWordsMap.map(([word]) => word))
 </script>
 
 {#snippet chartBar(index: number, score: number, name: string )}
@@ -102,23 +101,6 @@
 </div>
 {/snippet}
 
-{#snippet dictionaryWord(word: string, section: "ava" | "player" | "total")}
-    {@const isSelected = selectedWord === `${word}-${section}`}
-	<button
-        class="flex overflow-hidden cursor-pointer"
-        class:selected-word={isSelected}
-        onclick={() => handleDictionaryWordClick(word, section)}>
-        <span class="whitespace-nowrap overflow-hidden max-w-0 transition-all duration-200"
-            class:max-w-0={!isSelected}
-            style={isSelected ? `max-width: calc(${word.length}ch + 6rem)` : ''}>
-            define "
-        </span>
-        <span>{word}</span>
-        <span class:max-w-0={!isSelected}>"</span>
-    </button>
-
-{/snippet}
-
 <div
     transition:slide={{ delay }}
     class="game-over h-full grid grid-rows-4 bg-surface border border-border"
@@ -138,36 +120,24 @@
     </div>
     <div class="row-span-2 overflow-y-scroll p-2">
         <h3 class="font-bold">Ava's words</h3>
-        <ul class=" flex flex-wrap gap-2 h-min">
-            {#each avasWordMap as [word, wasFound]}
-                <li class:found={wasFound}>
-                    {@render dictionaryWord(word, "ava")}
-                </li>
-            {/each}
-        </ul>
+        <WordList
+            words={avasWords}
+            itemClass={(word) => avasFoundWords.has(word) ? "found" : undefined}
+        />
 
         <hr class="my-4"/>
 
         <h3 class="font-bold">Your words</h3>
-        <ul class="flex flex-wrap gap-2 h-min">
-            {#each playerWordMap as [word, wasFound]}
-                <li class:unique={wasFound}>
-                    {@render dictionaryWord(word, "player")}
-                </li>
-            {/each}
-        </ul>
+        <WordList
+            words={playerWords}
+            itemClass={(word) => playerUniqueWords.has(word) ? "unique" : undefined}
+        />
 
         <hr class="my-4"/>
 
         <h3 class="font-bold">All words</h3>
         <p class="italic text-accent">Click on a word to see its definition</p>
-        <ul class="flex flex-wrap gap-2 h-min">
-            {#each totalWordsMap as [word]}
-                <li>
-                    {@render dictionaryWord(word, "total")}
-                </li>
-            {/each}
-        </ul>
+        <WordList words={totalWords} />
     </div>
     <div class="bubble-container flex gap-1 flex-col [align-items:end]">
         <div class="imessage-bubble">
@@ -189,21 +159,6 @@
 </div>
 
 <style>
-    li {
-        interpolate-size: allow-keywords;
-        width: max-content;
-        transition: all 200ms ease;
-
-    }
-
-    li:has(.selected-word) {
-        width: max-content;
-        /*border: 1px solid var(--color-border);*/
-        text-decoration: underline;
-        background-color: var(--color-foreground);
-        color: var(--color-surface);
-    }
-
     .move {
         position: unset;
         color: var(--color-foreground);
@@ -215,37 +170,6 @@
 
     .bar.player {
         background-color: var(--color-muted);
-    }
-
-    .found {
-	    background-color: var(--color-muted);
-	    color: var(--color-surface);
-    }
-
-    .found::after {
-    	content: "you found!";
-    	position: absolute;
-    	font-size: xx-small;
-    	left: 50%;
-    	transform: translateX(-50%);
-    	bottom: -6px;
-    }
-
-    .unique {
-    	position: relative;
-    }
-
-    .unique:has(.selected-word)::after {
-        display: none;
-    }
-
-    .unique::after {
-    	content: "unique!";
-    	position: absolute;
-    	font-size: xx-small;
-    	left: 50%;
-    	transform: translateX(-50%);
-    	bottom: -6px;
     }
 
     .bubble-container {

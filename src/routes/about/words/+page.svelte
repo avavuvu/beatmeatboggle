@@ -26,32 +26,4 @@
 
 
     </p>
-
-    <p>
-        The table below breaks down the logic.
-    </p>
-
-    <table>
-        <thead>
-        <tr>
-            <td>Length</td>
-            <td>Include If</td>
-            <td>For nerds</td>
-        </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="font-compat">&lt; 5</td>
-                <td>In 12dicts</td>
-                <td><p>word &#x2208; 12dicts</p>
-</td>
-            </tr>
-            <tr>
-                <td class="font-compat">&#x2265; 5</td>
-                <td>In 12dicts, or in Scrabble dictionary AND Spread The Word List</td>
-                <td><p>word &#x2208; 12dicts &#x2228; (word &#x2208; Scrabble &#x2227; word &#x2208; STWL)</p>
-</td>
-            </tr>
-        </tbody>
-    </table>
 </TextBlock>

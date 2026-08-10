@@ -47,7 +47,7 @@
     }
 </script>
 
-<div class="text-foreground min-h-screen flex justify-center items-center gap-4">
+<div class="text-foreground min-h-screen flex justify-center items-center gap-4 py-24">
     <div class="w-xl px-4 sm:px-2">
         <span class="inline-flex gap-4 w-full">
             <h1 class="px-2 font-bold">Boggle Word Checker</h1>
