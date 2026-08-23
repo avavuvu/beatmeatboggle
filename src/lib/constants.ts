@@ -41,4 +41,5 @@ export const dateOverrides: Record<string, BoardSettings> = {
         letters: "hapybdayriasingh".split(""),
         time: 3 * 60,
     },
+
 }
