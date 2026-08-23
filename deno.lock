@@ -31,7 +31,6 @@
         "npm:prettier@^3.9.6",
         "npm:seedrandom@^3.0.5",
         "npm:svelte-check@^4.7.3",
-        "npm:svelte-sitemap@^3.2.0",
         "npm:svelte@^5.56.8",
         "npm:tailwindcss@^4.3.3",
         "npm:typescript@^5.9.3",

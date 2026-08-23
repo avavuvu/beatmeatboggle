@@ -41,4 +41,34 @@ export const dateOverrides: Record<string, BoardSettings> = {
         letters: "hapybdayriasingh".split(""),
         time: 3 * 60,
     },
+    "2026-08-24": {
+        size: 4,
+        letters: "eefisrtatkshcaco".split(""),
+        time: 3 * 60,
+    },
+    "2026-08-25": {
+        size: 4,
+        letters: "eyaoegebntesihom".split(""),
+        time: 3 * 60,
+    },
+    "2026-08-26": {
+        size: 4,
+        letters: "tronoshoeiptsema".split(""),
+        time: 3 * 60,
+    },
+    "2026-08-27": {
+        size: 4,
+        letters: "cshuehsoeboaodri".split(""),
+        time: 3 * 60,
+    },
+    "2026-08-28": {
+        size: 4,
+        letters: "vdyoeolotedysunt".split(""),
+        time: 3 * 60,
+    },
+    "2026-08-29": {
+        size: 4,
+        letters: "ecmenopueasydsic".split(""),
+        time: 3 * 60,
+    },
 }

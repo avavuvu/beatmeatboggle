@@ -101,9 +101,9 @@ export const rerollBoard = (date: Date): BoardSettings => {
 
     return {
         ...board,
-        letters: todaysGeneration.generateBoard(
-            `${dateKey}-reroll`,
-            todaysGeneration.size
-        ),
+        // letters: todaysGeneration.generateBoard(
+        //     `${dateKey}-reroll`,
+        //     todaysGeneration.size
+        // ),
     }
 }
