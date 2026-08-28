@@ -62,13 +62,13 @@ export const dateOverrides: Record<string, BoardSettings> = {
         time: 3 * 60,
     },
     "2026-08-28": {
-        size: 4,
-        letters: "vdyoeolotedysunt".split(""),
-        time: 3 * 60,
+        size: 5,
+        letters: "ireaistesueztwhgarinlmooa".split(""),
+        time: 4 * 60,
     },
     "2026-08-29": {
-        size: 4,
-        letters: "ecmenopueasydsic".split(""),
-        time: 3 * 60,
+        size: 5,
+        letters: "oneeolaistvngrhoaitoxleeo".split(""),
+        time: 4 * 60,
     },
 }
