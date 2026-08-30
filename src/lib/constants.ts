@@ -76,4 +76,59 @@ export const dateOverrides: Record<string, BoardSettings> = {
         letters: "oneeolaistvngrhoaitoxleeo".split(""),
         time: 4 * 60,
     },
+    "2026-08-31": {
+        size: 4,
+        letters: "araonmohreingseo".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-01": {
+        size: 4,
+        letters: "irainenbgedclyuo".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-02": {
+        size: 4,
+        letters: "bleysopnouetsaer".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-03": {
+        size: 4,
+        letters: "edeteustmilsecal".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-04": {
+        size: 4,
+        letters: "ponsareetssirdua".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-05": {
+        size: 5,
+        letters: "ezautvdroielioulfuftunlie".split(""),
+        time: 4 * 60,
+    },
+    "2026-09-06": {
+        size: 5,
+        letters: "vaolntsiolialcarpiwxeemet".split(""),
+        time: 4 * 60,
+    },
+    "2026-09-07": {
+        size: 4,
+        letters: "einefradertvozse".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-08": {
+        size: 4,
+        letters: "araonmohreingseo".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-09": {
+        size: 4,
+        letters: "tnfucoiaosctisee".split(""),
+        time: 3 * 60,
+    },
+    "2026-09-10": {
+        size: 4,
+        letters: "kdeoelellqarturh".split(""),
+        time: 3 * 60,
+    },
 }
