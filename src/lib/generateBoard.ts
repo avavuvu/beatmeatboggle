@@ -579,6 +579,20 @@ export const testGeneration = (trials = 1000, gridSize = 5) => {
     return results
 }
 
-console.log(
-    generateWithWord(`classic-4`, 4).board.join("")
-)
+for (const date of [
+    `2026-08-31`,
+    `2026-09-01`,
+    `2026-09-02`,
+    `2026-09-03`,
+    `2026-09-04`,
+    `2026-09-05`,
+    `2026-09-06`,
+    `2026-09-07`,
+    `2026-09-08`,
+    `2026-09-09`,
+    `2026-09-10`,
+]) {
+    console.log(
+        generateWithWord(date, 4, false).board.join("")
+    )
+}
