@@ -68,16 +68,24 @@ export const GET = async ({ url, cookies }: RequestEvent) => {
         relationships?: { campaign?: { data?: { id: string } } }
     }
 
+    console.log(data.relationships.memberships, JSON.stringify((data)))
+
     const member = (included ?? []).find(
         (m: MemberInclude) =>
             m.type === "member" &&
             m.relationships?.campaign?.data?.id === PATREON_CAMPAIGN_ID
     ) as MemberInclude | undefined
 
+
+
     let tier: PatronTier = "free"
     if (member?.attributes?.patron_status === "active_patron") {
         tier = "paid"
     }
+
+    // if (data.id === "19662370") {
+    //     tier = "paid"
+    // }
 
     const session: PatronSession = {
         patreonUserId: data.id,
@@ -93,6 +101,8 @@ export const GET = async ({ url, cookies }: RequestEvent) => {
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30,
     })
+
+    console.log(session)
 
     redirect(303, "/archive")
 }

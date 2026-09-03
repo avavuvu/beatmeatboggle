@@ -16,6 +16,16 @@
 
     const kickback = $derived(page.url.searchParams.get("kickback") !== null)
 
+    let pastGames: Record<string, boolean> = {}
+    for(const [key, item] of Object.entries(localStorage)) {
+        if(key.startsWith("boggle_") && key !== "boggle_settings") {
+            const itemData = JSON.parse(item)
+            const date = key.replace("boggle_", "")
+
+            pastGames[date] = itemData.gameOver
+        }
+    }
+
 </script>
 
 <Head title="Archive — Beat Me At Boggle" description="Past puzzles from Beat Me At Boggle" />
@@ -66,7 +76,7 @@
         </div>
 
         <div style:opacity={data.tier !== 'paid' ? 0.5 : 1}>
-            <Dates dates={data.dates} paid={data.tier === 'paid'}/>
+            <Dates {pastGames} dates={data.dates} paid={data.tier === 'paid'}/>
         </div>
     </main>
 </div>

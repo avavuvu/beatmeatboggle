@@ -1,7 +1,8 @@
 <script lang="ts">
-    const { dates, paid }: {
+    const { dates, paid, pastGames }: {
         dates: string[],
-        paid: boolean
+        paid: boolean,
+        pastGames: Record<string, boolean>
     } = $props()
 
     const monthMap: Record<string, string> = {
@@ -49,15 +50,26 @@
             </div>
             <ul class="grid grid-cols-7">
                 {#each dates ?? [] as date}
+                    {@const isoKey = date.join("-")}
                     {@const [year, month, day] = date.map(Number)}
                     {@const col = (new Date(year, month - 1, day).getDay() + 6) % 7 + 1}
                     {@const row = Math.ceil((day + firstDayOffset) / 7)}
                     <li
                         style:grid-column-start={col} style:grid-row-start={row}>
                         <svelte:element
-                            href="/archive/{date.join("-")}"
+                            href="/archive/{isoKey}"
                             this={paid ? "a" : "span"} >
+
+                            {#if pastGames[isoKey] !== undefined}
+                                {@const hasFinishedGame = pastGames[isoKey]}
+                                {#if hasFinishedGame}
+                                    ☑️
+                                {:else}
+                                    ⏰
+                                {/if}
+                            {:else}
                                 {date[2]}
+                            {/if}
                         </svelte:element>
                     </li>
                 {/each}
