@@ -1,8 +1,8 @@
 import { dateOverrides, toISODateKey } from "$lib/constants"
 import { generateClassic, generateClusters } from "$lib/generateBoard"
-import preferences from "$lib/Preferences.svelte"
+// import preferences from "$lib/Preferences.svelte"
 
-const WEEKDAYS = [
+export const WEEKDAYS = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -29,7 +29,7 @@ export type BoardSettings = {
 const threeMinutes = 3 * 60
 const fourMinutes = 4 * 60
 
-const weekDayMap: Record<Weekday, GenerationSettings> = {
+export const weekDayMap: Record<Weekday, GenerationSettings> = {
     Monday: {
         size: 4,
         generateBoard: generateClassic,

@@ -54,13 +54,11 @@ export const generateClassic = (seed: string, gridSize: number): string[] => {
         ;[classicDice[i], classicDice[j]] = [classicDice[j], classicDice[i]]
     }
 
-    const board = Array.from({ length: gridSize * gridSize }, (_, index) => {
+    return Array.from({ length: gridSize * gridSize }, (_, index) => {
         const die = classicDice[index % classicDice.length]
 
         return die[Math.floor(rng() * die.length)].toLowerCase()
     })
-
-    return removeDeadLetters(board, gridSize, rng)
 }
 
 export const generateClusters = (
@@ -263,12 +261,12 @@ export const generateClusters = (
         }
     }
 
-    return removeDeadLetters(board, gridSize, rng)
+    return board
 }
 
 const words = wordList.split("\n")
 
-const generateWithWord = (
+export const generateWithWord = (
     seed: string,
     gridSize: number,
     debug = true,

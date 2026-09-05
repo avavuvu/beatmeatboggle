@@ -1,0 +1,2014 @@
+Board Generation Regression Report
+Generated: 2026-09-03T09:45:39.106Z
+Entries tested: 151
+Entries with misses: 72
+Entries fully matching: 79
+Entries with a higher than 30% miss rate: 13 / 151
+Entries rerolled: 97 / 151
+================================================================
+
+----------------------------------------------------------------
+Date:      2026-04-26 (Sunday)
+Grid size: 5x5
+Miss rate: 3.13% (1 / 32)
+Rerolled:  no
+
+Board:
+[O] [G] [E] [A] [L]
+[N] [M] [B] [I] [G]
+[A] [H] [E] [O] [L]
+[C] [O] [S] [W] [E]
+[P] [H] [L] [S] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-04-27 (Monday)
+Grid size: 4x4
+Miss rate: 12.50% (3 / 24)
+Rerolled:  yes
+
+Board:
+[E] [B] [P] [Y]
+[B] [E] [E] [E]
+[S] [D] [M] [A]
+[V] [U] [G] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-04-28 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 39)
+Rerolled:  no
+
+Board:
+[N] [F] [E] [I]
+[G] [A] [E] [M]
+[N] [P] [T] [S]
+[C] [H] [S] [U]
+
+
+----------------------------------------------------------------
+Date:      2026-04-29 (Wednesday)
+Grid size: 4x4
+Miss rate: 4.17% (1 / 24)
+Rerolled:  no
+
+Board:
+[L] [E] [G] [R]
+[A] [H] [E] [O]
+[L] [T] [E] [H]
+[A] [B] [T] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-04-30 (Thursday)
+Grid size: 4x4
+Miss rate: 5.00% (1 / 20)
+Rerolled:  yes
+
+Board:
+[G] [O] [H] [O]
+[N] [C] [C] [R]
+[I] [K] [E] [T]
+[M] [S] [H] [L]
+
+
+----------------------------------------------------------------
+Date:      2026-05-01 (Friday)
+Grid size: 4x4
+Miss rate: 2.63% (1 / 38)
+Rerolled:  no
+
+Board:
+[E] [E] [T] [R]
+[O] [S] [O] [R]
+[O] [T] [E] [M]
+[A] [R] [Y] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-02 (Saturday)
+Grid size: 5x5
+Miss rate: 10.71% (3 / 28)
+Rerolled:  yes
+
+Board:
+[O] [R] [J] [I] [K]
+[W] [O] [E] [L] [S]
+[I] [C] [R] [I] [L]
+[R] [F] [L] [G] [P]
+[E] [R] [E] [O] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-04-06 (Monday)
+Grid size: 4x4
+Miss rate: 94.74% (18 / 19)
+Rerolled:  no
+
+Board:
+[A] [Y] [L] [U]
+[R] [A] [U] [R]
+[E] [V] [T] [S]
+[N] [A] [Y] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-03 (Sunday)
+Grid size: 5x5
+Miss rate: 3.45% (1 / 29)
+Rerolled:  yes
+
+Board:
+[P] [S] [H] [E] [I]
+[A] [T] [G] [E] [R]
+[S] [G] [H] [C] [W]
+[O] [K] [L] [O] [K]
+[H] [S] [P] [C] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-04-07 (Tuesday)
+Grid size: 4x4
+Miss rate: 18.75% (6 / 32)
+Rerolled:  yes
+
+Board:
+[A] [U] [S] [W]
+[E] [C] [D] [B]
+[B] [R] [E] [P]
+[R] [E] [B] [K]
+
+
+----------------------------------------------------------------
+Date:      2026-04-08 (Wednesday)
+Grid size: 4x4
+Miss rate: 5.00% (1 / 20)
+Rerolled:  yes
+
+Board:
+[I] [I] [A] [M]
+[O] [O] [R] [O]
+[W] [E] [F] [I]
+[T] [U] [O] [L]
+
+
+----------------------------------------------------------------
+Date:      2026-04-09 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 29)
+Rerolled:  no
+
+Board:
+[E] [S] [E] [H]
+[K] [W] [E] [W]
+[G] [S] [I] [R]
+[O] [N] [A] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-04-10 (Friday)
+Grid size: 4x4
+Miss rate: 12.90% (4 / 31)
+Rerolled:  yes
+
+Board:
+[E] [W] [O] [M]
+[T] [N] [R] [Y]
+[I] [L] [T] [I]
+[S] [C] [S] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-04-11 (Saturday)
+Grid size: 5x5
+Miss rate: 19.23% (5 / 26)
+Rerolled:  no
+
+Board:
+[I] [T] [R] [E] [U]
+[R] [N] [H] [S] [U]
+[E] [G] [P] [L] [A]
+[H] [O] [E] [O] [B]
+[R] [W] [A] [A] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-04-12 (Sunday)
+Grid size: 5x5
+Miss rate: 12.82% (5 / 39)
+Rerolled:  no
+
+Board:
+[A] [E] [O] [H] [C]
+[R] [T] [R] [R] [A]
+[Z] [I] [A] [B] [A]
+[E] [O] [G] [N] [R]
+[I] [N] [G] [U] [Z]
+
+
+----------------------------------------------------------------
+Date:      2026-04-13 (Monday)
+Grid size: 4x4
+Miss rate: 3.70% (1 / 27)
+Rerolled:  yes
+
+Board:
+[I] [S] [I] [A]
+[P] [W] [A] [X]
+[E] [C] [S] [E]
+[E] [B] [D] [D]
+
+
+----------------------------------------------------------------
+Date:      2026-04-14 (Tuesday)
+Grid size: 4x4
+Miss rate: 4.55% (1 / 22)
+Rerolled:  yes
+
+Board:
+[P] [O] [E] [A]
+[A] [E] [U] [L]
+[B] [O] [L] [G]
+[H] [A] [L] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-04-15 (Wednesday)
+Grid size: 4x4
+Miss rate: 6.67% (2 / 30)
+Rerolled:  yes
+
+Board:
+[A] [M] [A] [V]
+[B] [R] [R] [G]
+[E] [E] [N] [O]
+[A] [O] [T] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-04-16 (Thursday)
+Grid size: 4x4
+Miss rate: 7.14% (2 / 28)
+Rerolled:  yes
+
+Board:
+[E] [S] [I] [O]
+[R] [H] [T] [U]
+[A] [S] [C] [H]
+[I] [U] [A] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-04-17 (Friday)
+Grid size: 4x4
+Miss rate: 9.52% (2 / 21)
+Rerolled:  no
+
+Board:
+[T] [E] [A] [R]
+[O] [R] [W] [H]
+[A] [E] [T] [S]
+[E] [A] [O] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-04-18 (Saturday)
+Grid size: 5x5
+Miss rate: 12.24% (6 / 49)
+Rerolled:  no
+
+Board:
+[E] [L] [T] [O] [N]
+[S] [S] [O] [G] [H]
+[O] [A] [E] [N] [S]
+[O] [W] [M] [B] [E]
+[A] [R] [I] [Y] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-04-19 (Sunday)
+Grid size: 5x5
+Miss rate: 8.51% (4 / 47)
+Rerolled:  no
+
+Board:
+[E] [S] [I] [W] [I]
+[L] [S] [T] [N] [T]
+[E] [R] [I] [L] [O]
+[L] [W] [A] [S] [T]
+[T] [O] [A] [R] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-04-20 (Monday)
+Grid size: 4x4
+Miss rate: 3.13% (1 / 32)
+Rerolled:  no
+
+Board:
+[H] [A] [P] [Y]
+[B] [D] [A] [Y]
+[R] [I] [A] [S]
+[I] [N] [G] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-04-21 (Tuesday)
+Grid size: 4x4
+Miss rate: 4.35% (1 / 23)
+Rerolled:  yes
+
+Board:
+[E] [I] [P] [E]
+[A] [W] [N] [B]
+[C] [T] [S] [D]
+[A] [V] [Y] [F]
+
+
+----------------------------------------------------------------
+Date:      2026-04-22 (Wednesday)
+Grid size: 4x4
+Miss rate: 13.64% (3 / 22)
+Rerolled:  yes
+
+Board:
+[E] [R] [H] [R]
+[B] [I] [E] [W]
+[Q] [Y] [G] [I]
+[D] [A] [W] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-04-23 (Thursday)
+Grid size: 4x4
+Miss rate: 16.22% (6 / 37)
+Rerolled:  yes
+
+Board:
+[H] [D] [S] [E]
+[Y] [A] [R] [H]
+[L] [C] [S] [E]
+[R] [E] [G] [L]
+
+
+----------------------------------------------------------------
+Date:      2026-04-24 (Friday)
+Grid size: 4x4
+Miss rate: 4.35% (1 / 23)
+Rerolled:  yes
+
+Board:
+[A] [E] [A] [S]
+[A] [T] [U] [T]
+[H] [P] [M] [J]
+[A] [F] [U] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-04-25 (Saturday)
+Grid size: 5x5
+Miss rate: 9.38% (3 / 32)
+Rerolled:  no
+
+Board:
+[U] [E] [L] [N] [O]
+[E] [G] [G] [S] [R]
+[R] [N] [U] [H] [T]
+[A] [L] [M] [T] [E]
+[E] [L] [E] [Y] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-05-04 (Monday)
+Grid size: 4x4
+Miss rate: 13.79% (4 / 29)
+Rerolled:  yes
+
+Board:
+[P] [S] [R] [S]
+[T] [J] [B] [A]
+[C] [N] [Y] [C]
+[N] [E] [E] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-05-05 (Tuesday)
+Grid size: 4x4
+Miss rate: 13.33% (4 / 30)
+Rerolled:  yes
+
+Board:
+[U] [D] [O] [C]
+[A] [E] [T] [O]
+[E] [O] [E] [H]
+[B] [E] [I] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-05-06 (Wednesday)
+Grid size: 4x4
+Miss rate: 5.41% (2 / 37)
+Rerolled:  yes
+
+Board:
+[A] [B] [O] [H]
+[S] [N] [W] [S]
+[O] [L] [I] [L]
+[C] [T] [S] [F]
+
+
+----------------------------------------------------------------
+Date:      2026-05-07 (Thursday)
+Grid size: 4x4
+Miss rate: 23.08% (3 / 13)
+Rerolled:  yes
+
+Board:
+[E] [W] [O] [C]
+[H] [L] [C] [K]
+[E] [N] [G] [A]
+[L] [M] [O] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-05-08 (Friday)
+Grid size: 4x4
+Miss rate: 2.56% (1 / 39)
+Rerolled:  no
+
+Board:
+[E] [P] [Y] [M]
+[L] [S] [E] [I]
+[S] [O] [R] [A]
+[V] [T] [C] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-05-09 (Saturday)
+Grid size: 5x5
+Miss rate: 6.67% (2 / 30)
+Rerolled:  no
+
+Board:
+[I] [O] [Y] [M] [O]
+[H] [N] [R] [U] [O]
+[T] [D] [S] [E] [U]
+[K] [K] [C] [G] [T]
+[E] [C] [E] [H] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-10 (Sunday)
+Grid size: 5x5
+Miss rate: 8.33% (3 / 36)
+Rerolled:  no
+
+Board:
+[E] [G] [M] [E] [T]
+[N] [G] [H] [T] [L]
+[A] [H] [U] [R] [E]
+[A] [M] [E] [L] [V]
+[E] [Y] [E] [O] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-05-11 (Monday)
+Grid size: 4x4
+Miss rate: 5.88% (1 / 17)
+Rerolled:  yes
+
+Board:
+[E] [E] [I] [S]
+[O] [E] [D] [U]
+[H] [C] [L] [E]
+[A] [M] [D] [U]
+
+
+----------------------------------------------------------------
+Date:      2026-05-12 (Tuesday)
+Grid size: 4x4
+Miss rate: 6.25% (1 / 16)
+Rerolled:  yes
+
+Board:
+[K] [I] [O] [Q]
+[E] [M] [O] [Y]
+[E] [I] [E] [I]
+[T] [M] [S] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-13 (Wednesday)
+Grid size: 4x4
+Miss rate: 11.76% (4 / 34)
+Rerolled:  yes
+
+Board:
+[O] [E] [C] [H]
+[O] [M] [X] [R]
+[R] [E] [A] [W]
+[V] [A] [T] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-05-14 (Thursday)
+Grid size: 4x4
+Miss rate: 6.25% (2 / 32)
+Rerolled:  yes
+
+Board:
+[R] [K] [C] [I]
+[G] [I] [P] [I]
+[H] [A] [R] [T]
+[E] [T] [W] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-05-15 (Friday)
+Grid size: 4x4
+Miss rate: 4.35% (1 / 23)
+Rerolled:  no
+
+Board:
+[C] [E] [A] [Z]
+[H] [L] [G] [I]
+[R] [R] [T] [N]
+[I] [A] [S] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-05-16 (Saturday)
+Grid size: 5x5
+Miss rate: 7.50% (3 / 40)
+Rerolled:  no
+
+Board:
+[U] [T] [I] [V] [N]
+[P] [R] [R] [E] [G]
+[I] [C] [S] [G] [R]
+[H] [G] [O] [S] [A]
+[E] [N] [L] [R] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-05-17 (Sunday)
+Grid size: 5x5
+Miss rate: 21.95% (9 / 41)
+Rerolled:  no
+
+Board:
+[E] [T] [W] [S] [T]
+[G] [R] [J] [E] [A]
+[I] [C] [M] [O] [N]
+[T] [H] [E] [G] [P]
+[E] [R] [C] [R] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-05-18 (Monday)
+Grid size: 4x4
+Miss rate: 19.05% (4 / 21)
+Rerolled:  yes
+
+Board:
+[O] [A] [E] [E]
+[N] [O] [E] [R]
+[I] [J] [A] [G]
+[E] [M] [F] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-05-19 (Tuesday)
+Grid size: 4x4
+Miss rate: 6.06% (2 / 33)
+Rerolled:  no
+
+Board:
+[I] [E] [H] [R]
+[T] [S] [A] [E]
+[G] [E] [A] [I]
+[I] [N] [P] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-05-20 (Wednesday)
+Grid size: 4x4
+Miss rate: 21.05% (4 / 19)
+Rerolled:  yes
+
+Board:
+[A] [I] [S] [A]
+[A] [U] [L] [S]
+[R] [O] [H] [E]
+[D] [W] [H] [C]
+
+
+----------------------------------------------------------------
+Date:      2026-05-21 (Thursday)
+Grid size: 4x4
+Miss rate: 25.00% (3 / 12)
+Rerolled:  yes
+
+Board:
+[U] [I] [I] [O]
+[A] [E] [U] [E]
+[O] [K] [W] [R]
+[R] [O] [E] [G]
+
+
+----------------------------------------------------------------
+Date:      2026-05-22 (Friday)
+Grid size: 4x4
+Miss rate: 9.52% (2 / 21)
+Rerolled:  yes
+
+Board:
+[O] [G] [O] [R]
+[N] [R] [S] [U]
+[T] [O] [B] [H]
+[D] [R] [U] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-23 (Saturday)
+Grid size: 5x5
+Miss rate: 14.29% (3 / 21)
+Rerolled:  no
+
+Board:
+[S] [X] [U] [A] [I]
+[R] [V] [O] [O] [W]
+[H] [R] [C] [H] [H]
+[O] [A] [N] [S] [L]
+[I] [O] [I] [E] [K]
+
+
+----------------------------------------------------------------
+Date:      2026-05-25 (Monday)
+Grid size: 4x4
+Miss rate: 14.29% (3 / 21)
+Rerolled:  yes
+
+Board:
+[N] [C] [F] [N]
+[E] [O] [D] [E]
+[H] [O] [K] [E]
+[I] [V] [A] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-26 (Tuesday)
+Grid size: 4x4
+Miss rate: 3.70% (1 / 27)
+Rerolled:  yes
+
+Board:
+[A] [B] [T] [T]
+[E] [O] [A] [G]
+[E] [E] [E] [H]
+[O] [A] [S] [W]
+
+
+----------------------------------------------------------------
+Date:      2026-05-27 (Wednesday)
+Grid size: 4x4
+Miss rate: 9.09% (3 / 33)
+Rerolled:  yes
+
+Board:
+[E] [T] [C] [E]
+[P] [E] [Y] [H]
+[R] [A] [A] [M]
+[F] [S] [L] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-05-28 (Thursday)
+Grid size: 4x4
+Miss rate: 13.04% (3 / 23)
+Rerolled:  no
+
+Board:
+[E] [O] [M] [A]
+[K] [E] [O] [U]
+[L] [T] [R] [M]
+[O] [S] [O] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-05-29 (Friday)
+Grid size: 4x4
+Miss rate: 8.33% (2 / 24)
+Rerolled:  yes
+
+Board:
+[E] [R] [H] [H]
+[K] [C] [C] [U]
+[E] [G] [R] [I]
+[E] [S] [L] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-05-30 (Saturday)
+Grid size: 5x5
+Miss rate: 9.52% (4 / 42)
+Rerolled:  no
+
+Board:
+[A] [E] [O] [G] [N]
+[T] [J] [H] [E] [O]
+[B] [S] [C] [T] [A]
+[K] [E] [L] [I] [M]
+[R] [S] [S] [H] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-05-31 (Sunday)
+Grid size: 5x5
+Miss rate: 10.64% (5 / 47)
+Rerolled:  yes
+
+Board:
+[R] [E] [E] [B] [U]
+[O] [P] [R] [L] [A]
+[W] [B] [I] [S] [T]
+[O] [M] [U] [H] [T]
+[S] [F] [L] [O] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-06-01 (Monday)
+Grid size: 4x4
+Miss rate: 3.85% (1 / 26)
+Rerolled:  yes
+
+Board:
+[F] [B] [E] [M]
+[L] [K] [M] [A]
+[P] [R] [I] [D]
+[I] [T] [Q] [D]
+
+
+----------------------------------------------------------------
+Date:      2026-06-02 (Tuesday)
+Grid size: 4x4
+Miss rate: 11.11% (3 / 27)
+Rerolled:  yes
+
+Board:
+[L] [I] [Y] [A]
+[D] [E] [R] [I]
+[B] [E] [U] [M]
+[T] [I] [R] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-06-03 (Wednesday)
+Grid size: 4x4
+Miss rate: 4.55% (1 / 22)
+Rerolled:  no
+
+Board:
+[E] [W] [T] [E]
+[L] [E] [M] [N]
+[I] [P] [R] [I]
+[E] [C] [N] [G]
+
+
+----------------------------------------------------------------
+Date:      2026-06-04 (Thursday)
+Grid size: 4x4
+Miss rate: 3.70% (1 / 27)
+Rerolled:  no
+
+Board:
+[A] [K] [T] [E]
+[I] [E] [L] [O]
+[A] [A] [R] [E]
+[O] [Y] [M] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-06-05 (Friday)
+Grid size: 4x4
+Miss rate: 23.33% (7 / 30)
+Rerolled:  no
+
+Board:
+[N] [G] [Q] [R]
+[H] [O] [Y] [L]
+[L] [C] [R] [E]
+[S] [A] [K] [U]
+
+
+----------------------------------------------------------------
+Date:      2026-06-06 (Saturday)
+Grid size: 5x5
+Miss rate: 12.50% (4 / 32)
+Rerolled:  no
+
+Board:
+[S] [O] [U] [W] [O]
+[S] [H] [U] [S] [H]
+[E] [L] [E] [O] [A]
+[G] [Z] [H] [K] [N]
+[O] [N] [E] [L] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-06-07 (Sunday)
+Grid size: 5x5
+Miss rate: 12.12% (4 / 33)
+Rerolled:  no
+
+Board:
+[Q] [E] [O] [U] [R]
+[R] [R] [I] [D] [R]
+[E] [Y] [W] [N] [U]
+[L] [S] [G] [O] [A]
+[O] [T] [R] [I] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-06-08 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 16)
+Rerolled:  yes
+
+Board:
+[A] [A] [I] [B]
+[T] [G] [X] [O]
+[U] [L] [N] [N]
+[C] [I] [K] [P]
+
+
+----------------------------------------------------------------
+Date:      2026-06-09 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 13)
+Rerolled:  yes
+
+Board:
+[I] [S] [P] [W]
+[H] [F] [C] [N]
+[Y] [G] [E] [M]
+[A] [L] [N] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-06-10 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 41)
+Rerolled:  yes
+
+Board:
+[W] [E] [H] [E]
+[G] [D] [S] [G]
+[E] [L] [O] [C]
+[Y] [M] [M] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-06-11 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 25)
+Rerolled:  yes
+
+Board:
+[I] [E] [H] [E]
+[C] [R] [S] [C]
+[A] [S] [K] [H]
+[T] [S] [I] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-06-12 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 32)
+Rerolled:  yes
+
+Board:
+[S] [U] [O] [G]
+[H] [R] [L] [I]
+[E] [C] [S] [I]
+[S] [E] [T] [M]
+
+
+----------------------------------------------------------------
+Date:      2026-06-13 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 38)
+Rerolled:  no
+
+Board:
+[O] [T] [W] [R] [U]
+[G] [R] [O] [R] [I]
+[N] [M] [F] [E] [H]
+[E] [G] [U] [E] [T]
+[R] [T] [N] [I] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-06-14 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 45)
+Rerolled:  no
+
+Board:
+[U] [F] [O] [M] [O]
+[I] [L] [I] [E] [I]
+[N] [H] [S] [E] [R]
+[E] [S] [R] [T] [K]
+[O] [M] [I] [L] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-06-15 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 14)
+Rerolled:  yes
+
+Board:
+[U] [M] [O] [I]
+[O] [S] [N] [O]
+[N] [H] [O] [I]
+[A] [I] [S] [Y]
+
+
+----------------------------------------------------------------
+Date:      2026-06-16 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 12)
+Rerolled:  yes
+
+Board:
+[N] [U] [L] [Z]
+[Y] [I] [E] [H]
+[C] [I] [L] [I]
+[A] [N] [M] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-06-17 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[D] [M] [O] [L]
+[I] [R] [S] [H]
+[W] [T] [A] [A]
+[U] [R] [D] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-06-18 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 14)
+Rerolled:  yes
+
+Board:
+[R] [W] [T] [L]
+[O] [V] [C] [E]
+[A] [G] [R] [O]
+[N] [E] [I] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-06-19 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[T] [A] [E] [I]
+[S] [M] [E] [O]
+[J] [L] [R] [D]
+[U] [E] [O] [M]
+
+
+----------------------------------------------------------------
+Date:      2026-06-20 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 33)
+Rerolled:  no
+
+Board:
+[I] [I] [E] [M] [E]
+[E] [R] [A] [H] [S]
+[Y] [M] [D] [W] [A]
+[L] [M] [B] [I] [K]
+[I] [G] [R] [W] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-06-21 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 53)
+Rerolled:  no
+
+Board:
+[T] [I] [Z] [I] [A]
+[A] [L] [B] [H] [S]
+[B] [R] [O] [S] [E]
+[A] [R] [V] [L] [H]
+[I] [E] [E] [A] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-06-22 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 37)
+Rerolled:  yes
+
+Board:
+[U] [J] [I] [N]
+[D] [S] [N] [A]
+[T] [I] [N] [E]
+[D] [O] [P] [F]
+
+
+----------------------------------------------------------------
+Date:      2026-06-23 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 14)
+Rerolled:  yes
+
+Board:
+[H] [O] [Q] [P]
+[F] [C] [R] [D]
+[Z] [T] [P] [S]
+[A] [Y] [O] [Y]
+
+
+----------------------------------------------------------------
+Date:      2026-06-24 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[E] [U] [Y] [I]
+[A] [E] [M] [E]
+[D] [L] [N] [O]
+[I] [G] [E] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-06-25 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[C] [L] [R] [M]
+[A] [L] [A] [H]
+[E] [R] [D] [T]
+[N] [G] [A] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-06-26 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 31)
+Rerolled:  no
+
+Board:
+[R] [S] [N] [E]
+[A] [A] [P] [G]
+[E] [E] [R] [O]
+[F] [R] [M] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-06-27 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 36)
+Rerolled:  yes
+
+Board:
+[U] [R] [L] [T] [E]
+[T] [T] [U] [R] [R]
+[S] [E] [H] [U] [V]
+[R] [S] [R] [L] [G]
+[A] [W] [A] [M] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-06-28 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 34)
+Rerolled:  yes
+
+Board:
+[G] [E] [R] [R] [T]
+[N] [T] [W] [U] [K]
+[O] [R] [O] [L] [G]
+[H] [S] [L] [W] [A]
+[E] [R] [O] [D] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-06-29 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 21)
+Rerolled:  yes
+
+Board:
+[D] [O] [S] [M]
+[R] [B] [I] [A]
+[J] [Y] [W] [U]
+[P] [I] [E] [V]
+
+
+----------------------------------------------------------------
+Date:      2026-06-30 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[N] [E] [E] [A]
+[A] [L] [Z] [O]
+[B] [B] [E] [S]
+[P] [E] [I] [G]
+
+
+----------------------------------------------------------------
+Date:      2026-07-01 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 31)
+Rerolled:  yes
+
+Board:
+[O] [O] [T] [O]
+[F] [R] [E] [L]
+[R] [A] [K] [S]
+[E] [M] [L] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-07-02 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[U] [I] [I] [H]
+[L] [S] [W] [E]
+[N] [R] [T] [A]
+[O] [G] [R] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-07-03 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 17)
+Rerolled:  yes
+
+Board:
+[O] [T] [T] [J]
+[C] [H] [U] [R]
+[T] [R] [C] [T]
+[E] [S] [E] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-07-04 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[E] [Y] [E] [A] [I]
+[E] [I] [M] [H] [E]
+[O] [K] [C] [N] [S]
+[E] [I] [C] [O] [M]
+[I] [E] [G] [N] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-07-12 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 36)
+Rerolled:  yes
+
+Board:
+[E] [L] [S] [A] [S]
+[S] [C] [N] [R] [T]
+[L] [E] [N] [I] [W]
+[R] [S] [T] [H] [O]
+[E] [S] [D] [Z] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-07-05 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 58)
+Rerolled:  no
+
+Board:
+[I] [M] [R] [D] [E]
+[Y] [E] [R] [A] [R]
+[U] [A] [S] [E] [H]
+[O] [E] [A] [R] [P]
+[G] [N] [C] [B] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-07-06 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[T] [E] [A] [L]
+[A] [K] [E] [H]
+[Q] [L] [N] [R]
+[A] [T] [N] [K]
+
+
+----------------------------------------------------------------
+Date:      2026-07-07 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 36)
+Rerolled:  yes
+
+Board:
+[G] [M] [S] [N]
+[A] [Y] [O] [D]
+[X] [O] [A] [J]
+[C] [F] [I] [W]
+
+
+----------------------------------------------------------------
+Date:      2026-07-08 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 44)
+Rerolled:  no
+
+Board:
+[E] [H] [A] [H]
+[P] [I] [S] [E]
+[W] [G] [N] [T]
+[N] [U] [O] [P]
+
+
+----------------------------------------------------------------
+Date:      2026-07-09 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[O] [J] [E] [I]
+[E] [L] [T] [H]
+[P] [K] [W] [O]
+[S] [A] [O] [U]
+
+
+----------------------------------------------------------------
+Date:      2026-07-10 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 15)
+Rerolled:  yes
+
+Board:
+[E] [J] [D] [O]
+[E] [R] [E] [Q]
+[M] [S] [M] [Q]
+[Y] [A] [E] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-07-11 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 29)
+Rerolled:  no
+
+Board:
+[M] [E] [O] [E] [E]
+[E] [I] [O] [V] [R]
+[T] [S] [R] [A] [E]
+[L] [H] [R] [R] [Q]
+[B] [A] [E] [A] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-07-27 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 25)
+Rerolled:  yes
+
+Board:
+[N] [E] [S] [I]
+[E] [E] [U] [E]
+[W] [T] [F] [O]
+[D] [G] [I] [M]
+
+
+----------------------------------------------------------------
+Date:      2026-07-13 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 39)
+Rerolled:  no
+
+Board:
+[T] [H] [U] [G]
+[E] [R] [D] [N]
+[S] [R] [O] [A]
+[A] [S] [T] [Q]
+
+
+----------------------------------------------------------------
+Date:      2026-07-14 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 16)
+Rerolled:  yes
+
+Board:
+[K] [E] [L] [O]
+[F] [Q] [A] [N]
+[N] [L] [D] [I]
+[A] [A] [L] [F]
+
+
+----------------------------------------------------------------
+Date:      2026-07-15 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 19)
+Rerolled:  yes
+
+Board:
+[O] [H] [I] [H]
+[L] [G] [C] [R]
+[E] [C] [O] [L]
+[H] [G] [S] [P]
+
+
+----------------------------------------------------------------
+Date:      2026-07-16 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 20)
+Rerolled:  yes
+
+Board:
+[I] [G] [N] [E]
+[E] [I] [A] [O]
+[E] [O] [L] [O]
+[I] [A] [P] [U]
+
+
+----------------------------------------------------------------
+Date:      2026-07-17 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 37)
+Rerolled:  yes
+
+Board:
+[I] [E] [R] [B]
+[T] [A] [E] [H]
+[E] [R] [C] [R]
+[A] [B] [O] [K]
+
+
+----------------------------------------------------------------
+Date:      2026-07-18 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 77)
+Rerolled:  yes
+
+Board:
+[E] [W] [A] [R] [A]
+[S] [G] [B] [E] [S]
+[E] [R] [O] [W] [N]
+[T] [Y] [A] [C] [I]
+[E] [M] [S] [W] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-07-28 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[E] [O] [A] [K]
+[R] [X] [O] [S]
+[L] [G] [V] [B]
+[A] [V] [E] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-08-05 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[E] [H] [A] [E]
+[L] [E] [G] [R]
+[I] [E] [E] [V]
+[I] [E] [T] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-07-19 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 51)
+Rerolled:  no
+
+Board:
+[A] [H] [O] [E] [E]
+[B] [R] [M] [H] [T]
+[R] [E] [S] [A] [L]
+[O] [S] [R] [H] [W]
+[H] [O] [V] [E] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-07-20 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 16)
+Rerolled:  yes
+
+Board:
+[U] [A] [V] [L]
+[I] [E] [B] [S]
+[F] [B] [T] [G]
+[C] [W] [C] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-07-21 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 19)
+Rerolled:  yes
+
+Board:
+[P] [H] [M] [S]
+[A] [O] [M] [H]
+[G] [U] [L] [W]
+[A] [A] [B] [P]
+
+
+----------------------------------------------------------------
+Date:      2026-07-22 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 31)
+Rerolled:  yes
+
+Board:
+[E] [E] [L] [E]
+[N] [G] [R] [S]
+[O] [N] [E] [W]
+[C] [L] [H] [G]
+
+
+----------------------------------------------------------------
+Date:      2026-07-23 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[B] [L] [I] [C]
+[I] [E] [E] [H]
+[U] [W] [C] [R]
+[D] [O] [H] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-07-24 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 29)
+Rerolled:  yes
+
+Board:
+[G] [E] [O] [L]
+[U] [L] [S] [P]
+[W] [E] [A] [M]
+[T] [U] [Y] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-07-25 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 45)
+Rerolled:  no
+
+Board:
+[O] [I] [R] [E] [F]
+[O] [W] [S] [T] [R]
+[W] [H] [O] [G] [I]
+[S] [L] [D] [R] [A]
+[M] [I] [U] [E] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-07-26 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 21)
+Rerolled:  yes
+
+Board:
+[H] [I] [C] [E] [E]
+[A] [C] [A] [H] [B]
+[A] [E] [E] [L] [E]
+[E] [L] [Y] [G] [A]
+[E] [C] [M] [I] [L]
+
+
+----------------------------------------------------------------
+Date:      2026-07-29 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 42)
+Rerolled:  no
+
+Board:
+[E] [A] [M] [O]
+[W] [T] [E] [A]
+[R] [R] [S] [N]
+[I] [N] [E] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-07-30 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 43)
+Rerolled:  yes
+
+Board:
+[E] [T] [A] [W]
+[O] [R] [T] [R]
+[X] [R] [S] [A]
+[A] [H] [P] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-07-31 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 27)
+Rerolled:  yes
+
+Board:
+[R] [E] [M] [Y]
+[C] [L] [E] [M]
+[E] [S] [S] [H]
+[T] [R] [I] [W]
+
+
+----------------------------------------------------------------
+Date:      2026-08-01 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 44)
+Rerolled:  yes
+
+Board:
+[M] [Y] [C] [E] [T]
+[A] [F] [L] [H] [N]
+[H] [R] [R] [I] [P]
+[O] [S] [A] [T] [E]
+[W] [N] [N] [P] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-08-02 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 43)
+Rerolled:  yes
+
+Board:
+[U] [I] [G] [E] [G]
+[N] [O] [N] [I] [L]
+[S] [G] [N] [L] [O]
+[T] [E] [K] [E] [P]
+[R] [W] [H] [T] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-08-03 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 12)
+Rerolled:  yes
+
+Board:
+[I] [P] [K] [V]
+[A] [Z] [Q] [H]
+[G] [C] [O] [O]
+[S] [L] [S] [L]
+
+
+----------------------------------------------------------------
+Date:      2026-08-04 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 26)
+Rerolled:  yes
+
+Board:
+[C] [E] [E] [A]
+[N] [I] [L] [O]
+[M] [A] [U] [U]
+[R] [T] [R] [Y]
+
+
+----------------------------------------------------------------
+Date:      2026-08-06 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 28)
+Rerolled:  yes
+
+Board:
+[A] [N] [I] [S]
+[G] [I] [M] [Y]
+[L] [W] [R] [O]
+[I] [G] [B] [S]
+
+
+----------------------------------------------------------------
+Date:      2026-08-07 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 21)
+Rerolled:  yes
+
+Board:
+[E] [E] [U] [S]
+[O] [C] [A] [K]
+[S] [H] [M] [M]
+[H] [I] [E] [Y]
+
+
+----------------------------------------------------------------
+Date:      2026-08-08 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 48)
+Rerolled:  no
+
+Board:
+[O] [I] [R] [L] [D]
+[T] [H] [T] [S] [R]
+[S] [A] [W] [F] [E]
+[O] [P] [R] [R] [K]
+[N] [G] [A] [F] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-08-09 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 43)
+Rerolled:  no
+
+Board:
+[I] [Q] [I] [P] [U]
+[T] [C] [L] [E] [S]
+[S] [H] [E] [H] [O]
+[E] [G] [G] [L] [M]
+[O] [R] [U] [D] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-08-10 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 32)
+Rerolled:  yes
+
+Board:
+[D] [L] [T] [U]
+[O] [E] [H] [V]
+[T] [S] [I] [B]
+[G] [P] [F] [H]
+
+
+----------------------------------------------------------------
+Date:      2026-08-11 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 27)
+Rerolled:  yes
+
+Board:
+[I] [C] [E] [G]
+[G] [U] [W] [N]
+[I] [D] [I] [C]
+[B] [L] [R] [P]
+
+
+----------------------------------------------------------------
+Date:      2026-08-20 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 33)
+Rerolled:  yes
+
+Board:
+[M] [H] [D] [L]
+[E] [G] [D] [N]
+[N] [S] [D] [L]
+[G] [O] [H] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-08-12 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 44)
+Rerolled:  no
+
+Board:
+[H] [E] [T] [A]
+[T] [R] [B] [S]
+[I] [E] [W] [E]
+[S] [T] [O] [L]
+
+
+----------------------------------------------------------------
+Date:      2026-08-13 (Thursday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 17)
+Rerolled:  yes
+
+Board:
+[U] [G] [C] [A]
+[T] [N] [S] [L]
+[E] [G] [R] [L]
+[I] [N] [S] [N]
+
+
+----------------------------------------------------------------
+Date:      2026-08-14 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 22)
+Rerolled:  yes
+
+Board:
+[X] [E] [H] [I]
+[E] [R] [S] [W]
+[A] [L] [E] [H]
+[R] [N] [G] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-08-15 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 35)
+Rerolled:  no
+
+Board:
+[O] [C] [E] [R] [T]
+[T] [R] [W] [G] [O]
+[G] [N] [G] [M] [A]
+[A] [I] [E] [N] [N]
+[O] [L] [M] [Y] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-08-16 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 27)
+Rerolled:  no
+
+Board:
+[H] [E] [A] [I] [E]
+[O] [L] [K] [R] [X]
+[G] [O] [D] [T] [V]
+[A] [N] [C] [H] [U]
+[E] [L] [A] [H] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-08-17 (Monday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 21)
+Rerolled:  yes
+
+Board:
+[I] [M] [O] [O]
+[I] [E] [Z] [H]
+[T] [C] [U] [M]
+[R] [D] [U] [G]
+
+
+----------------------------------------------------------------
+Date:      2026-08-18 (Tuesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 17)
+Rerolled:  yes
+
+Board:
+[A] [U] [I] [G]
+[T] [O] [N] [E]
+[J] [R] [A] [A]
+[T] [K] [I] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-08-19 (Wednesday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 23)
+Rerolled:  yes
+
+Board:
+[E] [S] [U] [G]
+[C] [G] [D] [D]
+[O] [R] [I] [Q]
+[D] [M] [I] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-08-21 (Friday)
+Grid size: 4x4
+Miss rate: 0.00% (0 / 28)
+Rerolled:  yes
+
+Board:
+[T] [H] [I] [D]
+[U] [R] [G] [N]
+[K] [O] [E] [K]
+[A] [E] [A] [C]
+
+
+----------------------------------------------------------------
+Date:      2026-08-22 (Saturday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 27)
+Rerolled:  yes
+
+Board:
+[M] [E] [L] [O] [I]
+[C] [Y] [E] [O] [A]
+[R] [O] [I] [E] [U]
+[O] [I] [C] [E] [A]
+[U] [E] [L] [S] [E]
+
+
+----------------------------------------------------------------
+Date:      2026-08-23 (Sunday)
+Grid size: 5x5
+Miss rate: 0.00% (0 / 52)
+Rerolled:  no
+
+Board:
+[Y] [I] [V] [I] [L]
+[O] [R] [E] [K] [E]
+[A] [A] [P] [T] [O]
+[W] [U] [S] [A] [S]
+[R] [O] [U] [H] [I]
+
+
+----------------------------------------------------------------
+Date:      2026-08-24 (Monday)
+Grid size: 4x4
+Miss rate: 100.00% (38 / 38)
+Rerolled:  no
+
+Board:
+[T] [O] [Y] [E]
+[W] [A] [B] [P]
+[E] [K] [W] [I]
+[S] [N] [V] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-08-25 (Tuesday)
+Grid size: 4x4
+Miss rate: 94.59% (35 / 37)
+Rerolled:  yes
+
+Board:
+[V] [R] [I] [W]
+[H] [S] [A] [G]
+[T] [E] [A] [F]
+[Q] [I] [D] [D]
+
+
+----------------------------------------------------------------
+Date:      2026-08-26 (Wednesday)
+Grid size: 4x4
+Miss rate: 87.23% (41 / 47)
+Rerolled:  no
+
+Board:
+[E] [T] [V] [O]
+[Q] [R] [O] [S]
+[U] [N] [L] [H]
+[U] [R] [E] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-08-27 (Thursday)
+Grid size: 4x4
+Miss rate: 96.67% (29 / 30)
+Rerolled:  yes
+
+Board:
+[L] [A] [A] [N]
+[H] [T] [H] [G]
+[I] [R] [I] [H]
+[E] [H] [S] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-08-28 (Friday)
+Grid size: 4x4
+Miss rate: 94.59% (35 / 37)
+Rerolled:  yes
+
+Board:
+[I] [P] [P] [S]
+[M] [S] [T] [O]
+[P] [E] [O] [H]
+[R] [Z] [J] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-08-29 (Saturday)
+Grid size: 5x5
+Miss rate: 92.86% (52 / 56)
+Rerolled:  no
+
+Board:
+[O] [N] [O] [R] [A]
+[S] [M] [R] [L] [P]
+[A] [P] [O] [M] [I]
+[O] [H] [E] [R] [S]
+[S] [H] [S] [A] [U]
+
+
+----------------------------------------------------------------
+Date:      2026-08-30 (Sunday)
+Grid size: 5x5
+Miss rate: 87.50% (35 / 40)
+Rerolled:  no
+
+Board:
+[V] [A] [E] [T] [E]
+[R] [W] [T] [O] [R]
+[H] [L] [E] [E] [L]
+[U] [C] [W] [O] [D]
+[E] [G] [I] [R] [O]
+
+
+----------------------------------------------------------------
+Date:      2026-08-31 (Monday)
+Grid size: 4x4
+Miss rate: 92.31% (24 / 26)
+Rerolled:  no
+
+Board:
+[C] [G] [L] [D]
+[B] [M] [Z] [F]
+[S] [N] [A] [N]
+[I] [E] [S] [A]
+
+
+----------------------------------------------------------------
+Date:      2026-09-01 (Tuesday)
+Grid size: 4x4
+Miss rate: 97.06% (33 / 34)
+Rerolled:  no
+
+Board:
+[E] [S] [M] [O]
+[H] [Y] [G] [I]
+[T] [N] [L] [U]
+[S] [Z] [I] [R]
+
+
+----------------------------------------------------------------
+Date:      2026-09-02 (Wednesday)
+Grid size: 4x4
+Miss rate: 96.88% (31 / 32)
+Rerolled:  no
+
+Board:
+[U] [E] [R] [I]
+[R] [I] [G] [T]
+[S] [S] [T] [I]
+[H] [O] [L] [M]
+
+
+----------------------------------------------------------------
+Date:      2026-09-03 (Thursday)
+Grid size: 4x4
+Miss rate: 95.24% (40 / 42)
+Rerolled:  yes
+
+Board:
+[A] [I] [P] [O]
+[A] [L] [E] [A]
+[Y] [H] [G] [D]
+[E] [Z] [I] [T]
+
+
+----------------------------------------------------------------
+Date:      2026-09-04 (Friday)
+Grid size: 4x4
+Miss rate: 95.65% (44 / 46)
+Rerolled:  no
+
+Board:
+[R] [E] [O] [H]
+[S] [R] [H] [S]
+[O] [V] [T] [I]
+[A] [E] [U] [E]
+
+
+================================================================
