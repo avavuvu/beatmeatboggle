@@ -118,7 +118,7 @@ export const dateOverrides: Record<string, BoardSettings> = {
     },
     "2026-09-08": {
         size: 4,
-        letters: "araonmohreingseo".split(""),
+        letters: "centifershsoting".split(""),
         time: 3 * 60,
     },
     "2026-09-09": {
