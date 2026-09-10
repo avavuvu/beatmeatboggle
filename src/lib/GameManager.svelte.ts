@@ -1,5 +1,3 @@
-import { solve } from "./dictionary/solver"
-import dictionaryManager from "./dictionary/DictionaryManager.svelte"
 import { getAdjacentPositions } from "./constants"
 export { getAdjacentPositions } from "./constants"
 import toaster from "./Toaster.svelte"
@@ -116,7 +114,6 @@ class GameManager {
                 body: JSON.stringify({
                     words: this.foundWords,
                     dateKey: this.session.dateKey,
-                    totalWords: this.session.totalPossibleWords,
                 }),
                 headers,
             })
@@ -231,9 +228,7 @@ class GameManager {
             return
         }
 
-        const notInDict = !dictionaryManager.tryWord(word)
-
-        if (notInDict) {
+        if (!this.session.totalPossibleWords.includes(word)) {
             toaster.addError(`"${word}" is not in the word list`)
             return
         }

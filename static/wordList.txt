@@ -50946,8 +50946,6 @@ rapids
 rapier
 rapiers
 rapini
-rapist
-rapists
 rapped
 rappel
 rappeled

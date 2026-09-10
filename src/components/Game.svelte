@@ -1,5 +1,6 @@
 <script lang="ts">
     import { createGameSession } from "$lib/gameSession";
+    import type { ResolvedBoard } from "$lib/board";
     import GameManager from "$lib/GameManager.svelte";
     import InputController from "$lib/InputController.svelte";
     import { onMount, onDestroy } from "svelte"
@@ -15,23 +16,23 @@
     import Challenge from "./Challenge.svelte"
 
     const {
-        date,
+        dateKey,
+        board,
         playerStatus,
         opponentWords,
         opponentName = "Ava",
-        totalWords,
         challengedBy = null
     }: {
-        date: Date;
+        dateKey: string;
+        board: ResolvedBoard;
         playerStatus: "ava" | "player";
         opponentWords: string[] | null,
         opponentName?: string,
-        totalWords: string[] | null,
         challengedBy?: string | null
     } = $props()
 
     // svelte-ignore state_referenced_locally
-    const session = createGameSession(date, playerStatus, totalWords, challengedBy)
+    const session = createGameSession(dateKey, playerStatus, board, challengedBy)
     const game = new GameManager(session, opponentWords, opponentName)
 
     const inputController = new InputController(game)

@@ -29,6 +29,20 @@
       "when": 1785125838235,
       "tag": "0003_odd_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788996457056,
+      "tag": "0004_breezy_pride",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788997782428,
+      "tag": "0005_seed_boards",
+      "breakpoints": true
     }
   ]
 }

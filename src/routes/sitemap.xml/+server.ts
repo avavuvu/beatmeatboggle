@@ -1,5 +1,5 @@
 import { siteUrl } from "$lib/constants"
-import { sitemapChunkCount } from "$lib/sitemapConfig"
+import { sitemapChunkCount } from "$lib/server/sitemap"
 
 export const prerender = true
 

@@ -1,5 +1,5 @@
 import type { TrieNode } from "./trie"
-import dictionaryManager from "./DictionaryManager.svelte"
+import dictionaryManager from "./DictionaryManager"
 
 type Board = {
     grid: string[][]

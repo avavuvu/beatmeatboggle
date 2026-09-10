@@ -1,8 +1,9 @@
 import type { Config, Context } from "@netlify/functions"
 import { db } from "../../db"
-import { avasWords, playerWords } from "../../db/schema"
+import { playerWords } from "../../db/schema"
 import { and, desc, eq } from "drizzle-orm"
 import { decodeChallenge } from "../../src/lib/challenge/challengeToken"
+import { getOrCreateBoard } from "../../src/lib/server/board"
 
 export default async function getChallenge(req: Request, context: Context) {
     if (req.method !== "GET") {
@@ -24,11 +25,6 @@ export default async function getChallenge(req: Request, context: Context) {
 
     const { date: dateKey, playerId, name } = decoded
 
-    const [ava] = await db
-        .select({ totalWords: avasWords.totalWords })
-        .from(avasWords)
-        .where(eq(avasWords.dateKey, dateKey))
-
     const [challenger] = await db
         .select({ words: playerWords.words })
         .from(playerWords)
@@ -45,13 +41,15 @@ export default async function getChallenge(req: Request, context: Context) {
         return Response.json({ error: "Challenge not found" }, { status: 404 })
     }
 
+    const { size, letters, time, totalWords } = await getOrCreateBoard(dateKey)
+
     return Response.json(
         {
             success: true,
             date: dateKey,
+            board: { size, letters, time, totalWords },
             opponentWords: challenger.words,
             opponentName: name || "Your friend",
-            totalWords: ava?.totalWords ?? null,
             challengedBy: playerId,
         },
         { status: 200 }

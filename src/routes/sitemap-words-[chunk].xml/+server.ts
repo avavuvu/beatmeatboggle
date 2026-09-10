@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit"
 import { siteUrl } from "$lib/constants"
-import { getSitemapChunk, sitemapChunkCount } from "$lib/sitemapConfig"
+import { getSitemapChunk, sitemapChunkCount } from "$lib/server/sitemap"
 
 export const prerender = true
 

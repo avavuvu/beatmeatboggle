@@ -4,7 +4,7 @@
     import { page } from "$app/state";
     import { redirect } from "@sveltejs/kit";
     import { onMount } from "svelte";
-    import { toISODateKey } from "$lib/constants"
+    import type { ResolvedBoard } from "$lib/board"
 
     export const verify = () => {
         const token = browser ? localStorage.getItem("admin_token") : null;
@@ -19,15 +19,35 @@
 
     let verified = $state(verify());
 
-    let date: Date | undefined = $state()
+    let dateKey: string | undefined = $state()
+    let board: ResolvedBoard | undefined = $state()
+    let error: string | undefined = $state()
 
-    onMount(() => {
-        date = new Date(page.url.searchParams.get("date")!);
+    onMount(async () => {
+        dateKey = page.url.searchParams.get("date") ?? undefined
+
+        if (!dateKey) {
+            error = "missing ?date=YYYY-MM-DD"
+            return
+        }
+
+        const response = await fetch(`/api/board?dateKey=${dateKey}`, {
+            headers: { authorization: localStorage.getItem("admin_token") ?? "" },
+        })
+
+        if (!response.ok) {
+            error = `board request failed: ${response.status}`
+            return
+        }
+
+        board = await response.json()
     });
 </script>
 
-{#if verified && date}
-    <Game playerStatus="ava" {date} opponentWords={null} totalWords={null}  />
+{#if error}
+    {error}
+{:else if verified && dateKey && board}
+    <Game playerStatus="ava" {dateKey} {board} opponentWords={null} />
 {:else}
     ...verifying
 {/if}

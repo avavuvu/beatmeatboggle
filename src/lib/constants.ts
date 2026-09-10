@@ -1,5 +1,3 @@
-import type { BoardSettings } from "./boardSettings"
-
 export type PlayerState = "ava" | "player"
 
 export const RESULT_KEY_PREFIX = "result_"
@@ -9,6 +7,8 @@ export const PLAYER_ID_KEY = "playerId"
 
 export const toISODateKey = (date: Date): string =>
     `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`
+
+export const dateFromKey = (dateKey: string): Date => new Date(`${dateKey}T00:00:00Z`)
 
 export const getAdjacentPositions = (index: number, gridSize: number) => {
     const x = index % gridSize
@@ -34,101 +34,3 @@ export const description =
 export const title = "Beat Me At Boggle"
 
 export const siteUrl = "https://beatmeatboggle.com"
-
-export const dateOverrides: Record<string, BoardSettings> = {
-    "2026-04-20": {
-        size: 4,
-        letters: "hapybdayriasingh".split(""),
-        time: 3 * 60,
-    },
-    "2026-08-24": {
-        size: 4,
-        letters: "eefisrtatkshcaco".split(""),
-        time: 3 * 60,
-    },
-    "2026-08-25": {
-        size: 4,
-        letters: "eyaoegebntesihom".split(""),
-        time: 3 * 60,
-    },
-    "2026-08-26": {
-        size: 4,
-        letters: "tronoshoeiptsema".split(""),
-        time: 3 * 60,
-    },
-    "2026-08-27": {
-        size: 4,
-        letters: "cshuehsoeboaodri".split(""),
-        time: 3 * 60,
-    },
-    "2026-08-28": {
-        size: 4,
-        letters: "vdyoeolotedysunt".split(""),
-        time: 3 * 60,
-    },
-    "2026-08-29": {
-        size: 5,
-        letters: "ireaistesueztwhgarinlmooa".split(""),
-        time: 4 * 60,
-    },
-    "2026-08-30": {
-        size: 5,
-        letters: "oneeolaistvngrhoaitoxleeo".split(""),
-        time: 4 * 60,
-    },
-    "2026-08-31": {
-        size: 4,
-        letters: "araonmohreingseo".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-01": {
-        size: 4,
-        letters: "irainenbgedclyuo".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-02": {
-        size: 4,
-        letters: "bleysopnouetsaer".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-03": {
-        size: 4,
-        letters: "edeteustmilsecal".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-04": {
-        size: 4,
-        letters: "ponsareetssirdua".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-05": {
-        size: 5,
-        letters: "ezautvdroielioulfuftunlie".split(""),
-        time: 4 * 60,
-    },
-    "2026-09-06": {
-        size: 5,
-        letters: "vaolntsiolialcarpiwxeemet".split(""),
-        time: 4 * 60,
-    },
-    "2026-09-07": {
-        size: 4,
-        letters: "einefradertvozse".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-08": {
-        size: 4,
-        letters: "centifershsoting".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-09": {
-        size: 4,
-        letters: "tnfucoiaosctisee".split(""),
-        time: 3 * 60,
-    },
-    "2026-09-10": {
-        size: 4,
-        letters: "kdeoelellqarturh".split(""),
-        time: 3 * 60,
-    },
-}
