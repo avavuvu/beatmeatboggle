@@ -37,7 +37,7 @@
     <main class="border ">
         <div class="p-4 *>py-2">
             <h2 class="font-bold">My name is Ava and I like Boggle</h2>
-            <p>So much so, I decided to made this online version.</p>
+            <p>So much so, I decided to make this online version.</p>
             <p>
                 Every day, I play a game of Boggle. The next day, you try and beat
                 my score.

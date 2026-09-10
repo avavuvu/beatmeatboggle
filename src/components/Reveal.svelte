@@ -16,7 +16,6 @@
     // svelte-ignore state_referenced_locally
     const {
         scores,
-        totalWordSet,
         didWin,
         opponentWordMap,
         playerWordMap,
@@ -55,6 +54,8 @@
     )
 
     const totalWords = $derived(totalWordsMap.map(([word]) => word))
+
+    const topScore = $derived(Math.max(scores.you, scores.opponent, game.averageGameScore ?? 0, 1))
 </script>
 
 {#snippet chartBar(index: number, score: number, name: string )}
@@ -75,9 +76,7 @@
     <div
         class:player={name === "You!"}
         class="bar text-xs text-surface transition-all duration-500 ease-out"
-        style="height: {mounted
-            ? (Number(score) / totalWordSet.size) * 100
-            : 0}%; {getDelayStyle(index)}"
+        style="height: {mounted ? (score / topScore) * 100 : 0}%; {getDelayStyle(index)}"
     ></div>
 </div>
 {/snippet}
