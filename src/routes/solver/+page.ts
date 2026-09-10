@@ -1,6 +1,9 @@
 import type { PageLoad } from "./$types"
+import { loadDictionary } from "$lib/dictionary/load"
 
-export const load: PageLoad = async ({ url }) => {
+export const load: PageLoad = async ({ url, fetch }) => {
+    await loadDictionary(fetch)
+
     const sizeParam = Number(url.searchParams.get("size"))
     const size = Number.isFinite(sizeParam) && sizeParam >= 2 && sizeParam <= 7
         ? sizeParam

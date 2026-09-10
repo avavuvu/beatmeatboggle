@@ -4,13 +4,14 @@
     import { page } from "$app/state"
     import { onMount } from "svelte"
     import { decodeChallenge } from "$lib/challenge/challengeToken"
+    import type { ResolvedBoard } from "$lib/board"
     import favicon from "$lib/assets/favicon.svg"
 
     type ChallengeSession = {
-        date: Date
+        dateKey: string
+        board: ResolvedBoard
         opponentWords: string[] | null
         opponentName: string
-        totalWords: string[] | null
         challengedBy: string
     }
 
@@ -39,10 +40,10 @@
         const json = await response.json()
 
         data = {
-            date: new Date(`${json.date}T00:00:00Z`),
+            dateKey: json.date,
+            board: json.board,
             opponentWords: json.opponentWords,
             opponentName: json.opponentName,
-            totalWords: json.totalWords,
             challengedBy: json.challengedBy,
         }
         challengeState = "lander"
@@ -54,11 +55,11 @@
 
 {#if data && challengeState === "playing"}
 	<Game
-        date={data.date}
+        dateKey={data.dateKey}
+        board={data.board}
         playerStatus="player"
         opponentWords={data.opponentWords}
         opponentName={data.opponentName}
-        totalWords={data.totalWords}
         challengedBy={data.challengedBy}
     />
 {:else}

@@ -1,5 +1,5 @@
-import wordList from "$lib/dictionary/wordList.txt?raw"
-import scrabble from "$lib/dictionary/scrabble.txt?raw"
+import wordList from "../../../static/wordList.txt?raw"
+import scrabble from "../../../static/scrabble.txt?raw"
 
 const checkerWords = [...new Set(
     [

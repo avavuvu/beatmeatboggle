@@ -1,7 +1,7 @@
 <script lang="ts">
     import definitionManaager from "$lib/DefinitionManager.svelte"
-    import wordList from "$lib/dictionary/wordList.txt?raw"
-    import scrabble from "$lib/dictionary/scrabble.txt?raw"
+    import wordList from "../../../static/wordList.txt?raw"
+    import scrabble from "../../../static/scrabble.txt?raw"
     import Definition from "@/Definition.svelte"
     import { cross } from "@/icons/cross.svelte"
     import { tick } from "@/icons/tick.svelte"

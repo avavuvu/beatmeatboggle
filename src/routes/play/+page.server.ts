@@ -1,12 +1,13 @@
 import type { PageServerLoad } from "./$types"
-import { toISODateKey } from "$lib/constants"
+import { error } from "@sveltejs/kit"
+import { getGameDateKey } from "$lib/server/gameDate"
+import type { ResolvedBoard } from "$lib/board"
 import { db } from "../../../db"
 import { avasWords } from "../../../db/schema"
 import { eq } from "drizzle-orm"
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
-    const date = new Date(Date.now() + 10 * 60 * 60 * 1000)
-    const dateKey = toISODateKey(date)
+export const load: PageServerLoad = async ({ setHeaders, url }) => {
+    const dateKey = getGameDateKey()
 
     setHeaders({
         "netlify-cdn-cache-control":
@@ -14,19 +15,22 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
         "netlify-cache-tag": "play-page",
     })
 
-    const [ava] = await db
-        .select({
-            words: avasWords.words,
-            totalWords: avasWords.totalWords,
-        })
-        .from(avasWords)
-        .where(eq(avasWords.dateKey, dateKey))
+    // sveltekit's own fetch routes same-origin requests internally, where /api/board (a netlify
+    // function) does not exist. the global fetch makes a real http request that reaches it.
+    const [[ava], boardResponse] = await Promise.all([
+        db.select({ words: avasWords.words }).from(avasWords).where(eq(avasWords.dateKey, dateKey)),
+        globalThis.fetch(new URL(`/api/board?dateKey=${dateKey}`, url.origin)),
+    ])
 
-    console.log(date)
+    if (!boardResponse.ok) {
+        error(503, "Today's board is not available")
+    }
+
+    const board: ResolvedBoard = await boardResponse.json()
 
     return {
         avasWords: ava?.words ?? null,
-        totalWords: ava?.totalWords ?? null,
-        date,
+        board,
+        dateKey,
     }
 }

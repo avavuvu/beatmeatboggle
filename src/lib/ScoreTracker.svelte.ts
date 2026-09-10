@@ -2,61 +2,12 @@ import { SvelteMap } from "svelte/reactivity"
 import toaster from "./Toaster.svelte"
 import preferences from "./Preferences.svelte"
 import { encodeChallenge } from "./challenge/challengeToken"
+import { dirtyWords } from "./dictionary/dirtyWords"
 
 export type ScoreItem = {
     points: number
     reason?: "opponent bonus" | "length" | "dirty bonus" | "unique"
 }
-
-const DIRTY_WORDS = [
-    "sex",
-    "dick",
-    "balls",
-    "sexy",
-    "anus",
-    "cock",
-    "horny",
-    "hornier",
-    "horniest",
-    "shit",
-    "fuck",
-    "ass",
-    "bitch",
-    "bastard",
-    "cunt",
-    "damn",
-    "pussy",
-    "tits",
-    "boobs",
-    "cum",
-    "twat",
-    "wank",
-    "wanker",
-    "crap",
-    "dildo",
-    "penis",
-    "vagina",
-    "nude",
-    "naked",
-    "porno",
-    "porn",
-    "piss",
-    "scrotum",
-    "testicle",
-    "testicles",
-    "fucker",
-    "fucking",
-    "shitty",
-    "shitting",
-    "bitching",
-    "tit",
-    "titty",
-    "boner",
-    "hooker",
-    "hoe",
-    "gonad",
-    "gonads",
-]
 
 class ScoreTracker {
     pointsMap = new SvelteMap<string, ScoreItem[]>([])
@@ -145,7 +96,7 @@ class ScoreTracker {
             })
         }
 
-        if (DIRTY_WORDS.includes(word)) {
+        if (dirtyWords.has(word)) {
             points += 4
             pointsArray.push({
                 points: 4,

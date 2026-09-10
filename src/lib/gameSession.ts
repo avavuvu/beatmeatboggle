@@ -1,7 +1,7 @@
-import { toISODateKey, type PlayerState } from "./constants"
-import { getBoardSettings, rerollBoard, type BoardSettings } from "./boardSettings"
-import { solve } from "./dictionary/solver"
+import type { PlayerState } from "./constants"
+import type { BoardSettings, ResolvedBoard } from "./board"
 import { getPlayerId } from "$lib/session"
+import preferences from "./Preferences.svelte"
 
 export type GameSession = {
     board: BoardSettings
@@ -13,25 +13,18 @@ export type GameSession = {
 }
 
 export const createGameSession = (
-    date: Date,
+    dateKey: string,
     playerState: PlayerState,
-    totalWords: string[] | null,
+    { size, letters, time, totalWords }: ResolvedBoard,
     challengedBy: string | null = null
 ): GameSession => {
-    let board = getBoardSettings(date)
-
-    const initialWords = [...solve(board.letters, board.size)]
-    if (initialWords.length < 130) {
-        board = rerollBoard(date)
-    }
-
-    const totalPossibleWords = totalWords ?? [...solve(board.letters, board.size)]
+    const extraTime = preferences.settings.extraTime.value ? 2 * 60 : 0
 
     return {
-        board,
-        dateKey: toISODateKey(date),
+        board: { size, letters, time: time + extraTime },
+        dateKey,
         playerState,
-        totalPossibleWords,
+        totalPossibleWords: totalWords,
         playerId: getPlayerId(),
         challengedBy,
     }

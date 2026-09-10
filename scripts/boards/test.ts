@@ -1,58 +1,54 @@
 import data from "./data.json"
-import { weekDayMap, WEEKDAYS } from "../../src/lib/boardSettings"
-import { solve } from "../../src/lib/dictionary/solver"
-import { dateOverrides } from "../../src/lib/constants"
+import boards from "./boards.json"
+import { WEEKDAYS } from "../../src/lib/server/boardSettings"
+import { dateFromKey } from "../../src/lib/constants"
 import { writeFile } from "node:fs/promises"
 
 type Report = {
     date: string
     weekday: string
     gridSize: number
-    letters: string[]
+    letters: string
     missRate: number
     missedWords: string[]
     avasWords: string[]
-    wasRerolled: boolean
+    source: string
 }
+
+const boardsByDate = new Map(boards.map((board) => [board.dateKey, board]))
 
 const reports: Report[] = []
 
 for (const entry of data) {
-    const weekday = WEEKDAYS[new Date(entry.dateKey).getUTCDay()]
-    const board = weekDayMap[weekday]
+    const board = boardsByDate.get(entry.dateKey)
 
-    const override = dateOverrides[entry.dateKey]
-    const gridSize = override?.size ?? board.size
-    const letters = override?.letters ?? board.generateBoard(entry.dateKey, board.size)
+    if (!board) {
+        console.warn(`${entry.dateKey}: no board in boards.json`)
+        continue
+    }
 
-    const solution = solve(letters, gridSize)
-    const missedWords = entry.words.filter((word) => !solution.has(word))
-
-    const rerolledLetters = board.generateBoard(`${entry.dateKey}-reroll`, board.size)
-    const rerolledSolution = solve(rerolledLetters, board.size)
-    const rerolledMissedWords = entry.words.filter((word) => !rerolledSolution.has(word))
-
-    const wasRerolled = rerolledMissedWords.length < missedWords.length
+    const totalWords = new Set(board.totalWords)
+    const missedWords = entry.words.filter((word) => !totalWords.has(word))
 
     reports.push({
         date: entry.dateKey,
-        weekday,
-        gridSize: wasRerolled ? board.size : gridSize,
-        letters: wasRerolled ? rerolledLetters : letters,
-        missRate:
-            (wasRerolled ? rerolledMissedWords.length : missedWords.length) / entry.words.length,
-        missedWords: wasRerolled ? rerolledMissedWords : missedWords,
+        weekday: WEEKDAYS[dateFromKey(entry.dateKey).getUTCDay()],
+        gridSize: board.size,
+        letters: board.letters,
+        missRate: missedWords.length / entry.words.length,
+        missedWords,
         avasWords: entry.words,
-        wasRerolled,
+        source: board.source,
     })
 }
 
-const formatBoard = (letters: string[], gridSize: number): string => {
+const formatBoard = (letters: string, gridSize: number): string => {
     const rows: string[] = []
 
     for (let row = 0; row < gridSize; row++) {
         const cells = letters
             .slice(row * gridSize, row * gridSize + gridSize)
+            .split("")
             .map((letter) => `[${letter.toUpperCase()}]`)
 
         rows.push(cells.join(" "))
@@ -64,11 +60,10 @@ const formatBoard = (letters: string[], gridSize: number): string => {
 const totalEntries = reports.length
 const entriesWithMisses = reports.filter((report) => report.missedWords.length > 0).length
 const entriesOverThreshold = reports.filter((report) => report.missRate > 0.3).length
-const entriesRerolled = reports.filter((report) => report.wasRerolled).length
 
 const lines: string[] = []
 
-lines.push("Board Generation Regression Report")
+lines.push("Board Reconstruction Report")
 lines.push(`Generated: ${new Date().toISOString()}`)
 lines.push(`Entries tested: ${totalEntries}`)
 lines.push(`Entries with misses: ${entriesWithMisses}`)
@@ -76,7 +71,6 @@ lines.push(`Entries fully matching: ${totalEntries - entriesWithMisses}`)
 lines.push(
     `Entries with a higher than 30% miss rate: ${entriesOverThreshold} / ${totalEntries}`
 )
-lines.push(`Entries rerolled: ${entriesRerolled} / ${totalEntries}`)
 lines.push("=".repeat(64))
 lines.push("")
 
@@ -87,7 +81,7 @@ for (const report of reports) {
     lines.push(
         `Miss rate: ${(report.missRate * 100).toFixed(2)}% (${report.missedWords.length} / ${report.avasWords.length})`
     )
-    lines.push(`Rerolled:  ${report.wasRerolled ? "yes" : "no"}`)
+    lines.push(`Source:    ${report.source}`)
     lines.push("")
     lines.push("Board:")
     lines.push(formatBoard(report.letters, report.gridSize))
