@@ -48,7 +48,7 @@
             </p>
         </div>
         <div class="w-full bg-foreground flex  justify-center text-surface">
-            <a class="" href="/play"> {">"} PLAY TODAY {"<"} </a>
+            <a class="" href="/play"> {">"} Play Today's Game! {"<"} </a>
          </div>
 
     </main>
