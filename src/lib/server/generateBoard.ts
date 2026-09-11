@@ -91,16 +91,19 @@ export const generateClusters = (seed: string, gridSize: number, vowelness = 0.4
     return board
 }
 
-// places a random 9-11 letter word along an adjacent path, then fills the rest so that vowels
-// and consonants pull towards each other and no letter appears in a bad double or any triple.
-// requires the dictionary to be loaded first
 export const generateWithWord = (seed: string, gridSize: number): string[] => {
     const rng = seedrandom(seed)
 
-    const seedWord = pick(
+    let seedWord = pick(
         rng,
         dictionaryManager.list.filter((word) => word.length > 8 && word.length < 12)
     )
+
+    // because qu is bundled together on the board, we need to stop it from placing
+    // an extra u with the q
+    if (seedWord.includes("qu")) {
+        seedWord = seedWord.replace("qu", "q")
+    }
 
     const board = Array.from({ length: gridSize * gridSize }, () => "")
 
@@ -113,7 +116,6 @@ export const generateWithWord = (seed: string, gridSize: number): string[] => {
     const neighborsWith = (position: number, letter: string) =>
         getAdjacentPositions(position, gridSize).filter((index) => board[index] === letter)
 
-    // aa, ii, uu and these consonant pairs read badly; oo and ee are common enough to encourage
     const createsBadDouble = (candidate: number, letter: string) =>
         "auiqwyhkxcv".includes(letter) && neighborsWith(candidate, letter).length > 0
 
