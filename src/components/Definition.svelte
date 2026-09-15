@@ -1,7 +1,7 @@
 <script>
     import definitionManaager from "$lib/DefinitionManager.svelte"
     import { slide } from "svelte/transition"
-    import favicon from "$lib/assets/favicon.svg"
+    import { logo } from "./icons/logo.svelte"
 
     const entry = $derived(definitionManaager.currentDefinition)
 
@@ -26,7 +26,7 @@
                     <ul class="px-4">
                         {#each entry.data.definitions as definition}
                             <li >
-                            <img src={favicon} alt="" class="w-4 mr-2 inline"/>{definition}
+                            <span class="w-4 h-4 mr-2 inline-block align-middle">{@render logo()}</span>{definition}
                             </li>
                         {/each}
                     </ul>
@@ -43,7 +43,7 @@
             </div>
         {:else}
             <div class="p-2 w-full h-full flex justify-center items-center">
-                <img src="{favicon}" alt="" class="animate-spin w-12 h-12" />
+                <div class="animate-spin w-12 h-12">{@render logo()}</div>
             </div>
         {/if}
     </div>

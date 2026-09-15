@@ -1,23 +1,27 @@
 import { redirect } from "@sveltejs/kit"
-import { parseSession } from "$lib/server/session"
-import type { PatronSession } from "$lib/server/session"
+import { resolvePatronSession } from "$lib/server/patreon"
 import type { Handle } from "@sveltejs/kit"
 
-export const handle: Handle = async ({ event, resolve }) => {
-    const id = event.route.id
+const PATRON_ROUTES = ["/archive", "/practice"]
 
-    if ((id as string | null) === "/archive/[date]") {
-        const session = parseSession<PatronSession>(
-            event.cookies.get("patron_session")
-        )
-        if (session?.tier !== "paid") redirect(303, "/archive?kickback")
+const GATED_ROUTES: Record<string, string> = {
+    "/archive/[date]": "/archive?kickback",
+    "/practice/play": "/practice?kickback",
+}
+
+export const handle: Handle = async ({ event, resolve }) => {
+    const id = event.route.id ?? ""
+
+    event.locals.patron = null
+
+    if (PATRON_ROUTES.some((prefix) => id.startsWith(prefix))) {
+        event.locals.patron = await resolvePatronSession(event.cookies)
     }
 
-    if ((id as string | null) === "/practice/play") {
-        const session = parseSession<PatronSession>(
-            event.cookies.get("patron_session")
-        )
-        if (session?.tier !== "paid") redirect(303, "/practice?kickback")
+    const kickback = GATED_ROUTES[id]
+
+    if (kickback && event.locals.patron?.tier !== "paid") {
+        redirect(303, kickback)
     }
 
     return resolve(event)

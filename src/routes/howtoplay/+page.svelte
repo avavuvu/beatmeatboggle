@@ -18,11 +18,11 @@
     </p>
 
     <p>
-        Typically, the game is played such that one player will read the words they have found, and words that are shared between players are crossed out: No player receives points for a shared word. Beat Me at Boggle is a bit different: if you find a word that I didn't find, you automatically get a bonus point. You'll also receive extra points for finding longer words.
+        Typically, the game is played such that one player will read the words they have found, and words that are shared between players are crossed out: no player receives points for a shared word. Beat Me at Boggle is a bit different: if you find a word that I didn't find, you automatically get a bonus point. You'll also receive extra points for finding longer words.
     </p>
 
     <p>
-        Only English words are accepted. Proper nouns, uncommon abbreviations, and contractions are not accepted. What is and is not a word is obviously up for debate. Beat Me at Boggle uses a custom dictionary, which I <a href="/about/words">discussed here.</a>
+        Only English words are accepted. Proper nouns, uncommon abbreviations, and contractions are not accepted. What is and is not a word is obviously up for debate. Beat Me at Boggle uses a custom dictionary, which I <a href="/about/words">discussed here</a>.
     </p>
 
     <br/>

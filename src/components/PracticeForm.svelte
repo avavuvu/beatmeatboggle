@@ -1,10 +1,12 @@
 <script lang="ts">
     import { goto } from '$app/navigation'
+    import { DICE, DICE_LABELS, type BoardSize, type Dice } from "$lib/board"
+    import BoardInput from "./BoardInput.svelte"
 
     type PracticeFormData = {
-        size: 4 | 5,
+        size: BoardSize,
         time: number,
-        dice: "classic" | "clusters" | "custom",
+        dice: Dice | "custom",
     }
 
     let preset: | "weekday" | "weekend" | "edited" = $state("weekday")
@@ -12,23 +14,23 @@
     const WEEKDAY_PRESET: PracticeFormData = {
         size: 4,
         time: 3,
-        dice: "clusters",
+        dice: "word",
 
     }
 
     const WEEKEND_PRESET: PracticeFormData = {
         size: 4,
         time: 4,
-        dice: "clusters",
+        dice: "word",
     }
 
     let formData: PracticeFormData = $state({
         size: 4,
         time: 3,
-        dice: "clusters",
+        dice: "word",
     })
 
-    let customBoard = $state(Array.from({length: 25}, () => "a"))
+    let customBoard = $state(Array.from("abcdefghijklmnopqrstuvwxy"))
 
     const submit = (e: SubmitEvent) => {
         e.preventDefault()
@@ -100,40 +102,26 @@
             <div>
                 <h3>Dice</h3>
                 <div class="radio mb-6" >
-                    <input type="radio" id="classic" name="dice" value="classic" bind:group={formData.dice}>
-                    <label for="classic">Classic</label>
-                    <input type="radio" id="clusters" name="dice" value="clusters" bind:group={formData.dice}>
-                    <label for="clusters">Clusters</label>
+                    {#each DICE as dice}
+                        <input type="radio" id={dice} name="dice" value={dice} bind:group={formData.dice}>
+                        <label for={dice}>{DICE_LABELS[dice].name}</label>
+                    {/each}
                     <input type="radio" id="custom" name="dice" value="custom" bind:group={formData.dice}>
-                    <label for="custom">Custom</label>
+                    <label for="custom">Custom board</label>
                 </div>
             </div>
         </div>
 
         <!-- Custom Board -->
         {#if formData.dice === "custom"}
-        <div class="grid gap-1 h-48 mb-6 "
-            style:grid-template-rows="repeat({formData.size}, 1fr)"
-            style:grid-template-columns="repeat({formData.size}, 1fr)">
-
-            {#each {length: formData.size * formData.size}, i}
-                <div class="w-full border p-0.5 bg-foreground text-surface">
-                    <input
-                        class="w-full h-full text-center font-bold uppercase"
-                        type="text"
-                        maxlength="1"
-                        bind:value={customBoard[i]}
-                        onclick={() => customBoard[i] = ""}/>
-                </div>
-            {/each}
-        </div>
+        <BoardInput
+            size={formData.size}
+            bind:letters={customBoard}
+            class="gap-1 h-48 w-48 mx-auto mb-6 text-2xl font-bold"
+        />
         {:else}
             <section class="h-48 italic mb-6">
-                {#if formData.dice === "classic"}
-                    <p>Uses simulated dice for combinations that could appear on a real board</p>
-                {:else}
-                    <p>Uses a letter-clustering algorithm that attempts to make fun boards</p>
-                {/if}
+                <p>{DICE_LABELS[formData.dice].description}</p>
             </section>
         {/if}
     </div>

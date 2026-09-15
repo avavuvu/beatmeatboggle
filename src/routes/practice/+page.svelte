@@ -16,7 +16,7 @@
     const kickback = $derived(page.url.searchParams.get("kickback") !== null)
 </script>
 
-<Head title="Practice — Beat Me At Boggle" description="Play unlimited Boggle" />
+<Head title="Practice" description="Play unlimited Boggle" />
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">
     <span class="inline-flex justify-between gap-[2ch] w-full">
@@ -29,7 +29,7 @@
             <a class="underline" href="/auth/login">Sign in</a>
         {:else}
             <form method="POST" action="/auth/logout">
-                <button type="submit" class="underline cursor-pointer">Sign Out</button>
+                <button type="submit" class="underline cursor-pointer">Sign out</button>
             </form>
         {/if}
     </span>
@@ -46,7 +46,7 @@
 
         <div class="py-4">
             {#if kickback}
-                <p class="text-red-400">You must subscribe to play practice games.</p>
+                <p >You must subscribe to play practice games.</p>
                 <p>
                     <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
                 </p>
@@ -54,9 +54,10 @@
                 {#if data.tier === 'free'}
                     <p>You're connected but not yet a member.</p>
                     <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
-                    <span> to access past puzzles.</span>
-                {:else}
-                    <p>Past puzzles are available to Patreon supporters.</p>
+                    <span> to play practice games.</span>
+                {:else if !data.tier}
+                    <p>Practice games are available to Patreon supporters.</p>
+                    <p>If you like my work, please consider subscribing! It would mean a lot.</p>
                     <a class="underline" href="/auth/login">Connect with Patreon</a>
                 {/if}
             {/if}

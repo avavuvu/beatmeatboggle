@@ -5,7 +5,7 @@
     import { fade, slide } from "svelte/transition";
     import preferences from "$lib/Preferences.svelte"
     import type GameManager from "$lib/GameManager.svelte"
-    import favicon from "$lib/assets/favicon.svg"
+    import { logo } from "./icons/logo.svelte"
     import WordList from "./WordList.svelte"
     import { challengeManager } from "$lib/challenge/challenge.svelte"
 
@@ -105,9 +105,12 @@
                 {@render chartBar(2, game.averageGameScore, "Average")}
             {:else}
                 <div class="w-full flex justify-center items-center">
-                    <img
+                    <div
                         style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
-                        src="{favicon}" alt="" class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]">
+                        class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]"
+                    >
+                        {@render logo()}
+                    </div>
                 </div>
             {/if}
         {/if}

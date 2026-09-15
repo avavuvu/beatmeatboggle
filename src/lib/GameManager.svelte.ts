@@ -221,7 +221,7 @@ class GameManager {
         const notLongEnough = word.length < 3
 
         if (notLongEnough) {
-            toaster.addError(`${word} is not long enough`)
+            toaster.addError(`"${word}" is not long enough`)
             return
         }
 

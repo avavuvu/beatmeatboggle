@@ -30,7 +30,7 @@ export const getAdjacentPositions = (index: number, gridSize: number) => {
 }
 
 export const description =
-    "Every day I play a game of Boggle. Every day you try and beat my score."
-export const title = "Beat Me At Boggle"
+    "Every day, I play a game of Boggle. Every day, you try and beat my score."
+export const title = "Beat Me at Boggle"
 
 export const siteUrl = "https://beatmeatboggle.com"

@@ -1,6 +1,6 @@
 import { toISODateKey } from "../constants"
-import type { BoardSettings, ResolvedBoard } from "../board"
-import { generateClassic, generateClusters, generateWithWord } from "./generateBoard"
+import type { BoardSettings, BoardSize, Dice, ResolvedBoard } from "../board"
+import { GENERATORS } from "./generateBoard"
 import { solve } from "../dictionary/solver"
 
 export const WEEKDAYS = [
@@ -15,8 +15,8 @@ export const WEEKDAYS = [
 
 type Weekday = (typeof WEEKDAYS)[number]
 type GenerationSettings = {
-    size: number
-    generateBoard: (seed: string, gridSize: number) => string[]
+    size: BoardSize
+    dice: Dice
     time: number
 }
 
@@ -26,49 +26,49 @@ const fourMinutes = 4 * 60
 export const weekDayMap: Record<Weekday, GenerationSettings> = {
     Monday: {
         size: 4,
-        generateBoard: generateClassic,
+        dice: "classic",
         time: threeMinutes,
     },
     Tuesday: {
         size: 4,
-        generateBoard: generateWithWord,
+        dice: "word",
         time: threeMinutes,
     },
     Wednesday: {
         size: 4,
-        generateBoard: generateWithWord,
+        dice: "word",
         time: threeMinutes,
     },
     Thursday: {
         size: 4,
-        generateBoard: generateWithWord,
+        dice: "word",
         time: threeMinutes,
     },
     Friday: {
         size: 4,
-        generateBoard: generateWithWord,
+        dice: "word",
         time: threeMinutes,
     },
     Saturday: {
         size: 5,
-        generateBoard: generateWithWord,
+        dice: "word",
         time: fourMinutes,
     },
     Sunday: {
         size: 5,
-        generateBoard: generateWithWord,
+        dice: "word",
         time: fourMinutes,
     },
 }
 
 export const getBoardSettings = (date: Date): BoardSettings => {
     const dateKey = toISODateKey(date)
-    const todaysGeneration = weekDayMap[WEEKDAYS[date.getUTCDay()]]
+    const { size, dice, time } = weekDayMap[WEEKDAYS[date.getUTCDay()]]
 
     return {
-        size: todaysGeneration.size,
-        letters: todaysGeneration.generateBoard(dateKey, todaysGeneration.size),
-        time: todaysGeneration.time,
+        size,
+        letters: GENERATORS[dice](dateKey, size),
+        time,
     }
 }
 
@@ -80,9 +80,9 @@ export const resolveBoard = (date: Date): ResolvedBoard => {
 }
 
 export type PracticeBoardParams = {
-    size: 4 | 5
+    size: BoardSize
     time: number
-    dice: "classic" | "clusters" | "custom"
+    dice: Dice | "custom"
     override?: string
     seed?: string
 }
@@ -92,13 +92,12 @@ export const resolvePracticeBoard = (params: PracticeBoardParams): ResolvedBoard
 
     let letters: string[]
 
-    if (params.dice === "custom" && params.override) {
-        letters = params.override.split("").slice(0, params.size * params.size)
+    if (params.dice === "custom") {
+        letters = (params.override ?? "").split("").slice(0, params.size * params.size)
     } else {
-        const generateBoard = params.dice === "classic" ? generateClassic : generateClusters
         const seed = params.seed ?? String(Date.now())
 
-        letters = generateBoard(seed, params.size)
+        letters = GENERATORS[params.dice](seed, params.size)
     }
 
     return {

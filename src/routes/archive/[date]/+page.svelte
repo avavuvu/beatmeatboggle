@@ -14,6 +14,6 @@
     })
 </script>
 
-<Head title="{dateFormatted} — Beat Me At Boggle" />
+<Head title={dateFormatted} />
 
 <Game board={data.board} dateKey={data.dateKey} playerStatus="player" opponentWords={data.avasWords} />

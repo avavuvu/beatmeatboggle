@@ -18,7 +18,7 @@ export const GET = ({ cookies }: RequestEvent) => {
         response_type: "code",
         client_id: PUBLIC_PATREON_CLIENT_ID,
         redirect_uri: PUBLIC_PATREON_REDIRECT_URI,
-        scope: "identity",
+        scope: "identity identity.memberships",
         state,
     })
 

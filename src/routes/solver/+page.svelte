@@ -3,6 +3,7 @@
     import Definition from "@/Definition.svelte"
     import Head from "@/styling/Head.svelte"
     import WordList from "@/WordList.svelte"
+    import BoardInput from "@/BoardInput.svelte"
     import { fade, slide } from "svelte/transition"
     import { page } from "$app/state"
     import type { PageData } from "./$types"
@@ -38,7 +39,7 @@
 </script>
 
 <Head
-    title="Boggle Word Solver"
+    title="Boggle Board Solver"
     description="Find every possible combination of words from your Boggle board, for 4x4, 5x5, 6x6, and 7x7 Boggle boards"
     />
 
@@ -54,30 +55,11 @@
             {onsubmit}
             class="border p-4 min-h-48 flex justify-center items-center flex-col gap-4">
 
-            <div class="grid  mx-auto mb-6 text-4xl sm:text-5xl md:text-7xl"
-            style:grid-template-rows="repeat({size}, 1fr)"
-            style:grid-template-columns="repeat({size}, 1fr)">
-
-            {#each {length: size * size}, i}
-                    <div class="tile aspect-square min-w-0 border-surface bg-board focus-within:bg-muted transition-colors">
-                        <label for="input-{i}" class="w-full min-h-0 min-w-12 sm:min-w-24 h-full text-center text-tile-letter inline-flex justify-center items-center">
-                            <input
-                                id="input-{i}"
-                                size="1"
-                                class="uppercase  bg-transparent text-center focus:outline-none"
-                                type="text"
-                                maxlength="1"
-                                bind:value={board[i]}
-                                onclick={() => board[i] = ""}/>
-                            {#if board[i] === "q"}
-                                <span>
-                                    u
-                                </span>
-                            {/if}
-                        </label>
-                    </div>
-                {/each}
-            </div>
+            <BoardInput
+                {size}
+                bind:letters={board}
+                class="mx-auto mb-6 w-full max-w-md text-4xl sm:text-5xl md:text-7xl"
+            />
 
             <div class="flex gap-2">
                 <button
@@ -142,9 +124,6 @@
         text-decoration: underline;
     }
 
-    .tile {
-        border-width: 1px;
-    }
 
      .definition:empty {
          pointer-events: none;

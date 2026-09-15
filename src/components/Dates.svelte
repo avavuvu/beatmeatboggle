@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { tick } from "./icons/tick.svelte"
+    import { logo } from "./icons/logo.svelte"
+
     const { dates, paid, pastGames }: {
         dates: string[],
         paid: boolean,
@@ -62,11 +65,13 @@
 
                             {#if pastGames[isoKey] !== undefined}
                                 {@const hasFinishedGame = pastGames[isoKey]}
-                                {#if hasFinishedGame}
-                                    ☑️
-                                {:else}
-                                    ⏰
-                                {/if}
+                                <span class="inline-block w-4 h-4 align-middle">
+                                    {#if hasFinishedGame}
+                                        {@render tick()}
+                                    {:else}
+                                        {@render logo()}
+                                    {/if}
+                                </span>
                             {:else}
                                 {date[2]}
                             {/if}

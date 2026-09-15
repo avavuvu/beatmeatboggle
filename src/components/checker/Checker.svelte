@@ -122,7 +122,7 @@
                 compact/>
 
             <div class="my-2 text-muted">
-                The Boggle board game does not have an official word list. This word-checker is designed for the online word game <a href="/">Beat Me at Boggle.</a> It can also be used for games of pen-and-paper Boggle, as well as Scrabble and other word games. <a href="/about/words">Click here to find out what counts as a word.</a>
+                The Boggle board game does not have an official word list. This word checker is designed for the online word game <a href="/">Beat Me at Boggle</a>. It can also be used for games of pen-and-paper Boggle, as well as Scrabble and other word games. <a href="/about/words">Click here to find out what counts as a word.</a>
             </div>
         </div>
 

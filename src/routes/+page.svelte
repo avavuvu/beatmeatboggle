@@ -6,10 +6,7 @@
 
 </script>
 
-<Head
-    title="Beat Me At Boggle"
-
-    />
+<Head />
 
 <svg
     class="max-w-3xl mx-auto mt-4"
@@ -34,7 +31,7 @@
     <h1 class="px-2">
         <span> Beat </span>
         <span> Me </span>
-        <span> At </span>
+        <span> at </span>
         <span> Boggle </span>
     </h1>
 
@@ -47,7 +44,7 @@
                 my score.
             </p>
             <p>
-                If you manage to beat me-- well you don't get anything. Except maybe
+                If you manage to beat me -- well, you don't get anything. Except maybe
                 the satisfaction of knowing you're better at Boggle than me.
             </p>
         </div>
@@ -58,16 +55,21 @@
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wrap justify-between">
+        <ul class="flex gap-6 flex-wrap justify-between sm:justify-start">
+            <li>
+                <a class="underline" href="/settings"> settings </a>
+            </li>
             <li>
                 <a class="underline" href="/archive"> archive </a>
             </li>
             <li>
                 <a class="underline" href="/practice"> practice </a>
             </li>
-            <li>
-                <a class="underline" href="/settings"> settings </a>
-            </li>
+        </ul>
+    </aside>
+
+    <aside class="border p-4 my-4">
+        <ul class="flex gap-6 flex-wrap justify-between">
             <li>
                 <a class="underline" href="/howtoplay"> how to play</a>
             </li>

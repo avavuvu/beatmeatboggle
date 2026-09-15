@@ -6,6 +6,6 @@
     const { data }: { data: PageData } = $props()
 </script>
 
-<Head title="Practice — Beat Me At Boggle" />
+<Head title="Practice" />
 
 <Game board={data.board} dateKey={data.practiceKey} playerStatus="practice" opponentWords={null} />

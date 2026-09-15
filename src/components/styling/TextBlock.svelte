@@ -7,10 +7,6 @@
     } = $props()
 </script>
 
-<svelte:head>
-    <title>{title} — Beat Me at Boggle</title>
-</svelte:head>
-
 
 <div class="text-foreground max-w-3xl my-10 mx-auto px-4">
     <span class="inline-flex gap-4 w-full">

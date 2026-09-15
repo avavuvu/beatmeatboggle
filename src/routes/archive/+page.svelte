@@ -28,7 +28,7 @@
 
 </script>
 
-<Head title="Archive — Beat Me At Boggle" description="Past puzzles from Beat Me At Boggle" />
+<Head title="Archive" description="Past puzzles from Beat Me at Boggle" />
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">
     <span class="inline-flex justify-between gap-[2ch] w-full">
@@ -41,7 +41,7 @@
             <a class="underline" href="/auth/login">Sign in</a>
         {:else}
             <form method="POST" action="/auth/logout">
-                <button type="submit" class="underline cursor-pointer">Sign Out</button>
+                <button type="submit" class="underline cursor-pointer">Sign out</button>
             </form>
         {/if}
     </span>
@@ -58,7 +58,7 @@
 
         <div class="py-4">
             {#if kickback}
-            <p class="text-red-400">You must subscribe to play practice games.</p>
+            <p >You must subscribe to view past puzzles.</p>
                 <p>
                     <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
                 </p>
@@ -67,8 +67,9 @@
                     <p>You're connected but not yet a member.</p>
                     <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
                     <span> to access past puzzles.</span>
-                {:else}
+                {:else if !data.tier}
                     <p>Past puzzles are available to Patreon supporters.</p>
+                    <p>If you like my work, please consider subscribing! It would mean a lot.</p>
                     <a class="underline" href="/auth/login">Connect with Patreon</a>
                 {/if}
             {/if}

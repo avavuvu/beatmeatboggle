@@ -2,6 +2,9 @@ import seedrandom from "seedrandom"
 import { getAdjacentPositions } from "../constants"
 import { solve } from "../dictionary/solver"
 import dictionaryManager from "../dictionary/DictionaryManager"
+import type { Dice } from "../board"
+
+export type BoardGenerator = (seed: string, gridSize: number) => string[]
 
 type Rng = () => number
 
@@ -215,4 +218,9 @@ const removeDeadLetters = (rng: Rng, board: string[], gridSize: number): string[
     }
 
     return board
+}
+
+export const GENERATORS: Record<Dice, BoardGenerator> = {
+    classic: generateClassic,
+    word: generateWithWord,
 }
