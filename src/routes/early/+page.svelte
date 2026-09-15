@@ -1,25 +1,48 @@
 <script lang="ts">
-    import { enhance } from '$app/forms'
-    import Logo from "@/Logo.svelte"
-    const { form }: { form: { error?: string } | null } = $props()
+    import { goto, invalidateAll } from "$app/navigation";
+    import Game from "@/Game.svelte";
+    import Logo from "@/Logo.svelte";
+
+    let password = $state("");
+    let error = $state("");
+
+    const login = async () => {
+        error = "";
+
+        const res = await fetch("/early/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password }),
+        });
+
+        if (res.ok) {
+            const { token } = await res.json();
+            localStorage.setItem("admin_token", token);
+            await goto("/early/admin");
+            error = "success";
+        } else {
+            error =
+                res.status === 429 ? "Too many attempts." : "Wrong password.";
+        }
+    };
 </script>
 
 <div class="max-w-32 mx-auto mt-48 p-4">
     <Logo />
 </div>
 <main class="mx-auto w-96 p-8 border text-center text-foreground">
-    <form method="POST" use:enhance>
-        {#if form?.error}
-            <p class="text-red-500">{form.error}</p>
+    <form onsubmit={login}>
+        {#if error}
+            <p class="text-red-500">{error}</p>
         {/if}
 
         <h1>login</h1>
 
         <div class="border w-min mx-auto flex items-center">
             <input
-                class="p-2 bg-foreground text-surface"
+                class=" p-2 bg-foreground text-surface"
                 type="password"
-                name="password"
+                bind:value={password}
             />
             <!-- svelte-ignore a11y_consider_explicit_label -->
             <button

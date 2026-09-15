@@ -14,7 +14,7 @@
     </p>
 
     <p>
-        The first version of <i>BM@B</i> used the Scrabble dictionary. If you've ever played a game of Scrabble with me, you will know that there are issues with the Scrabble dictionary. My friend Ria hates playing against me because I will -- without shame -- play <i><a href="https://scrabblecheck.com/qis">QIS</a>, <a href="https://scrabblecheck.com/qat">QAT</a>, <a href="https://scrabblecheck.com/za">ZA</a>, <a href="https://scrabblecheck.com/oe">OE</a>, and <a href="https://scrabblecheck.com/zetas">ZETAS</a></i>. The Scrabble dictionary is just a bit too liberal with what it counts as word. I found that people would just try random plausible combinations of letters, and more often than not, the generous Scrabble dictionary would count it.
+        The first version of <i>BM@B</i> used the Scrabble dictionary. If you've ever played a game of Scrabble with me, you will know that there are issues with the Scrabble dictionary. My friend Ria hates playing against me because I will -- without shame -- play <i><a href="/checker/qis?scrabble">QIS</a>, <a href="/checker/qat?scrabble">QAT</a>, <a href="/checker/za?scrabble">ZA</a>, <a href="/checker/oe?scrabble">OE</a>, and <a href="/checker/zetas?scrabble">ZETAS</a></i>. The Scrabble dictionary is just a bit too liberal with what it counts as word. I found that people would just try random plausible combinations of letters, and more often than not, the generous Scrabble dictionary would count it.
     </p>
 
     <p>
@@ -26,32 +26,4 @@
 
 
     </p>
-
-    <p>
-        The table below breaks down the logic.
-    </p>
-
-    <table>
-        <thead>
-        <tr>
-            <td>Length</td>
-            <td>Include If</td>
-            <td>For nerds</td>
-        </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="font-compat">&lt; 5</td>
-                <td>In 12dicts</td>
-                <td><p>word &#x2208; 12dicts</p>
-</td>
-            </tr>
-            <tr>
-                <td class="font-compat">&#x2265; 5</td>
-                <td>In 12dicts, or in Scrabble dictionary AND Spread The Word List</td>
-                <td><p>word &#x2208; 12dicts &#x2228; (word &#x2208; Scrabble &#x2227; word &#x2208; STWL)</p>
-</td>
-            </tr>
-        </tbody>
-    </table>
 </TextBlock>

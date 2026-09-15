@@ -1,12 +1,12 @@
-import type GameSession from "./GameSession.svelte"
+import type GameManager from "./GameManager.svelte"
 
 const PROXIMITY_THRESHOLD = 0.38
 const MIN_MOVE_PX = 3
 
 class InputController {
-    game: GameSession
+    game: GameManager
 
-    constructor(game: GameSession) {
+    constructor(game: GameManager) {
         this.game = game
     }
 
@@ -25,8 +25,8 @@ class InputController {
         clientY: number,
         rect: DOMRect
     ): [number, number] => {
-        const svgX = ((clientX - rect.left) / rect.width) * this.game.board.size
-        const svgY = ((clientY - rect.top) / rect.height) * this.game.board.size
+        const svgX = ((clientX - rect.left) / rect.width) * this.game.session.board.size
+        const svgY = ((clientY - rect.top) / rect.height) * this.game.session.board.size
         return [svgX, svgY]
     }
 
@@ -34,9 +34,9 @@ class InputController {
         let bestIndex = -1
         let bestDist = PROXIMITY_THRESHOLD
 
-        for (let i = 0; i < this.game.board.size * this.game.board.size; i++) {
-            const cx = (i % this.game.board.size) + 0.5
-            const cy = Math.floor(i / this.game.board.size) + 0.5
+        for (let i = 0; i < this.game.session.board.size * this.game.session.board.size; i++) {
+            const cx = (i % this.game.session.board.size) + 0.5
+            const cy = Math.floor(i / this.game.session.board.size) + 0.5
             const dist = Math.hypot(svgX - cx, svgY - cy)
             if (dist < bestDist) {
                 bestDist = dist
@@ -49,6 +49,8 @@ class InputController {
 
     inputKey = (event: KeyboardEvent) => {
         if (!this.game.isPlayingGame) return
+        event.preventDefault()
+
         switch (event.key) {
             case "Backspace":
                 this.game.removeLast()

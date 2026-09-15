@@ -4,50 +4,27 @@
     import { page } from "$app/state";
     import { fade, slide } from "svelte/transition";
     import preferences from "$lib/Preferences.svelte"
-    import definitionManaager from "$lib/DefinitionManager.svelte"
-    import type GameSession from "$lib/GameSession.svelte"
+    import type GameManager from "$lib/GameManager.svelte"
     import favicon from "$lib/assets/favicon.svg"
+    import WordList from "./WordList.svelte"
+    import { challengeManager } from "$lib/challenge/challenge.svelte"
 
-    const { session }: {
-        session: GameSession
+    const { game }: {
+        game: GameManager
     }  = $props()
 
     // svelte-ignore state_referenced_locally
     const {
         scores,
-        totalWordSet,
         didWin,
-        avasWordMap,
+        opponentWordMap,
         playerWordMap,
         totalWordsMap,
-        hasComparison
-    } = scoreTracker.getReveal(session.foundWords, session.totalPossibleWords)
+        opponentName
+    } = scoreTracker.getReveal(game.foundWords, game.session.totalPossibleWords)
 
     // svelte-ignore state_referenced_locally
-    const isPractice = session.playerState === "practice"
-
-    let shareLink = $state(page.url.origin);
-
-    let shareButtonText = $state("Share");
-
-    const shareText = $derived(
-        !hasComparison
-            ? "I just played a practice game of Boggle!"
-            : didWin
-                ? `I beat Ava at Boggle!${preferences.settings.fairFight.value && " (And it was a fair fight!)"}`
-                : "I couldn't quite beat Ava at Boggle :(",
-    );
-
-    const share = async () => {
-        const data = { title: "Beat Me At Boggle", text: shareText, shareLink };
-
-        if (navigator.share) {
-            await navigator.share(data);
-        } else {
-            await navigator.clipboard.writeText(shareLink);
-            shareButtonText = "Copied to Clipboard";
-        }
-    };
+    const isPractice = game.session.playerState === "practice"
 
     const delay = 1000;
 
@@ -69,18 +46,19 @@
 
     const getDelayStyle = (index: number) => `transition-delay: ${delay + index * 400}ms;`
 
-    let selectedWord = $state("")
-    const handleDictionaryWordClick = async (word: string, section: "ava" | "player" | "total") => {
-        const id = `${word}-${section}`
+    const opponentWords = $derived(opponentWordMap.map(([word]) => word))
+    const opponentFoundWords = $derived(
+        new Set(opponentWordMap.filter(([, wasFound]) => wasFound).map(([word]) => word))
+    )
 
-        if(selectedWord === id) {
-            // fetch definition
-            await definitionManaager.setWord(word)
-            return
-        }
+    const playerWords = $derived(playerWordMap.map(([word]) => word))
+    const playerUniqueWords = $derived(
+        new Set(playerWordMap.filter(([, isUnique]) => isUnique).map(([word]) => word))
+    )
 
-        selectedWord = id
-    }
+    const totalWords = $derived(totalWordsMap.map(([word]) => word))
+
+    const topScore = $derived(Math.max(scores.you, scores.opponent, game.averageGameScore ?? 0, 1))
 </script>
 
 {#snippet chartBar(index: number, score: number, name: string )}
@@ -101,28 +79,9 @@
     <div
         class:player={name === "You!"}
         class="bar text-xs text-surface transition-all duration-500 ease-out"
-        style="height: {mounted
-            ? (Number(score) / totalWordSet.size) * 100
-            : 0}%; {getDelayStyle(index)}"
+        style="height: {mounted ? (score / topScore) * 100 : 0}%; {getDelayStyle(index)}"
     ></div>
 </div>
-{/snippet}
-
-{#snippet dictionaryWord(word: string, section: "ava" | "player" | "total")}
-    {@const isSelected = selectedWord === `${word}-${section}`}
-	<button
-        class="flex overflow-hidden cursor-pointer"
-        class:selected-word={isSelected}
-        onclick={() => handleDictionaryWordClick(word, section)}>
-        <span class="whitespace-nowrap overflow-hidden max-w-0 transition-all duration-200"
-            class:max-w-0={!isSelected}
-            style={isSelected ? `max-width: calc(${word.length}ch + 6rem)` : ''}>
-            define "
-        </span>
-        <span>{word}</span>
-        <span class:max-w-0={!isSelected}>"</span>
-    </button>
-
 {/snippet}
 
 <div
@@ -141,9 +100,9 @@
             </a>
         {:else}
             {@render chartBar(0, scores.you, "You!")}
-            {@render chartBar(1, scores.ava, "Ava")}
-            {#if session.averageGameScore}
-                {@render chartBar(2, session.averageGameScore, "Average")}
+            {@render chartBar(1, scores.opponent, opponentName)}
+            {#if game.averageGameScore}
+                {@render chartBar(2, game.averageGameScore, "Average")}
             {:else}
                 <div class="w-full flex justify-center items-center">
                     <img
@@ -155,76 +114,51 @@
     </div>
     <div class="row-span-2 overflow-y-scroll p-2">
         {#if !isPractice}
-            <h3 class="font-bold">Ava's words</h3>
-            <ul class=" flex flex-wrap gap-2 h-min">
-                {#each avasWordMap as [word, wasFound]}
-                    <li class:found={wasFound}>
-                        {@render dictionaryWord(word, "ava")}
-                    </li>
-                {/each}
-            </ul>
+            <h3 class="font-bold">{opponentName}'s words</h3>
+            <WordList
+                words={opponentWords}
+                itemClass={(word) => opponentFoundWords.has(word) ? "found" : undefined}
+            />
 
             <hr class="my-4"/>
         {/if}
 
         <h3 class="font-bold">Your words</h3>
-        <ul class="flex flex-wrap gap-2 h-min">
-            {#each playerWordMap as [word, wasFound]}
-                <li class:unique={wasFound}>
-                    {@render dictionaryWord(word, "player")}
-                </li>
-            {/each}
-        </ul>
+        <WordList
+            words={playerWords}
+            itemClass={(word) => playerUniqueWords.has(word) ? "unique" : undefined}
+        />
 
         <hr class="my-4"/>
 
         <h3 class="font-bold">All words</h3>
         <p class="italic text-accent">Click on a word to see its definition</p>
-        <ul class="flex flex-wrap gap-2 h-min">
-            {#each totalWordsMap as [word]}
-                <li>
-                    {@render dictionaryWord(word, "total")}
-                </li>
-            {/each}
-        </ul>
+        <WordList words={totalWords} />
     </div>
     <div class="bubble-container flex gap-1 flex-col [align-items:end]">
         <div class="imessage-bubble">
             {#if isPractice}
                 Nice game!
             {:else if didWin}
-                I beat Ava at Boggle!
+                I beat {opponentName} at Boggle!
             {:else}
-                I couldn't quite beat Ava at Boggle :{"("}
+                I couldn't quite beat {opponentName} at Boggle :{"("}
             {/if}
             <div class="bubble-tail"></div>
         </div>
-        <button
-            class="imessage-bubble underline cursor-pointer"
-            onclick={share}
-        >
-            {shareButtonText}
-            <div class="bubble-tail"></div>
-        </button>
+        {#if !isPractice}
+            <button
+                class="imessage-bubble underline cursor-pointer"
+                onclick={() => challengeManager.showChallenge = true}
+            >
+                Challenge someone else!
+                <div class="bubble-tail"></div>
+            </button>
+        {/if}
     </div>
 </div>
 
 <style>
-    li {
-        interpolate-size: allow-keywords;
-        width: max-content;
-        transition: all 200ms ease;
-
-    }
-
-    li:has(.selected-word) {
-        width: max-content;
-        /*border: 1px solid var(--color-border);*/
-        text-decoration: underline;
-        background-color: var(--color-foreground);
-        color: var(--color-surface);
-    }
-
     .move {
         position: unset;
         color: var(--color-foreground);
@@ -238,42 +172,11 @@
         background-color: var(--color-muted);
     }
 
-    .found {
-	    background-color: var(--color-muted);
-	    color: var(--color-surface);
-    }
-
-    .found::after {
-    	content: "you found!";
-    	position: absolute;
-    	font-size: xx-small;
-    	left: 50%;
-    	transform: translateX(-50%);
-    	bottom: -6px;
-    }
-
-    .unique {
-    	position: relative;
-    }
-
-    .unique:has(.selected-word)::after {
-        display: none;
-    }
-
-    .unique::after {
-    	content: "unique!";
-    	position: absolute;
-    	font-size: xx-small;
-    	left: 50%;
-    	transform: translateX(-50%);
-    	bottom: -6px;
-    }
-
-    .bubble-container {
+    :global(.bubble-container) {
         padding: 0.5rem;
     }
 
-    .imessage-bubble {
+    :global(.imessage-bubble) {
         position: relative;
         background: var(--color-foreground);
         color: var(--color-surface);
@@ -287,7 +190,7 @@
         line-height: 1.3;
     }
 
-    .bubble-tail {
+    :global(.bubble-tail) {
         position: absolute;
         bottom: 0;
         right: -6px;

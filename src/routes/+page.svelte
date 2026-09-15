@@ -29,16 +29,6 @@
     /></svg
 >
 
-{#snippet nav()}
-	<nav class="flex gap-6 flex-wrap justify-between">
-        <a class="underline" href="/play"> play </a>
-	    <div>
-            <a class="underline" href="/archive"> archive </a>
-            <a class="underline" href="/practice"> practice </a>
-            <a class="underline" href="/settings"> settings </a>
-		</div>
-    </nav>
-{/snippet}
 
 <div class="text-foreground max-w-4xl mx-auto px-4">
     <h1 class="px-2">
@@ -48,41 +38,50 @@
         <span> Boggle </span>
     </h1>
 
-    <main class="border p-4 *>py-2">
-        {#if playedBefore}
-            <h2 class="font-bold">Want to play past puzzles?</h2>
-
-            <p>Previous puzzles are available to Patreon subscribers. If you like BM@B, consider subscribing. It would mean the world. </p>
-
-            <br />
-
-            {@render nav()}
-
-        {:else}
+    <main class="border ">
+        <div class="p-4 *>py-2">
             <h2 class="font-bold">My name is Ava and I like Boggle</h2>
-            <p>So much so, I decided to made this online version.</p>
+            <p>So much so, I decided to make this online version.</p>
             <p>
                 Every day, I play a game of Boggle. The next day, you try and beat
                 my score.
             </p>
             <p>
-                If you manage to beat me—— well you don't get anything. Except maybe
+                If you manage to beat me-- well you don't get anything. Except maybe
                 the satisfaction of knowing you're better at Boggle than me.
             </p>
-            <br />
-
-            {@render nav()}
-        {/if}
+        </div>
+        <div class="w-full bg-foreground flex  justify-center text-surface">
+            <a class="" href="/play"> {">"} Play Today's Game! {"<"} </a>
+         </div>
 
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wrap">
+        <ul class="flex gap-6 flex-wrap justify-between">
+            <li>
+                <a class="underline" href="/archive"> archive </a>
+            </li>
+            <li>
+                <a class="underline" href="/practice"> practice </a>
+            </li>
+            <li>
+                <a class="underline" href="/settings"> settings </a>
+            </li>
+            <li>
+                <a class="underline" href="/howtoplay"> how to play</a>
+            </li>
             <li>
                 <a class="underline" href="/about"> about me </a>
             </li>
             <li>
                 <a class="underline" href="/about/words"> about the dictionary </a>
+            </li>
+            <li>
+                <a class="underline" href="/checker"> word checker </a>
+            </li>
+            <li>
+                <a class="underline" href="/solver"> solver </a>
             </li>
         </ul>
     </aside>

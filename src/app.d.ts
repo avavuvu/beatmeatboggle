@@ -1,8 +1,8 @@
 declare global {
     namespace App {
         interface Error {
-            code: string
-            id: string
+            code?: string
+            id?: string
         }
     }
 }

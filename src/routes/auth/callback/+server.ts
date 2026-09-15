@@ -5,8 +5,8 @@ import {
     PUBLIC_PATREON_REDIRECT_URI,
 } from "$env/static/public"
 import { PATREON_CLIENT_SECRET, PATREON_CAMPAIGN_ID } from "$env/static/private"
-import { createSession } from "$lib/session"
-import type { PatronSession, PatronTier } from "$lib/session"
+import { createSession } from "$lib/server/session"
+import type { PatronSession, PatronTier } from "$lib/server/session"
 import type { RequestEvent } from "@sveltejs/kit"
 
 export const GET = async ({ url, cookies }: RequestEvent) => {

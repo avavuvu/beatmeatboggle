@@ -2,8 +2,8 @@ import type { RequestEvent } from "@sveltejs/kit"
 import { db } from "../../../db"
 import { avasWords } from "../../../db/schema"
 import { desc } from "drizzle-orm"
-import { parseSession } from "$lib/session"
-import type { PatronSession } from "$lib/session"
+import { parseSession } from "$lib/server/session"
+import type { PatronSession } from "$lib/server/session"
 import { toISODateKey } from "$lib/constants"
 
 let cachedDateKeys: string[] | null = null

@@ -8,4 +8,4 @@
 
 <Head title="Practice — Beat Me At Boggle" />
 
-<Game board={data.board} dateKey={data.practiceKey} playerStatus="practice" avasWords={null} totalWords={null} />
+<Game board={data.board} dateKey={data.practiceKey} playerStatus="practice" opponentWords={null} />

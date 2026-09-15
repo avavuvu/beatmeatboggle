@@ -5,29 +5,36 @@
         optionOn,
         description,
         checked = $bindable(false),
+        compact = false,
     }: {
         heading: string;
-        optionOff: string;
+        optionOff?: string;
         optionOn: string;
         description?: string;
         checked?: boolean;
+        compact?: boolean;
     } = $props();
 
     const id = $derived(heading.toLowerCase());
 </script>
 
+{#if !compact}
 <h2 class="font-bold">{heading}</h2>
+{/if}
 
 {#if description}
     <p class="italic">{description}</p>
 {/if}
 
 <div
-    class="setting grid-cols-[1fr_auto_1fr] gap-2 grid items-center h-12 mb-2 text-center"
+    class:compact
+    class="setting gap-2 grid items-center h-12 mb-2 text-center"
 >
-    <label class="option-off cursor-pointer" for={id}>
-        {optionOff}
-    </label>
+    {#if !compact}
+        <label class="option-off cursor-pointer" for={id}>
+            {optionOff}
+        </label>
+    {/if}
     <label class="switch">
         <input type="checkbox" {id} bind:checked />
         <span class="slider"></span>
@@ -45,14 +52,12 @@
         height: 34px;
     }
 
-    /* Hide default HTML checkbox */
     .switch input {
         opacity: 0;
         width: 0;
         height: 0;
     }
 
-    /* The slider */
     .slider {
         position: absolute;
         cursor: pointer;
@@ -77,6 +82,17 @@
         -webkit-transition: 0.4s;
         transition: 0.4s;
     }
+
+    .setting {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+    }
+
+    .setting.compact {
+        display: flex;
+        grid-template-columns: unset;
+    }
+
 
     .setting:has(input:checked) .option-on {
         text-decoration: underline;

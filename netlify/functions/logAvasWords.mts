@@ -7,7 +7,6 @@ export default async function logAvasWords(req: Request, context: Context) {
         return new Response("Method Not Allowed", { status: 405 })
     }
 
-    // Admin auth check
     const token = req.headers.get("authorization")
     if (token !== process.env.ADMIN_TOKEN) {
         return new Response("Unauthorized", { status: 401 })
@@ -15,13 +14,11 @@ export default async function logAvasWords(req: Request, context: Context) {
 
     let dateKey: string
     let words: string[]
-    let totalWords: string[]
 
     try {
         const body = await req.json()
         dateKey = body.dateKey
         words = body.words
-        totalWords = body.totalWords
 
         if (!dateKey || !Array.isArray(words)) {
             return Response.json(
@@ -35,17 +32,10 @@ export default async function logAvasWords(req: Request, context: Context) {
 
     await db
         .insert(avasWords)
-        .values({
-            dateKey,
-            words,
-            totalWords,
-        })
+        .values({ dateKey, words })
         .onConflictDoUpdate({
             target: avasWords.dateKey,
-            set: {
-                words,
-                totalWords,
-            },
+            set: { words },
         })
 
     return Response.json(

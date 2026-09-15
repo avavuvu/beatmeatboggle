@@ -1,6 +1,6 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
-    import type { PatronTier } from "$lib/session"
+    import type { PatronTier } from "$lib/server/session"
     import Dates from "@/Dates.svelte"
     import { page } from "$app/state"
 
