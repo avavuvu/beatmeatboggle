@@ -3,6 +3,7 @@
     import type { PatronTier } from "$lib/server/session"
     import Dates from "@/Dates.svelte"
     import { page } from "$app/state"
+    import { onMount } from "svelte"
 
     const { data }: {
         data: {
@@ -16,15 +17,18 @@
 
     const kickback = $derived(page.url.searchParams.get("kickback") !== null)
 
-    let pastGames: Record<string, boolean> = {}
-    for(const [key, item] of Object.entries(localStorage)) {
-        if(key.startsWith("boggle_") && key !== "boggle_settings") {
-            const itemData = JSON.parse(item)
-            const date = key.replace("boggle_", "")
+    let pastGames: Record<string, boolean> = $state({})
 
-            pastGames[date] = itemData.gameOver
+    onMount(() => {
+        for (const [key, item] of Object.entries(localStorage)) {
+            if (key.startsWith("boggle_") && key !== "boggle_settings") {
+                const itemData = JSON.parse(item)
+                const date = key.replace("boggle_", "")
+
+                pastGames[date] = itemData.gameOver
+            }
         }
-    }
+    })
 
 </script>
 
