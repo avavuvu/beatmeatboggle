@@ -166,7 +166,10 @@ const recheck = async (session: PatronSession): Promise<PatronSession | null> =>
     }
 }
 
-export const resolvePatronSession = async (cookies: Cookies): Promise<PatronSession | null> => {
+export const resolvePatronSession = async (
+    cookies: Cookies,
+    force = false
+): Promise<PatronSession | null> => {
     const session = readPatronCookie(cookies)
 
     if (!session) {
@@ -174,7 +177,7 @@ export const resolvePatronSession = async (cookies: Cookies): Promise<PatronSess
         return null
     }
 
-    if (!isStale(session)) {
+    if (!force && !isStale(session)) {
         return session
     }
 

@@ -1,5 +1,6 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
+    import JoinPatreon from "@/JoinPatreon.svelte"
     import type { PatronTier } from "$lib/server/session"
     import PracticeForm from "@/PracticeForm.svelte"
     import { page } from "$app/state";
@@ -48,12 +49,12 @@
             {#if kickback}
                 <p >You must subscribe to play practice games.</p>
                 <p>
-                    <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
+                    <JoinPatreon tier={data.tier} />
                 </p>
             {:else}
                 {#if data.tier === 'free'}
                     <p>You're connected but not yet a member.</p>
-                    <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
+                    <JoinPatreon tier={data.tier} />
                     <span> to play practice games.</span>
                 {:else if !data.tier}
                     <p>Practice games are available to Patreon supporters.</p>

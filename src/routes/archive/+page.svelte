@@ -1,5 +1,6 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
+    import JoinPatreon from "@/JoinPatreon.svelte"
     import type { PatronTier } from "$lib/server/session"
     import Dates from "@/Dates.svelte"
     import { page } from "$app/state"
@@ -64,12 +65,12 @@
             {#if kickback}
             <p >You must subscribe to view past puzzles.</p>
                 <p>
-                    <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
+                    <JoinPatreon tier={data.tier} />
                 </p>
             {:else}
                 {#if data.tier === 'free'}
                     <p>You're connected but not yet a member.</p>
-                    <a class="underline" href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Join on Patreon</a>
+                    <JoinPatreon tier={data.tier} />
                     <span> to access past puzzles.</span>
                 {:else if !data.tier}
                     <p>Past puzzles are available to Patreon supporters.</p>
