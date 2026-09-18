@@ -74,10 +74,13 @@
                 <a class="underline" href="/howtoplay"> how to play</a>
             </li>
             <li>
-                <a class="underline" href="/about"> about me </a>
+                <a class="underline" href="/about"> about </a>
             </li>
             <li>
                 <a class="underline" href="/about/words"> about the dictionary </a>
+            </li>
+            <li>
+                <a class="underline" href="/about/words"> about the boards </a>
             </li>
             <li>
                 <a class="underline" href="/checker"> word checker </a>

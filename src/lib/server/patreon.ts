@@ -1,8 +1,9 @@
 import {
     PUBLIC_PATREON_CLIENT_ID,
     PUBLIC_PATREON_REDIRECT_URI,
+    PUBLIC_PATREON_CAMPAIGN_ID,
 } from "$env/static/public"
-import { PATREON_CLIENT_SECRET, PATREON_CAMPAIGN_ID } from "$env/static/private"
+import { PATREON_CLIENT_SECRET, PATREON_CREATOR_TOKEN } from "$env/static/private"
 import type { Cookies } from "@sveltejs/kit"
 import {
     PATRON_COOKIE,
@@ -112,7 +113,7 @@ export const fetchIdentity = async (accessToken: string): Promise<PatreonIdentit
     const member = (included ?? []).find(
         (m: MemberInclude) =>
             m.type === "member" &&
-            m.relationships?.campaign?.data?.id === PATREON_CAMPAIGN_ID
+            m.relationships?.campaign?.data?.id === PUBLIC_PATREON_CAMPAIGN_ID
     ) as MemberInclude | undefined
 
     const isPaid =
@@ -193,4 +194,68 @@ export const resolvePatronSession = async (
     }
 
     return fresh
+}
+
+type MemberResponse = {
+    data: {
+        attributes: {
+            full_name: string
+            patron_status: string | null
+            currently_entitled_amount_cents: number
+        }
+    }[]
+    meta: { pagination: { cursors?: { next: string | null } } }
+}
+
+export const fetchMembers = async (): Promise<Record<number, string[]>> => {
+    const members: Array<{ name: string, cents: number}> = []
+    let cursor: string | null = null
+
+    do {
+        const params = new URLSearchParams({
+            "fields[member]": "full_name,patron_status,currently_entitled_amount_cents",
+            "page[size]": "100",
+        })
+
+        if (cursor) {
+            params.set("page[cursor]", cursor)
+        }
+
+        const response = await fetch(
+            `https://www.patreon.com/api/oauth2/v2/campaigns/${PUBLIC_PATREON_CAMPAIGN_ID}/members?${params}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${PATREON_CREATOR_TOKEN}`,
+                    "User-Agent": USER_AGENT,
+                },
+            }
+        )
+
+        if (!response.ok) {
+            throw new Error(`patreon members request failed: ${response.status}`)
+        }
+
+        const { data, meta }: MemberResponse = await response.json()
+
+        for (const { attributes } of data) {
+            if (
+                attributes.patron_status === "active_patron"
+            ) {
+                members.push({
+                    name: attributes.full_name,
+                    cents: attributes.currently_entitled_amount_cents,
+                })
+            }
+        }
+
+        cursor = meta.pagination.cursors?.next ?? null
+    } while (cursor)
+
+    const byTier: Record<number, string[]> = {}
+
+    for (const { name, cents } of members.toSorted((a, b) => a.name.localeCompare(b.name))) {
+        ;(byTier[cents] ??= []).push(name)
+    }
+
+    return byTier
 }
