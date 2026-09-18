@@ -1,13 +1,16 @@
-// See https://svelte.dev/docs/kit/types#app.d.ts
-// for information about these interfaces
+import type { PatronSession } from "$lib/server/session"
+
 declare global {
-	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface PageState {}
-		// interface Platform {}
-	}
+    namespace App {
+        interface Error {
+            code?: string
+            id?: string
+        }
+
+        interface Locals {
+            patron: PatronSession | null
+        }
+    }
 }
 
-export {};
+export {}

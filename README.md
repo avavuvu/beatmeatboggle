@@ -1,3 +1,5 @@
 # Beat Me At Boggle
 
-beatmeatboggle.com
+Beat Me At Boggle is my daily word game, play today's game at [beatmeatboggle.com](https://beatmeatboggle.com)
+
+It is written in Typescript and Svelte with Tailwind

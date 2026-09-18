@@ -1,4 +1,4 @@
-export type PlayerState = "ava" | "player"
+export type PlayerState = "ava" | "player" | "practice"
 
 export const RESULT_KEY_PREFIX = "result_"
 export const SCORE_KEY_PREFIX = "scores_"
@@ -30,7 +30,7 @@ export const getAdjacentPositions = (index: number, gridSize: number) => {
 }
 
 export const description =
-    "Every day I play a game of Boggle. Every day you try and beat my score."
-export const title = "Beat Me At Boggle"
+    "Every day, I play a game of Boggle. Every day, you try and beat my score."
+export const title = "Beat Me at Boggle"
 
 export const siteUrl = "https://beatmeatboggle.com"

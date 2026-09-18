@@ -5,7 +5,7 @@
     import { fade, slide } from "svelte/transition";
     import preferences from "$lib/Preferences.svelte"
     import type GameManager from "$lib/GameManager.svelte"
-    import favicon from "$lib/assets/favicon.svg"
+    import { logo } from "./icons/logo.svelte"
     import WordList from "./WordList.svelte"
     import { challengeManager } from "$lib/challenge/challenge.svelte"
 
@@ -22,6 +22,9 @@
         totalWordsMap,
         opponentName
     } = scoreTracker.getReveal(game.foundWords, game.session.totalPossibleWords)
+
+    // svelte-ignore state_referenced_locally
+    const isPractice = game.session.playerState === "practice"
 
     const delay = 1000;
 
@@ -86,26 +89,42 @@
     class="game-over h-full grid grid-rows-4 bg-surface border border-border"
 >
     <div class="flex gap-1 w-full min-h-0 p-2">
-        {@render chartBar(0, scores.you, "You!")}
-        {@render chartBar(1, scores.opponent, opponentName)}
-        {#if game.averageGameScore}
-            {@render chartBar(2, game.averageGameScore, "Average")}
+        {#if isPractice}
+            {@render chartBar(0, scores.you, "You!")}
+            <a
+                href="/practice"
+                class="w-full flex justify-center items-center underline text-center"
+                style="opacity: {Number(mounted) * 100}%; {getDelayStyle(1)}"
+            >
+                Play Again
+            </a>
         {:else}
-            <div class="w-full flex justify-center items-center">
-                <img
-                    style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
-                    src="{favicon}" alt="" class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]">
-            </div>
+            {@render chartBar(0, scores.you, "You!")}
+            {@render chartBar(1, scores.opponent, opponentName)}
+            {#if game.averageGameScore}
+                {@render chartBar(2, game.averageGameScore, "Average")}
+            {:else}
+                <div class="w-full flex justify-center items-center">
+                    <div
+                        style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
+                        class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]"
+                    >
+                        {@render logo()}
+                    </div>
+                </div>
+            {/if}
         {/if}
     </div>
     <div class="row-span-2 overflow-y-scroll p-2">
-        <h3 class="font-bold">{opponentName}'s words</h3>
-        <WordList
-            words={opponentWords}
-            itemClass={(word) => opponentFoundWords.has(word) ? "found" : undefined}
-        />
+        {#if !isPractice}
+            <h3 class="font-bold">{opponentName}'s words</h3>
+            <WordList
+                words={opponentWords}
+                itemClass={(word) => opponentFoundWords.has(word) ? "found" : undefined}
+            />
 
-        <hr class="my-4"/>
+            <hr class="my-4"/>
+        {/if}
 
         <h3 class="font-bold">Your words</h3>
         <WordList
@@ -121,20 +140,24 @@
     </div>
     <div class="bubble-container flex gap-1 flex-col [align-items:end]">
         <div class="imessage-bubble">
-            {#if didWin}
+            {#if isPractice}
+                Nice game!
+            {:else if didWin}
                 I beat {opponentName} at Boggle!
             {:else}
                 I couldn't quite beat {opponentName} at Boggle :{"("}
             {/if}
             <div class="bubble-tail"></div>
         </div>
-        <button
-            class="imessage-bubble underline cursor-pointer"
-            onclick={() => challengeManager.showChallenge = true}
-        >
-            Challenge someone else!
-            <div class="bubble-tail"></div>
-        </button>
+        {#if !isPractice}
+            <button
+                class="imessage-bubble underline cursor-pointer"
+                onclick={() => challengeManager.showChallenge = true}
+            >
+                Challenge someone else!
+                <div class="bubble-tail"></div>
+            </button>
+        {/if}
     </div>
 </div>
 

@@ -1,12 +1,12 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
+    import { browser } from '$app/environment'
+
+    const playedBefore = browser && localStorage.length > 1
 
 </script>
 
-<Head
-    title="Beat Me At Boggle"
-
-    />
+<Head />
 
 <svg
     class="max-w-3xl mx-auto mt-4"
@@ -26,11 +26,12 @@
     /></svg
 >
 
+
 <div class="text-foreground max-w-4xl mx-auto px-4">
     <h1 class="px-2">
         <span> Beat </span>
         <span> Me </span>
-        <span> At </span>
+        <span> at </span>
         <span> Boggle </span>
     </h1>
 
@@ -43,7 +44,7 @@
                 my score.
             </p>
             <p>
-                If you manage to beat me-- well you don't get anything. Except maybe
+                If you manage to beat me -- well, you don't get anything. Except maybe
                 the satisfaction of knowing you're better at Boggle than me.
             </p>
         </div>
@@ -54,18 +55,32 @@
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wrap justify-between">
+        <ul class="flex gap-6 flex-wrap justify-between sm:justify-start">
             <li>
                 <a class="underline" href="/settings"> settings </a>
             </li>
             <li>
+                <a class="underline" href="/archive"> archive </a>
+            </li>
+            <li>
+                <a class="underline" href="/practice"> practice </a>
+            </li>
+        </ul>
+    </aside>
+
+    <aside class="border p-4 my-4">
+        <ul class="flex gap-6 flex-wrap justify-between">
+            <li>
                 <a class="underline" href="/howtoplay"> how to play</a>
             </li>
             <li>
-                <a class="underline" href="/about"> about me </a>
+                <a class="underline" href="/about"> about </a>
             </li>
             <li>
                 <a class="underline" href="/about/words"> about the dictionary </a>
+            </li>
+            <li>
+                <a class="underline" href="/about/words"> about the boards </a>
             </li>
             <li>
                 <a class="underline" href="/checker"> word checker </a>

@@ -14,7 +14,7 @@
 </script>
 
 <Head
-    title={"Settings"}
+    title="Settings"
     />
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">

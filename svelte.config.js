@@ -20,8 +20,11 @@ const config = {
 		}),
 		alias: {
 			"@": "src/components/"
+		},
+		experimental: {
+			handleRenderingErrors: true
 		}
-    },
+	},
 
 };
 

@@ -22,6 +22,10 @@ class ScoreTracker {
         return this.forceFairFight || preferences.settings.fairFight.value
     }
 
+    get hasComparison(): boolean {
+        return this.opponentWords !== null
+    }
+
     init = (
         totalWords: string[],
         opponentWords: string[] | null,
@@ -54,7 +58,8 @@ class ScoreTracker {
         words: string[],
         otherPlayersWords: string[],
         awardUniqueBonus: boolean,
-        fairFight: boolean
+        fairFight: boolean,
+        hasComparison: boolean = true
     ) =>
         words.reduce(
             (total, word) =>
@@ -63,7 +68,8 @@ class ScoreTracker {
                     word,
                     otherPlayersWords,
                     awardUniqueBonus,
-                    fairFight
+                    fairFight,
+                    hasComparison
                 ).points,
             0
         )
@@ -72,7 +78,8 @@ class ScoreTracker {
         word: string,
         otherPlayersWords: string[],
         awardUniqueBonus: boolean,
-        fairFight: boolean
+        fairFight: boolean,
+        hasComparison: boolean = true
     ) => {
         let points = 0
 
@@ -86,7 +93,11 @@ class ScoreTracker {
             },
         ]
 
-        if (awardUniqueBonus && !otherPlayersWords.includes(word)) {
+        if (
+            hasComparison &&
+            awardUniqueBonus &&
+            !otherPlayersWords.includes(word)
+        ) {
             const reason = fairFight ? "unique" : "opponent bonus"
 
             points += 1
@@ -116,7 +127,8 @@ class ScoreTracker {
                 word,
                 this.opponentWords || [],
                 true,
-                this.fairFight
+                this.fairFight,
+                this.hasComparison
             )
 
         this.pointsMap.set(word, scoreArray)
@@ -129,12 +141,14 @@ class ScoreTracker {
             word,
             this.opponentWords || [],
             true,
-            this.fairFight
+            this.fairFight,
+            this.hasComparison
         )
         this.pointsMap.set(word, scoreArray)
     }
 
     getReveal = (foundWords: string[], totalPossibleWords: string[]) => {
+        const hasComparison = this.hasComparison
         const playerWordSet = new Set(foundWords)
         const totalWordSet = new Set(totalPossibleWords)
         const opponentWordSet = new Set(this.opponentWords || [])
@@ -149,7 +163,7 @@ class ScoreTracker {
 
         const playerWordMap: WordMap = foundWords
             .toSorted()
-            .map((word) => [word, !opponentWordSet.has(word)])
+            .map((word) => [word, hasComparison && !opponentWordSet.has(word)])
 
         const totalWordsMap: WordMap = totalPossibleWords
             .toSorted()
@@ -162,10 +176,11 @@ class ScoreTracker {
             foundWords,
             this.opponentWords || [],
             true,
-            this.fairFight
+            this.fairFight,
+            hasComparison
         )
 
-        if (this.fairFight) {
+        if (hasComparison && this.fairFight) {
             this.opponentScore = ScoreTracker.calculateTotalPoints(
                 this.opponentWords || [],
                 foundWords,
@@ -179,9 +194,10 @@ class ScoreTracker {
             opponent: this.opponentScore,
         }
 
-        const didWin = playerScore > this.opponentScore
+        const didWin = hasComparison ? playerScore > this.opponentScore : null
 
         return {
+            hasComparison,
             opponentWordMap,
             playerWordMap,
             totalWordsMap,

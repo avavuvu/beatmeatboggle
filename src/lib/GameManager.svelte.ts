@@ -102,6 +102,10 @@ class GameManager {
         this.gameState = "gameOver"
         this.save()
 
+        if (this.session.playerState === "practice") {
+            return
+        }
+
         // Ava
 
         if (this.session.playerState === "ava") {
@@ -217,7 +221,7 @@ class GameManager {
         const notLongEnough = word.length < 3
 
         if (notLongEnough) {
-            toaster.addError(`${word} is not long enough`)
+            toaster.addError(`"${word}" is not long enough`)
             return
         }
 
@@ -327,8 +331,12 @@ class GameManager {
         this.isTentative = true
     }
 
+    #persists = () =>
+        this.session.playerState === "player" ||
+        this.session.playerState === "practice"
+
     save = () => {
-        if (this.session.playerState !== "player") return
+        if (!this.#persists()) return
 
         saveGameState(this.session.dateKey, {
             foundWords: this.foundWords,
@@ -339,7 +347,7 @@ class GameManager {
     }
 
     load = () => {
-        if (this.session.playerState !== "player") return false
+        if (!this.#persists()) return false
 
         const state = loadGameState(this.session.dateKey)
         if (!state) return false

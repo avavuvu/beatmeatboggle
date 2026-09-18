@@ -11,7 +11,7 @@
 
 <Head
     title="Is {word} a valid word in Boggle?"
-    description="Check if {word} can be played in Boggle or Scrabble. Use this tool to verify if {word} is a Boggle word."
+    description="Check if {word} can be played in Boggle or Scrabble. Use this tool to verify if {word} is a Boggle word"
     />
 
 <Checker preloaded={data.word} loadWithScrabble={data.loadWithScrabble}/>

@@ -22,7 +22,7 @@
 	<meta name="author" content="Ava Dinh-Vu" />
 
 	<meta property="og:type" content="website" />
-	<meta property="og:site_name" content="Beat Me At Boggle" />
+	<meta property="og:site_name" content="Beat Me at Boggle" />
 	<meta property="og:url" content={page.url.href} />
 	<meta property="og:image" content={`${page.url.origin}/img.png`} />
 	<meta property="og:image:width" content="1200" />
@@ -33,7 +33,7 @@
 	{@html `<script type="application/ld+json">${JSON.stringify({
 		"@context": "https://schema.org",
 		"@type": "WebSite",
-		"name": "Beat Me At Boggle",
+		"name": "Beat Me at Boggle",
 		"url": page.url.origin,
 		"description": description,
 		"author": {

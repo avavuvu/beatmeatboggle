@@ -40,7 +40,7 @@
         const shareLink = `${page.url.origin}/challenge?token=${id}`
         const shareText = `${name} has challenged you to a game of Boggle!\n${shareLink}`
         const shareData = {
-            title: "Beat Me At Boggle",
+            title: "Beat Me at Boggle",
             text: shareText
         }
 

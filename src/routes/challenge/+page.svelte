@@ -51,7 +51,7 @@
     })
 </script>
 
-<Head title="You've been challenged! — Beat Me at Boggle" />
+<Head title="You've been challenged!" />
 
 {#if data && challengeState === "playing"}
 	<Game
@@ -91,7 +91,7 @@
 
             {:else if challengeState === "error"}
                 <div>
-                    An error has occured when loading the challenge.
+                    An error occurred while loading the challenge.
                 </div>
                     <br/>
                     <a href="/" class="link underline">Return Home</a>
