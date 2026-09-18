@@ -12,7 +12,7 @@
     <br />
     <h2 class="font-bold">Beat Me at Boggle is brought to you by:</h2>
     <p >
-        I do not run ads on Beat Me at Boggle. Instead it is financed by donations.
+        I do not run ads on Beat Me at Boggle.
         <a href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Please consider supporting me if you like my work</a>.
     </p>
     {#each tiers as [cents, names]}
