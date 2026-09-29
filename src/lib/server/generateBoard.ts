@@ -38,6 +38,7 @@ export const generateClassic = (seed: string, gridSize: number): string[] => {
     )
 }
 
+
 export const generateClusters = (seed: string, gridSize: number, vowelness = 0.46): string[] => {
     const rng = seedrandom(seed)
 

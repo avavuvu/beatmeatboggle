@@ -1,80 +1,21 @@
 import { toISODateKey } from "../constants"
-import type { BoardSettings, BoardSize, Dice, ResolvedBoard } from "../board"
+import { weekDayMap, WEEKDAYS, type BoardSettings, type BoardSize, type Dice, type ResolvedBoard } from "../board"
 import { GENERATORS } from "./generateBoard"
 import { solve } from "../dictionary/solver"
 
-export const WEEKDAYS = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-] as const
-
-type Weekday = (typeof WEEKDAYS)[number]
-type GenerationSettings = {
-    size: BoardSize
-    dice: Dice
-    time: number
-}
-
-const threeMinutes = 3 * 60
-const fourMinutes = 4 * 60
-
-export const weekDayMap: Record<Weekday, GenerationSettings> = {
-    Monday: {
-        size: 4,
-        dice: "classic",
-        time: threeMinutes,
-    },
-    Tuesday: {
-        size: 4,
-        dice: "word",
-        time: threeMinutes,
-    },
-    Wednesday: {
-        size: 4,
-        dice: "word",
-        time: threeMinutes,
-    },
-    Thursday: {
-        size: 4,
-        dice: "word",
-        time: threeMinutes,
-    },
-    Friday: {
-        size: 4,
-        dice: "word",
-        time: threeMinutes,
-    },
-    Saturday: {
-        size: 5,
-        dice: "word",
-        time: fourMinutes,
-    },
-    Sunday: {
-        size: 5,
-        dice: "word",
-        time: fourMinutes,
-    },
-}
-
-export const getBoardSettings = (date: Date): BoardSettings => {
-    const dateKey = toISODateKey(date)
+export const getBoardSettings = (date: Date, seed = toISODateKey(date)): BoardSettings => {
     const { size, dice, time } = weekDayMap[WEEKDAYS[date.getUTCDay()]]
 
     return {
         size,
-        letters: GENERATORS[dice](dateKey, size),
+        letters: GENERATORS[dice](seed, size),
         time,
     }
 }
 
 // requires the dictionary to be loaded first
-export const resolveBoard = (date: Date): ResolvedBoard => {
-    const board = getBoardSettings(date)
+export const resolveBoard = (date: Date, seed?: string): ResolvedBoard => {
+    const board = getBoardSettings(date, seed)
 
     return { ...board, totalWords: [...solve(board.letters, board.size)] }
 }

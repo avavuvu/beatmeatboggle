@@ -2,11 +2,12 @@ import { redirect } from "@sveltejs/kit"
 import { resolvePatronSession } from "$lib/server/patreon"
 import type { Handle } from "@sveltejs/kit"
 
-const PATRON_ROUTES = ["/archive", "/practice"]
+const PATRON_ROUTES = ["/archive", "/practice", "/stats/[date]"]
 
 const GATED_ROUTES: Record<string, string> = {
     "/archive/[date]": "/archive?kickback",
     "/practice/play": "/practice?kickback",
+    "/stats/[date]": "/stats?kickback",
 }
 
 export const handle: Handle = async ({ event, resolve }) => {

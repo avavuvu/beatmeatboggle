@@ -1,0 +1,1 @@
+CREATE INDEX "player_words_date_key_idx" ON "player_words" USING btree ("date_key");

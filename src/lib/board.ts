@@ -1,3 +1,61 @@
+export const WEEKDAYS = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+] as const
+
+export type Weekday = (typeof WEEKDAYS)[number]
+export type GenerationSettings = {
+    size: BoardSize
+    dice: Dice
+    time: number
+}
+
+const threeMinutes = 3 * 60
+const fourMinutes = 4 * 60
+
+export const weekDayMap: Record<Weekday, GenerationSettings> = {
+    Monday: {
+        size: 4,
+        dice: "classic",
+        time: threeMinutes,
+    },
+    Tuesday: {
+        size: 4,
+        dice: "word",
+        time: threeMinutes,
+    },
+    Wednesday: {
+        size: 4,
+        dice: "word",
+        time: threeMinutes,
+    },
+    Thursday: {
+        size: 4,
+        dice: "word",
+        time: threeMinutes,
+    },
+    Friday: {
+        size: 4,
+        dice: "word",
+        time: threeMinutes,
+    },
+    Saturday: {
+        size: 5,
+        dice: "word",
+        time: fourMinutes,
+    },
+    Sunday: {
+        size: 5,
+        dice: "word",
+        time: fourMinutes,
+    },
+}
+
 export type BoardSettings = {
     size: number
     letters: string[]
