@@ -13,7 +13,7 @@
         <h1 class="px-2 font-bold">{title}</h1>
         <a href="/" class="underline">Return Home</a>
     </span>
-    <main class="border p-4 *:py-1">
+    <main class="border p-4">
         {@render children()}
     </main>
 </div>
@@ -21,6 +21,10 @@
 
 
 <style>
+    main :global(p) {
+        padding-bottom: 1em;
+    }
+
     main :global(a) {
         text-decoration: underline;
     }

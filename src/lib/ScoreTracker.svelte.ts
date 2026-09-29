@@ -2,12 +2,14 @@ import { SvelteMap } from "svelte/reactivity"
 import toaster from "./Toaster.svelte"
 import preferences from "./Preferences.svelte"
 import { encodeChallenge } from "./challenge/challengeToken"
-import { dirtyWords } from "./dictionary/dirtyWords"
+import {
+    calculatePoints,
+    calculateTotalPoints,
+    wordLengthToPoints,
+    type ScoreItem,
+} from "./scoring"
 
-export type ScoreItem = {
-    points: number
-    reason?: "opponent bonus" | "length" | "dirty bonus" | "unique"
-}
+export type { ScoreItem }
 
 class ScoreTracker {
     pointsMap = new SvelteMap<string, ScoreItem[]>([])
@@ -51,75 +53,11 @@ class ScoreTracker {
               )
     }
 
-    static wordLengthToPoints = (word: string) =>
-        Math.floor(Math.pow(word.length, 2) / 4)
+    static wordLengthToPoints = wordLengthToPoints
 
-    static calculateTotalPoints = (
-        words: string[],
-        otherPlayersWords: string[],
-        awardUniqueBonus: boolean,
-        fairFight: boolean,
-        hasComparison: boolean = true
-    ) =>
-        words.reduce(
-            (total, word) =>
-                total +
-                ScoreTracker.calculatePoints(
-                    word,
-                    otherPlayersWords,
-                    awardUniqueBonus,
-                    fairFight,
-                    hasComparison
-                ).points,
-            0
-        )
+    static calculateTotalPoints = calculateTotalPoints
 
-    static calculatePoints = (
-        word: string,
-        otherPlayersWords: string[],
-        awardUniqueBonus: boolean,
-        fairFight: boolean,
-        hasComparison: boolean = true
-    ) => {
-        let points = 0
-
-        const lengthPoints = ScoreTracker.wordLengthToPoints(word)
-        points += lengthPoints
-
-        const pointsArray: ScoreItem[] = [
-            {
-                points: lengthPoints,
-                reason: "length",
-            },
-        ]
-
-        if (
-            hasComparison &&
-            awardUniqueBonus &&
-            !otherPlayersWords.includes(word)
-        ) {
-            const reason = fairFight ? "unique" : "opponent bonus"
-
-            points += 1
-            pointsArray.push({
-                points: 1,
-                reason,
-            })
-        }
-
-        if (dirtyWords.has(word)) {
-            points += 4
-            pointsArray.push({
-                points: 4,
-                reason: "dirty bonus",
-            })
-        }
-
-        return {
-            pointsArray,
-            points,
-        }
-    }
+    static calculatePoints = calculatePoints
 
     addWord = (word: string) => {
         const { points, pointsArray: scoreArray } =

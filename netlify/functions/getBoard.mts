@@ -1,16 +1,7 @@
 import type { Config, Context } from "@netlify/functions"
 import { getOrCreateBoard } from "../../src/lib/server/board"
 import { getGameDateKey } from "../../src/lib/server/gameDate"
-import { dateFromKey } from "../../src/lib/constants"
-
-const isValidDateKey = (dateKey: string): boolean => {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
-        return false
-    }
-
-    const date = dateFromKey(dateKey)
-    return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(dateKey)
-}
+import { isValidDateKey } from "../../src/lib/dates"
 
 export default async function getBoard(req: Request, context: Context) {
     if (req.method !== "GET") {

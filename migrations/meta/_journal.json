@@ -43,6 +43,13 @@
       "when": 1788997782428,
       "tag": "0005_seed_boards",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790576267861,
+      "tag": "0006_small_patriot",
+      "breakpoints": true
     }
   ]
 }

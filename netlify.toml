@@ -9,4 +9,4 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  included_files = ["static/wordList.txt"]
+  included_files = ["static/wordList.txt", "static/dirtyWords.txt"]

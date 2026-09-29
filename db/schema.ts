@@ -5,6 +5,7 @@ import {
     jsonb,
     boolean,
     timestamp,
+    index,
 } from "drizzle-orm/pg-core"
 
 export const boards = pgTable("boards", {
@@ -19,7 +20,7 @@ export const boards = pgTable("boards", {
 export const avasWords = pgTable("avas_words", {
     dateKey: varchar("date_key", { length: 10 }).primaryKey(), // YYYY-MM-DD
     words: jsonb("words").$type<string[]>().notNull(),
-    // kept until the boards backfill is confirmed complete, then dropped in a follow-up migration
+    // this has moved to boards, so it has since been dropped
     totalWords: jsonb("total_words").$type<string[]>(),
 })
 
@@ -34,4 +35,4 @@ export const playerWords = pgTable("player_words", {
     createdAt: timestamp("created_at").notNull().defaultNow(),
     challengedBy: varchar("challenged_by"),
     playerId: varchar("player_id")
-})
+}, (table) => [index("player_words_date_key_idx").on(table.dateKey)])

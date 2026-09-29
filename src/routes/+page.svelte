@@ -51,14 +51,17 @@
         <div class="w-full bg-foreground flex  justify-center text-surface">
             <a class="" href="/play"> {">"} Play Today's Game! {"<"} </a>
          </div>
-
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wrap justify-between sm:justify-start">
+        <ul class="flex gap-2 md:gap-6 flex-wrap justify-between sm:justify-start">
+            <li>
+                <a class="underline new" href="/stats"> stats </a>
+            </li>
             <li>
                 <a class="underline" href="/settings"> settings </a>
             </li>
+
             <li>
                 <a class="underline" href="/archive"> archive </a>
             </li>
@@ -69,7 +72,7 @@
     </aside>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-6 flex-wrap justify-between">
+        <ul class="flex gap-3 gap-y-4 flex-wrap justify-between">
             <li>
                 <a class="underline" href="/howtoplay"> how to play</a>
             </li>
@@ -80,7 +83,7 @@
                 <a class="underline" href="/about/words"> about the dictionary </a>
             </li>
             <li>
-                <a class="underline" href="/about/words"> about the boards </a>
+                <a class="underline" href="/about/boards"> about the boards </a>
             </li>
             <li>
                 <a class="underline" href="/checker"> word checker </a>
@@ -95,6 +98,19 @@
 </div>
 
 <style>
+    .new {
+        position: relative;
+    }
+
+    .new::after {
+        content: "new!";
+        position: absolute;
+        font-size: xx-small;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+    }
+
     h1 span,
     main,
     aside {

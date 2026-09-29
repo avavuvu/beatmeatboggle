@@ -6,6 +6,7 @@
 
     const { data }: { data: PageData } = $props()
 
+    // svelte-ignore state_referenced_locally
     const date = dateFromKey(data.dateKey)
 
     const dateFormatted = date.toLocaleDateString("en-AU", {
