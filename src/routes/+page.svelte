@@ -83,7 +83,7 @@
                 <a class="underline" href="/about/words"> about the dictionary </a>
             </li>
             <li>
-                <a class="underline" href="/about/words"> about the boards </a>
+                <a class="underline" href="/about/boards"> about the boards </a>
             </li>
             <li>
                 <a class="underline" href="/checker"> word checker </a>
