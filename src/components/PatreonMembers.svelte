@@ -4,7 +4,7 @@
     const tiers = $derived(
         Object.entries(members)
             .map(([cents, names]) => [Number(cents), names] as const)
-            .toSorted(([a], [b]) => b - a)
+            .toSorted(([a], [b]) => a - b)
     )
 </script>
 
@@ -16,7 +16,7 @@
         <a href="https://www.patreon.com/2722716/join" target="_blank" rel="noopener">Please consider supporting me if you like my work</a>.
     </p>
     {#each tiers as [cents, names]}
-        {#if cents > 300}
+        {#if cents > 1}
             {#if cents > 999}
             <h3 class="font-bold text-center">Extra special people</h3>
             {/if}
