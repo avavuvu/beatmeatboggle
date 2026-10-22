@@ -1,7 +1,6 @@
 <script lang="ts">
     import definitionManaager from "$lib/DefinitionManager.svelte"
-    import wordList from "$lib/dictionary/wordList.txt?raw"
-    import scrabble from "$lib/dictionary/scrabble.txt?raw"
+    import { officialWords, scrabbleWords } from "$lib/dictionary/lists"
     import Definition from "@/Definition.svelte"
     import { cross } from "@/icons/cross.svelte"
     import { tick } from "@/icons/tick.svelte"
@@ -15,8 +14,8 @@
         loadWithScrabble?: boolean
     } = $props()
 
-    const officialList = new Set(wordList.split("\n"))
-    const scrabbleList = new Set(scrabble.split("\n"))
+    const officialList = officialWords
+    const scrabbleList = scrabbleWords
 
     // svelte-ignore state_referenced_locally
     let useScrabble = $state(loadWithScrabble)

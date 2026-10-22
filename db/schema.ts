@@ -17,7 +17,7 @@ export const boards = pgTable("boards", {
     seedWord: varchar("seed_word", { length: 20 }),
     ladder: jsonb("ladder").$type<string[]>(),
     generator: varchar("generator", { length: 20 }),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
 export const avasWords = pgTable("avas_words", {
@@ -38,7 +38,7 @@ export const playerWords = pgTable("player_words", {
     fairFight: boolean("fair_fight").notNull().default(false),
     country: varchar("country", { length: 100 }),
     city: varchar("city", { length: 100 }),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     challengedBy: varchar("challenged_by", { length: 12 }),
     playerId: varchar("player_id", { length: 12 }),
     // daily: played on the board's own day. archive and challenge rows are kept out of the daily stats
