@@ -1,0 +1,44 @@
+{
+  "version": "5",
+  "remote": {
+    "https://edge.netlify.com/": "607baf43414ddf5d42a24cf0e0ac7d03cc02fbc96f21bc34f027935060e28793",
+    "https://edge.netlify.com/bootstrap/config.ts": "6a2ce0e544e15e8f8883a5c18da5948e37fd0f2619f68cb31f3af53c51817025",
+    "https://edge.netlify.com/bootstrap/context.ts": "2260177df4a7d692f31177ccbf2de969cd8db1269c564a45517d6e47fd7d248f",
+    "https://edge.netlify.com/bootstrap/cookie.ts": "8b0baae708989ca183c6f3b4ab3d029e6abcbc2e43f93edeb0ff447b3bbc3a05",
+    "https://edge.netlify.com/bootstrap/edge_function.ts": "0c6c24959154a4ac64e24077adea5b4d23f01704a1dd1290df56fa9e4c6801f3",
+    "https://edge.netlify.com/bootstrap/globals/types.ts": "eaa6148ded3121d8dee62dd91c86e7fe76601df0f3ca8d7962243a30f4c8935f"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@neondatabase/serverless@^1.0.2",
+        "npm:@netlify/functions@^5.3.0",
+        "npm:@netlify/neon@~0.1.2",
+        "npm:@sveltejs/adapter-auto@^7.0.1",
+        "npm:@sveltejs/adapter-netlify@^6.0.4",
+        "npm:@sveltejs/kit@^2.70.1",
+        "npm:@sveltejs/vite-plugin-svelte@^6.2.4",
+        "npm:@tailwindcss/vite@^4.3.3",
+        "npm:@types/node@^25.9.5",
+        "npm:@types/seedrandom@^3.0.8",
+        "npm:drizzle-kit@~0.31.10",
+        "npm:drizzle-orm@~0.45.2",
+        "npm:js-confetti@~0.13.1",
+        "npm:netlify-cli@^27.0.1",
+        "npm:openapi-fetch@0.17",
+        "npm:openapi-typescript@^7.13.0",
+        "npm:prettier@^3.9.6",
+        "npm:seedrandom@^3.0.5",
+        "npm:svelte-check@^4.7.3",
+        "npm:svelte@^5.56.8",
+        "npm:tailwindcss@^4.3.3",
+        "npm:typescript@^5.9.3",
+        "npm:vite@^7.3.6",
+        "npm:vitest@^5.0.5"
+      ],
+      "overrides": {
+        "esbuild": "^0.28.0"
+      }
+    }
+  }
+}

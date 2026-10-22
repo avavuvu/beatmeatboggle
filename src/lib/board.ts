@@ -72,6 +72,9 @@ export type ResolvedBoard = BoardSettings & HiddenWord & { totalWords: string[] 
 export const DICE = ["classic", "word", "spread", "bag"] as const
 export type Dice = (typeof DICE)[number]
 
+// spread and bag exist for research and practice-by-url only
+export const PUBLIC_DICE = ["classic", "word"] as const satisfies readonly Dice[]
+
 export const DICE_LABELS: Record<Dice, { name: string; description: string }> = {
     classic: {
         name: "Classic",

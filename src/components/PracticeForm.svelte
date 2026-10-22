@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation'
-    import { DICE, DICE_LABELS, type BoardSize, type Dice } from "$lib/board"
+    import { PUBLIC_DICE, DICE_LABELS, type BoardSize, type Dice } from "$lib/board"
     import BoardInput from "./BoardInput.svelte"
 
     type PracticeFormData = {
@@ -102,7 +102,7 @@
             <div>
                 <h3>Dice</h3>
                 <div class="radio mb-6" >
-                    {#each DICE as dice}
+                    {#each PUBLIC_DICE as dice}
                         <input type="radio" id={dice} name="dice" value={dice} bind:group={formData.dice}>
                         <label for={dice}>{DICE_LABELS[dice].name}</label>
                     {/each}
