@@ -1,0 +1,5 @@
+snapshot: latest
+games: 99,926  days: 198  first: 2026-04-07  last: 2026-10-22
+countries: 137  cities: 5030
+beat ava: 37.1%  (under fair fight: 26.3%)
+median words per game: 26  median score: 112  ava median: 114
