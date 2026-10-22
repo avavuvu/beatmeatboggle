@@ -81,7 +81,8 @@
                 saved.foundWords,
                 avasWords ?? [],
                 true,
-                preferences.settings.fairFight.value
+                preferences.settings.fairFight.value,
+                avasWords !== null
             )
         })
 

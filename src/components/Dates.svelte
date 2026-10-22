@@ -23,19 +23,10 @@
         "12": "December",
     } as const
 
-    type Month = typeof monthMap[keyof typeof monthMap]
-
     // svelte-ignore state_referenced_locally
-    const months: Partial<Record<Month,string[][]>> = Object.groupBy(
+    const months: Partial<Record<string, string[][]>> = Object.groupBy(
         dates.map(date => date.split("-")),
-        (date) => {
-            // 0 year
-            // 1 month
-            // 2 day
-            const month = monthMap[date[1] as keyof typeof monthMap]
-            return month
-        }
-
+        ([year, month]) => `${monthMap[month as keyof typeof monthMap]} ${year}`
     )
 
 </script>

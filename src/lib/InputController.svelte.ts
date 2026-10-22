@@ -49,17 +49,20 @@ class InputController {
 
     inputKey = (event: KeyboardEvent) => {
         if (!this.game.isPlayingGame) return
-        event.preventDefault()
+        if (event.metaKey || event.ctrlKey || event.altKey) return
 
         switch (event.key) {
             case "Backspace":
+                event.preventDefault()
                 this.game.removeLast()
                 break
             case "Enter":
+                event.preventDefault()
                 this.game.submitWord()
                 break
             default:
                 if (event.key.match(/^[a-zA-Z]$/)) {
+                    event.preventDefault()
                     this.game.inputChar(event.key.toLowerCase())
                 }
                 break

@@ -40,14 +40,14 @@ class GameManager {
         this.foundWords = []
         this.currentChain.clear()
 
-        this.load()
-
         scoreTracker.init(
             session.totalPossibleWords,
             opponentWords,
             opponentName,
             session.challengedBy !== null
         )
+
+        this.load()
     }
 
     get isPaused() {

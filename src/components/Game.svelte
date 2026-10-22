@@ -58,6 +58,7 @@
 
     let introDelay = 3200
     let hasStartedOnce = false
+    let introTimer: ReturnType<typeof setTimeout> | undefined
 
     const startOrResumeTimer = () => {
         if (!hasStartedOnce) {
@@ -71,7 +72,12 @@
             }
 
             game.gameState = "loading"
-            setTimeout(() => {
+            introTimer = setTimeout(() => {
+                introTimer = undefined
+                if (document.hidden) {
+                    game.gameState = "backgrounded"
+                    return
+                }
                 game.startGame()
             }, introDelay);
         } else {
@@ -118,6 +124,7 @@
         if (browser) {
             document.removeEventListener("visibilitychange", handleVisibilityChange)
         }
+        clearTimeout(introTimer)
         game.stopTimer();
         toaster.showToast = false;
     });
