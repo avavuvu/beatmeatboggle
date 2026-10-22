@@ -27,6 +27,9 @@ export const avasWords = pgTable("avas_words", {
     totalWords: jsonb("total_words").$type<string[]>(),
 })
 
+export const PLAY_MODES = ["daily", "archive", "challenge"] as const
+export type PlayMode = (typeof PLAY_MODES)[number]
+
 export const playerWords = pgTable("player_words", {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     dateKey: varchar("date_key", { length: 10 }).notNull(),
@@ -36,6 +39,11 @@ export const playerWords = pgTable("player_words", {
     country: varchar("country", { length: 100 }),
     city: varchar("city", { length: 100 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
-    challengedBy: varchar("challenged_by"),
-    playerId: varchar("player_id")
-}, (table) => [index("player_words_date_key_idx").on(table.dateKey)])
+    challengedBy: varchar("challenged_by", { length: 12 }),
+    playerId: varchar("player_id", { length: 12 }),
+    // daily: played on the board's own day. archive and challenge rows are kept out of the daily stats
+    mode: varchar("mode", { length: 10 }).$type<PlayMode>().notNull().default("daily"),
+}, (table) => [
+    index("player_words_date_key_idx").on(table.dateKey),
+    index("player_words_date_key_player_id_idx").on(table.dateKey, table.playerId),
+])

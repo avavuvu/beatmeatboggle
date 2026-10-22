@@ -4,6 +4,7 @@ import { playerWords } from "../../db/schema"
 import { and, desc, eq } from "drizzle-orm"
 import { decodeChallenge } from "../../src/lib/challenge/challengeToken"
 import { getOrCreateBoard } from "../../src/lib/server/board"
+import { getGameDateKey } from "../../src/lib/server/gameDate"
 
 export default async function getChallenge(req: Request, context: Context) {
     if (req.method !== "GET") {
@@ -24,6 +25,10 @@ export default async function getChallenge(req: Request, context: Context) {
     }
 
     const { date: dateKey, playerId, name } = decoded
+
+    if (dateKey > getGameDateKey()) {
+        return Response.json({ error: "Board not available yet" }, { status: 404 })
+    }
 
     const [challenger] = await db
         .select({ words: playerWords.words })

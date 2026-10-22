@@ -1,72 +1,64 @@
 import type { Config, Context } from "@netlify/functions"
 import { db } from "../../db"
-import { playerWords, avasWords } from "../../db/schema"
-import { eq, avg, gte, and } from "drizzle-orm"
+import { avasWords } from "../../db/schema"
+import { eq } from "drizzle-orm"
+import { dailyAverage, PlayError, recordPlay } from "../../src/lib/server/plays"
+import { isValidDateKey } from "../../src/lib/dates"
+import { getGameDateKey } from "../../src/lib/server/gameDate"
+import { isPatron } from "../../src/lib/server/patronRequest"
 
 export default async function logPlayerWords(req: Request, context: Context) {
     if (req.method === "POST") {
-        let dateKey: string
-        let words: string[]
-        let score: number
-        let fairFight: boolean
-        let playerId: string | null
-        let challengedBy: string | null
-
+        let body: Record<string, unknown>
         try {
-            const body = await req.json()
-            dateKey = body.dateKey
-            words = body.words
-            score = typeof body.score === "number" ? body.score : -1
-            fairFight = body.fairFight ?? false
-            playerId = body.playerId ?? null
-            challengedBy = body.challengedBy ?? null
-
-            if (
-                !dateKey ||
-                !Array.isArray(words) ||
-                typeof score !== "number"
-            ) {
-                return Response.json(
-                    { error: "Missing dateKey, words, or score" },
-                    { status: 400 }
-                )
-            }
+            body = await req.json()
         } catch {
             return new Response("Bad Request", { status: 400 })
         }
 
-        if (words.length > 0) {
-            await db.insert(playerWords).values({
-                dateKey,
-                words,
-                score,
-                fairFight,
-                country: context.geo?.country?.name ?? null,
-                city: context.geo?.city ?? null,
-                playerId,
-                challengedBy,
-            })
-        }
-
-        const [{ average }] = await db
-            .select({ average: avg(playerWords.score) })
-            .from(playerWords)
-            .where(
-                and(eq(playerWords.dateKey, dateKey), gte(playerWords.score, 0))
+        try {
+            const play = await recordPlay(
+                {
+                    dateKey: body.dateKey,
+                    words: body.words,
+                    fairFight: body.fairFight,
+                    playerId: body.playerId,
+                    challengedBy: body.challengedBy,
+                },
+                { country: context.geo?.country?.name ?? null, city: context.geo?.city ?? null }
             )
 
-        return Response.json(
-            { success: true, average: Number(average ?? 0) },
-            { status: 201 }
-        )
+            return Response.json(
+                {
+                    success: true,
+                    score: play.score,
+                    mode: play.mode,
+                    recorded: play.recorded,
+                    average: await dailyAverage(body.dateKey as string),
+                },
+                { status: 201 }
+            )
+        } catch (e) {
+            if (e instanceof PlayError) {
+                return Response.json({ error: e.message }, { status: e.status })
+            }
+            throw e
+        }
     }
 
     if (req.method === "GET") {
-        const url = new URL(req.url)
-        const dateKey = url.searchParams.get("dateKey")
+        const dateKey = new URL(req.url).searchParams.get("dateKey")
 
-        if (!dateKey) {
-            return Response.json({ error: "Missing dateKey" }, { status: 400 })
+        if (!dateKey || !isValidDateKey(dateKey)) {
+            return Response.json({ error: "Invalid dateKey" }, { status: 400 })
+        }
+
+        if (dateKey > getGameDateKey()) {
+            return Response.json({ error: "Board not available yet" }, { status: 404 })
+        }
+
+        if (dateKey < getGameDateKey() && !isPatron(req)) {
+            return Response.json({ error: "Archive is for patrons" }, { status: 403 })
         }
 
         const [ava] = await db
@@ -74,13 +66,7 @@ export default async function logPlayerWords(req: Request, context: Context) {
             .from(avasWords)
             .where(eq(avasWords.dateKey, dateKey))
 
-        return Response.json(
-            {
-                success: true,
-                avasWords: ava.words ?? null,
-            },
-            { status: 200 }
-        )
+        return Response.json({ success: true, avasWords: ava?.words ?? null }, { status: 200 })
     }
 
     return new Response("Method Not Allowed", { status: 405 })

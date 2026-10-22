@@ -6,7 +6,7 @@ import type { DayScores } from "../statsTypes"
 import { loadDirtyWordsFromDisk } from "./dictionary"
 
 export const getDayScores = async (dateKey: string): Promise<DayScores> => {
-    const scoredOnDay = and(eq(playerWords.dateKey, dateKey), gte(playerWords.score, 0))
+    const scoredOnDay = and(eq(playerWords.dateKey, dateKey), eq(playerWords.mode, "daily"), gte(playerWords.score, 0))
 
     const [distribution, [ava], [topPlayer]] = await Promise.all([
         db

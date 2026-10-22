@@ -106,7 +106,7 @@
         {:else}
             {@render chartBar(0, scores.you, "You!")}
             {@render chartBar(1, scores.opponent, opponentName)}
-            {#if game.averageGameScore}
+            {#if game.averageGameScore !== undefined}
                 {@render chartBar(2, game.averageGameScore, "Average")}
             {:else}
                 <div class="w-full flex justify-center items-center">

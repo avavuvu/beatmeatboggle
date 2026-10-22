@@ -125,37 +125,29 @@ class GameManager {
             return
         }
 
-        // Player
+        // Player: the server recomputes the score from the words, so none is sent
 
-        if (this.foundWords.length > 0) {
-            const fairFight = scoreTracker.fairFight
-            const score = ScoreTracker.calculateTotalPoints(
-                this.foundWords,
-                scoreTracker.opponentWords || [],
-                true,
-                fairFight
-            )
-
+        try {
             const response = await fetch("/api/player-words", {
                 method: "POST",
                 body: JSON.stringify({
                     words: this.foundWords,
                     dateKey: this.session.dateKey,
-                    score,
-                    fairFight,
+                    fairFight: scoreTracker.fairFight,
                     playerId: this.session.playerId,
                     challengedBy: this.session.challengedBy,
                 }),
             })
 
-            const data: {
-                success: boolean
-                average: number
-            } = await response.json()
-
-            if (data?.average) {
-                this.averageGameScore = data.average
+            if (!response.ok) {
+                this.averageGameScore = 0
+                return
             }
+
+            const data: { average?: number } = await response.json()
+            this.averageGameScore = data.average ?? 0
+        } catch {
+            this.averageGameScore = 0
         }
     }
 
