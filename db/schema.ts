@@ -14,6 +14,9 @@ export const boards = pgTable("boards", {
     letters: jsonb("letters").$type<string[]>().notNull(),
     time: integer("time").notNull(),
     totalWords: jsonb("total_words").$type<string[]>().notNull(),
+    seedWord: varchar("seed_word", { length: 20 }),
+    ladder: jsonb("ladder").$type<string[]>(),
+    generator: varchar("generator", { length: 20 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
 })
 

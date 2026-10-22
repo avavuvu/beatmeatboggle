@@ -3,7 +3,7 @@
 Everything here runs on your machine and never deploys. One rule: **TypeScript owns game logic; Python does statistics and drawing.** Anything that solves a board, scores words, or picks a seed word runs in TS against `src/lib` and writes CSV/JSON to `data/`; Python fits models and plots from that, never re-implementing a game rule.
 
 ```
-lib/          shared TS: rng, solver, words/ladders/pools, metrics, stats, csv, select (quality floor + retry), generators/
+lib/          shared TS for research: solver with tile usage, words/ladders/pools, metrics, stats, csv, a selection harness. the generators, floors and rng are re-exported from src/lib/server/generation so there is one implementation
 analysis/     real play data: fetch → days → correlations · rerolls · ladders · players (scored csv for viz)
               order (submission order) · wordFeatures (per-word find-rate features) · scoreCheck · retention
 generation/   generator research: factorial · summary · practiceBoards · historical-boards.json
@@ -68,5 +68,7 @@ Note `player_words.created_at` is a `timestamp` *without* a zone holding UTC wal
 Everything tunable is in `viz/players/replay.toml`: timing (tap easing, holds), layout, board drawing, the rare-word threshold, colours per theme, the `[bonuses]` table (label, colour and sound for each scoring bonus from `src/lib/scoring`), and the `[sounds]` table mapping each slot (`start`, `tap`, `submit`, `rare`, `seed`, `dirty`, `end`) to a file in `viz/players/sounds/`. A slot whose file is missing gets a synthesised placeholder. `tap` climbs one scale degree per tile along `audio.tap_scale` (semitone offsets within an octave, major by default).
 
 ## Seeds (`seeds/`)
+
+`build.ts` writes `static/seedPool.json`, the file the app's generator draws hidden words from: `[word, weight, ladder, zipf, category]` per entry. With no pruned list it builds the ladder-weighted curated pool; once `scripts/seeds/list.txt` exists (one word per line, tabs after the word are ignored, so pruned candidate files can be concatenated into it) it builds from that instead. Re-run after changing the dictionary or the list.
 
 `candidates.ts` writes one file per board size and category (`common`, `ladder`, `scrabbly`, `rare`), 400 words each, tab-separated: `word  zipf  fill  note`. `fill` is how many tries the spread fill needed to reach the quality floor (`✗` = never). Delete the lines you don't want; the survivors become the curated seed list.

@@ -3,23 +3,12 @@ import { evaluate, type Metrics } from "./metrics"
 import { construct, isWordless, type Construction } from "./generators"
 import type { Pool } from "./pools"
 
-export type Floor = {
-    words: number
-    len6plus: number
-    len7plus: number
-    len3Share: number
-    pluralShare: number
-}
-
-export const FLOORS: Record<number, Floor> = {
-    4: { words: 100, len6plus: 10, len7plus: 2, len3Share: 0.35, pluralShare: 0.3 },
-    5: { words: 200, len6plus: 35, len7plus: 8, len3Share: 0.35, pluralShare: 0.3 },
-}
-
-export const WORDLESS_FLOORS: Record<number, Floor> = {
-    4: { words: 90, len6plus: 4, len7plus: 1, len3Share: 0.45, pluralShare: 0.3 },
-    5: { words: 180, len6plus: 15, len7plus: 3, len3Share: 0.45, pluralShare: 0.3 },
-}
+export {
+    FLOORS,
+    WORDLESS_FLOORS,
+    type Floor,
+} from "../../src/lib/server/generation/floor"
+import { FLOORS, WORDLESS_FLOORS, type Floor } from "../../src/lib/server/generation/floor"
 
 export const floorFor = (construction: Construction, size: number) =>
     isWordless(construction) ? WORDLESS_FLOORS[size] : FLOORS[size]

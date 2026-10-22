@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs"
-import { generateClassic, generateWithWord } from "../../src/lib/server/generateBoard"
+import { generateClassicLegacy, generateWithWordLegacy } from "../../src/lib/server/generateBoard"
 import {
     CURRENT,
     FIXED,
@@ -36,8 +36,8 @@ const N = Number(process.argv[2] ?? 400)
 
 for (const date of ["2026-09-11", "2026-10-07", "2026-10-22"]) {
     const ours = generate("current", "single", date, 4, productionPool()).letters.join("")
-    if (ours !== generateWithWord(date, 4).join("")) throw new Error(`current/single diverges from generateWithWord for ${date}`)
-    if (generate("classic", "single", date, 4).letters.join("") !== generateClassic(date, 4).join(""))
+    if (ours !== generateWithWordLegacy(date, 4).join("")) throw new Error(`current/single diverges from generateWithWord for ${date}`)
+    if (generate("classic", "single", date, 4).letters.join("") !== generateClassicLegacy(date, 4).join(""))
         throw new Error(`classic/single diverges from generateClassic for ${date}`)
 }
 console.log("current/single reproduces generateWithWord ✓  classic/single reproduces generateClassic ✓")

@@ -1,23 +1,13 @@
 import { toISODateKey } from "../constants"
-import { weekDayMap, WEEKDAYS, type BoardSettings, type BoardSize, type Dice, type ResolvedBoard } from "../board"
-import { GENERATORS } from "./generateBoard"
+import { weekDayMap, WEEKDAYS, type BoardSize, type Dice, type ResolvedBoard } from "../board"
+import { generateBoard } from "./generateBoard"
 import { solve } from "../dictionary/solver"
 
-export const getBoardSettings = (date: Date, seed = toISODateKey(date)): BoardSettings => {
+export const resolveBoard = (date: Date, seed = toISODateKey(date)): ResolvedBoard => {
     const { size, dice, time } = weekDayMap[WEEKDAYS[date.getUTCDay()]]
+    const { letters, seedWord, ladder, words } = generateBoard(dice, seed, size)
 
-    return {
-        size,
-        letters: GENERATORS[dice](seed, size),
-        time,
-    }
-}
-
-// requires the dictionary to be loaded first
-export const resolveBoard = (date: Date, seed?: string): ResolvedBoard => {
-    const board = getBoardSettings(date, seed)
-
-    return { ...board, totalWords: [...solve(board.letters, board.size)] }
+    return { size, letters, time, seedWord, ladder, totalWords: words }
 }
 
 export type PracticeBoardParams = {
@@ -31,20 +21,11 @@ export type PracticeBoardParams = {
 export const resolvePracticeBoard = (params: PracticeBoardParams): ResolvedBoard => {
     const time = params.time * 60
 
-    let letters: string[]
-
     if (params.dice === "custom") {
-        letters = (params.override ?? "").split("").slice(0, params.size * params.size)
-    } else {
-        const seed = params.seed ?? String(Date.now())
-
-        letters = GENERATORS[params.dice](seed, params.size)
+        const letters = (params.override ?? "").split("").slice(0, params.size * params.size)
+        return { size: params.size, letters, time, seedWord: null, ladder: [], totalWords: [...solve(letters, params.size)] }
     }
 
-    return {
-        size: params.size,
-        letters,
-        time,
-        totalWords: [...solve(letters, params.size)],
-    }
+    const { letters, seedWord, ladder, words } = generateBoard(params.dice, params.seed ?? String(Date.now()), params.size)
+    return { size: params.size, letters, time, seedWord, ladder, totalWords: words }
 }

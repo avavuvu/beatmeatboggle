@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs"
 import { weekDayMap, WEEKDAYS, type Dice } from "../../src/lib/board"
 import { dateFromKey } from "../../src/lib/constants"
-import { generateClassic, generateWithWord } from "../../src/lib/server/generateBoard"
+import { generateClassicLegacy, generateWithWordLegacy } from "../../src/lib/server/generateBoard"
 import { getGameDateKey } from "../../src/lib/server/gameDate"
 import { allWords, DATA_DIR, pick, rngFrom, PRODUCTION_LENGTHS } from "../lib"
 
@@ -88,7 +88,7 @@ export const productionSeedWord = (dateKey: string) => {
 export const originalBoard = (dateKey: string, size: number): string | null => {
     const dice = diceFor(dateKey)
     if (dice === "clusters") return null
-    return (dice === "classic" ? generateClassic : generateWithWord)(dateKey, size).join("")
+    return (dice === "classic" ? generateClassicLegacy : generateWithWordLegacy)(dateKey, size).join("")
 }
 
 export const inferSeedWord = (totalWords: string[]) =>

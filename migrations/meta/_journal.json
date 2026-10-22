@@ -50,6 +50,13 @@
       "when": 1790576267861,
       "tag": "0006_small_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792648958585,
+      "tag": "0007_ancient_punisher",
+      "breakpoints": true
     }
   ]
 }

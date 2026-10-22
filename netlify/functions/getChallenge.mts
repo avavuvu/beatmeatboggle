@@ -41,13 +41,13 @@ export default async function getChallenge(req: Request, context: Context) {
         return Response.json({ error: "Challenge not found" }, { status: 404 })
     }
 
-    const { size, letters, time, totalWords } = await getOrCreateBoard(dateKey)
+    const { size, letters, time, totalWords, seedWord, ladder } = await getOrCreateBoard(dateKey)
 
     return Response.json(
         {
             success: true,
             date: dateKey,
-            board: { size, letters, time, totalWords },
+            board: { size, letters, time, totalWords, seedWord, ladder: ladder ?? [] },
             opponentWords: challenger.words,
             opponentName: name || "Your friend",
             challengedBy: playerId,

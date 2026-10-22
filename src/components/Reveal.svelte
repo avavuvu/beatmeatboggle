@@ -59,6 +59,11 @@
     const totalWords = $derived(totalWordsMap.map(([word]) => word))
 
     const topScore = $derived(Math.max(scores.you, scores.opponent, game.averageGameScore ?? 0, 1))
+
+    // svelte-ignore state_referenced_locally
+    const { seedWord, ladder } = game.session.hidden
+    const foundSeedWord = $derived(seedWord !== null && game.foundWords.includes(seedWord))
+    const rungs = $derived(seedWord ? [...ladder].reverse().concat(seedWord) : [])
 </script>
 
 {#snippet chartBar(index: number, score: number, name: string )}
@@ -116,6 +121,26 @@
         {/if}
     </div>
     <div class="row-span-2 overflow-y-scroll p-2">
+        {#if seedWord}
+            <div class="hidden-word mb-4 p-2 border border-border">
+                <h3 class="font-bold">
+                    {#if foundSeedWord}
+                        You found the hidden word!
+                    {:else}
+                        The hidden word was
+                    {/if}
+                </h3>
+                <p class="text-lg font-bold">{seedWord}</p>
+                {#if rungs.length > 1}
+                    <p class="text-sm text-accent">
+                        {#each rungs as rung, index}
+                            <span class:found={game.foundWords.includes(rung)}>{rung}</span>{#if index < rungs.length - 1}{" → "}{/if}
+                        {/each}
+                    </p>
+                {/if}
+            </div>
+        {/if}
+
         {#if !isPractice}
             <h3 class="font-bold">{opponentName}'s words</h3>
             <WordList
@@ -165,6 +190,11 @@
     .move {
         position: unset;
         color: var(--color-foreground);
+    }
+
+    .hidden-word .found {
+        color: var(--color-foreground);
+        font-weight: bold;
     }
 
     .bar {
