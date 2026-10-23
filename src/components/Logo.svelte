@@ -1,7 +1,7 @@
 <svg
     class="max-w-3xl mx-auto"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="-10 0 740.57 279.29"
+    viewBox="-6 -6 716 288"
     width="100%"
     height="100%"
     aria-hidden="true"

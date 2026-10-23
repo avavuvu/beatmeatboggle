@@ -16,14 +16,19 @@
     const focusTile = (index: number) => {
         if (index < 0 || index >= size * size) return
 
-        const input = document.getElementById(inputId(index)) as HTMLInputElement | null
+        const input = document.getElementById(
+            inputId(index)
+        ) as HTMLInputElement | null
         input?.focus()
         input?.select()
     }
 
     const oninput = (index: number) => (event: Event) => {
         const input = event.currentTarget as HTMLInputElement
-        const letter = input.value.toLowerCase().replace(/[^a-z]/g, "").slice(-1)
+        const letter = input.value
+            .toLowerCase()
+            .replace(/[^a-z]/g, "")
+            .slice(-1)
 
         letters[index] = letter
         input.value = letter
@@ -67,7 +72,9 @@
     style:grid-template-columns="repeat({size}, 1fr)"
 >
     {#each { length: size * size }, i}
-        <div class="tile aspect-square min-w-0 border border-surface bg-board focus-within:bg-muted transition-colors">
+        <div
+            class="tile aspect-square min-w-0 border border-surface bg-board focus-within:bg-muted transition-colors"
+        >
             <label
                 for={inputId(i)}
                 class="w-full h-full min-h-0 text-center text-tile-letter inline-flex justify-center items-center"

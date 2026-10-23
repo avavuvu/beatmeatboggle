@@ -166,18 +166,14 @@ Example draws: `defeated → defeat → feat`, `touristy → tourist → tour`, 
 
 `scripts/generation/practiceBoards.ts` generates boards drawn only from good ladders and prints practice URLs; answers go to `scripts/data/practice_<batch>.json`.
 
-## What I'd now recommend, in order
+## Remaining options
 
-1. **Ship selection on the current generator first.** `refill` (same seed word, retry the fill) is a ~30-line change to `generateWithWord` and `resolveBoard`, keeps every board deterministic from the date, changes nothing about the character of the boards, and takes your reroll rate from ~57% to ~2%. Add `redraw` as the fallback after N failed refills so `bivouacking` days don't ship.
-2. **Store `seedWord` on `boards` and reveal it.** The generator already knows it; it's one column and one line in the reveal.
-3. **Apply the cheap fixes** as a correctness change, with no expectation of a measurable effect.
-4. **Curated pool** for the plural rule and length-per-size, since you've decided you want both. Zero cost, no downside in the data.
-5. **Ladder-weighted draw** on top of the curated pool, and show the ladder in the reveal. One line of weighting; one day in five becomes a ladder day.
-6. **Classic + retry on Mondays.** Same dice, no more 15-word boards.
-7. **Spread construction: optional, 5×5 only.** It's a real +20 words on weekends and nothing on weekdays. If you want it for *feel* (fewer `see`/`tee`, fewer `x`s, fewer 10-vowel boards) that's a legitimate reason, but the player data doesn't back it, and it's the one change here that actually alters what boards look like.
-8. **Bag (wordless) as a style**, not a replacement: fine for a wordless day if you want one, otherwise skip.
+The selection loop, hidden word and ladder reveal, cheap fixes, curated ladder-weighted pool and classic + retry are implemented (`src/lib/server/generation/`). What's left:
 
-The wordfreq export (`scripts/wordlist/wordfreq_en.tsv`, CC-BY-SA 4.0) would need to ship as a static asset and get a credit line on the about page.
+1. **Prune the seed list.** Edit the files in `scripts/seeds/candidates/`, concatenate the survivors into `scripts/seeds/list.txt`, and rerun `scripts/seeds/build.ts`; the generator picks it up with no code change.
+2. **Spread on 5×5 weekends.** Implemented as a dice but not scheduled. It's a real +20 words on weekends and nothing on weekdays; it's also the one change that alters what boards look like.
+3. **Bag as a wordless style.** Implemented, not scheduled; only worth it if you want a wordless day.
+4. **Credit wordfreq.** `static/seedPool.json` ships Zipf values derived from wordfreq (CC-BY-SA 4.0), so the about page needs a credit line.
 
 ## Caveats
 

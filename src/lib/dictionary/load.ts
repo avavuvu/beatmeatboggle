@@ -1,7 +1,9 @@
 import dictionaryManager from "./DictionaryManager"
 import { dirtyWords, initDirtyWords } from "./dirtyWords"
 
-export const loadDictionary = async (fetchFn: typeof fetch = fetch): Promise<void> => {
+export const loadDictionary = async (
+    fetchFn: typeof fetch = fetch
+): Promise<void> => {
     if (dictionaryManager.loaded) {
         return
     }
@@ -10,7 +12,9 @@ export const loadDictionary = async (fetchFn: typeof fetch = fetch): Promise<voi
     dictionaryManager.init(await response.text())
 }
 
-export const loadDirtyWords = async (fetchFn: typeof fetch = fetch): Promise<void> => {
+export const loadDirtyWords = async (
+    fetchFn: typeof fetch = fetch
+): Promise<void> => {
     if (dirtyWords.size > 0) {
         return
     }

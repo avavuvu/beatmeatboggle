@@ -1,6 +1,10 @@
 import { redirect } from "@sveltejs/kit"
 import { setPatronCookie } from "$lib/server/session"
-import { buildPatronSession, exchangeCode, fetchIdentity } from "$lib/server/patreon"
+import {
+    buildPatronSession,
+    exchangeCode,
+    fetchIdentity,
+} from "$lib/server/patreon"
 import type { RequestEvent } from "@sveltejs/kit"
 
 export const GET = async ({ url, cookies }: RequestEvent) => {

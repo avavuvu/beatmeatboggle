@@ -58,7 +58,7 @@ for (const size of [4, 5] as const satisfies BoardSize[]) {
         })
         counts[`${size}x${size} ${category} ✗`] = unfillable
         writeFileSync(`${SCRIPTS_DIR}/seeds/candidates/${size}-${category}.txt`, lines.join("\n") + "\n")
-        console.log(`${size}x${size} ${category.padEnd(9)} ${all.length} eligible, wrote ${sample.length}, ${unfillable} can't reach the floor`)
+        console.log(`${size}x${size} ${category.padEnd(9)} ${all.length} eligible, wrote ${sample.length}, ${unfillable} can't meet the requirements`)
     }
 }
 console.log("wrote scripts/seeds/candidates/*.txt")

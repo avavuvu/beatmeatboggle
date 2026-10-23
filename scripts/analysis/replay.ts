@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs"
 import { loadDirtyWordsFromDisk } from "../../src/lib/server/dictionary"
-import { calculatePoints } from "../../src/lib/scoring"
+import { scoreWord } from "../../src/lib/scoring"
 import { dataPath, findPath, loadWords } from "../lib"
 import { dedupe, isDailyPlay, loadPlayData, seedWordFor } from "./playData"
 
@@ -40,16 +40,17 @@ for (const date of dates) {
         continue
     }
 
-    const pack = (g: { id: number; words: string[] }) => ({
+    const match = { opponentWords: avasWords, fairFight: false, seedWord, boardDate: date }
+    const pack = (game: { id: number; words: string[] }) => ({
         date,
-        id: g.id,
+        id: game.id,
         size: board.size,
         letters: board.letters.join(""),
         seedWord,
         avasWords,
-        words: g.words,
-        paths: g.words.map((w) => findPath(board.letters, board.size, w)),
-        scores: g.words.map((w) => calculatePoints(w, avasWords, true, false, true).pointsArray),
+        words: game.words,
+        paths: game.words.map((word) => findPath(board.letters, board.size, word)),
+        scores: game.words.map((word) => scoreWord({ word, match }).breakdown),
     })
 
     const out = { top: pack(games[0]), median: pack(games[Math.floor(games.length / 2)]) }

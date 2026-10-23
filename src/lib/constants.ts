@@ -8,7 +8,8 @@ export const PLAYER_ID_KEY = "playerId"
 export const toISODateKey = (date: Date): string =>
     `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`
 
-export const dateFromKey = (dateKey: string): Date => new Date(`${dateKey}T00:00:00Z`)
+export const dateFromKey = (dateKey: string): Date =>
+    new Date(`${dateKey}T00:00:00Z`)
 
 export const getAdjacentPositions = (index: number, gridSize: number) => {
     const x = index % gridSize

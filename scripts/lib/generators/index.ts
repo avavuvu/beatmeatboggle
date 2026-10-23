@@ -32,3 +32,4 @@ export const construct = (
 }
 
 export { constructBag, constructClassic, constructLegacy, constructSpread, CURRENT, FIXED }
+export { generateWithWordLegacy, generateClassicLegacy, drawProductionSeedWord } from "./legacy"

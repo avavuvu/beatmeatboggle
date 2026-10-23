@@ -23,7 +23,9 @@
         playerWordCount: number | null
     } = $props()
 
-    const { distribution, players, avasScore, topPlayer } = $derived(data.scores)
+    const { distribution, players, avasScore, topPlayer } = $derived(
+        data.scores
+    )
 
     const dateFormatted = $derived(formatDateKey(data.dateKey))
     const weekday = $derived(WEEKDAYS[dateFromKey(data.dateKey).getUTCDay()])
@@ -59,7 +61,9 @@
 </script>
 
 <p>
-    {dateFormatted} was a <strong>{weekday}</strong> board; a <strong>{data.size}x{data.size}</strong> grid using
+    {dateFormatted} was a <strong>{weekday}</strong> board; a
+    <strong>{data.size}x{data.size}</strong>
+    grid using
     <strong>
         {#if dice === "classic"}
             classic boggle dice generation
@@ -86,14 +90,19 @@
 
     {#if playerPercentile !== null && playerRank !== null}
         <p>
-            You scored more than <strong>{formatPercentage(playerPercentile)}</strong> of players,
-            and placed <strong>#{playerRank}</strong>.
+            You scored more than <strong
+                >{formatPercentage(playerPercentile)}</strong
+            >
+            of players, and placed <strong>#{playerRank}</strong>.
         </p>
     {/if}
 {/if}
 
 {#if averageScore !== null}
-    <p>The average score was <strong>{Math.round(averageScore)} points</strong>.</p>
+    <p>
+        The average score was <strong>{Math.round(averageScore)} points</strong
+        >.
+    </p>
 {/if}
 
 {#if topPlayer}
@@ -109,13 +118,16 @@
         <strong>{topPlayer.words} words</strong>.
 
         {#if averageScore !== null}
-            It was <strong>{Math.round(topPlayer.score - averageScore)}</strong> points better than the average.
+            It was <strong>{Math.round(topPlayer.score - averageScore)}</strong> points
+            better than the average.
         {/if}
     </p>
 {/if}
 
 {#if beatAvaPercentage !== null}
-    <p><strong>{formatPercentage(beatAvaPercentage)}</strong> of players beat Ava.</p>
+    <p>
+        <strong>{formatPercentage(beatAvaPercentage)}</strong> of players beat Ava.
+    </p>
 {/if}
 
 <StatsHistogram {distribution} {avasScore} {playerScore} {averageScore} />

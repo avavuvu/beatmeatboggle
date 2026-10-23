@@ -1,5 +1,5 @@
 import { loadDirtyWordsFromDisk } from "../../src/lib/server/dictionary"
-import { calculateTotalPoints } from "../../src/lib/scoring"
+import { scoreOpponent, scorePlayer, scoreSolo } from "../../src/lib/scoring"
 import { dataPath, loadWords, writeCsv } from "../lib"
 import { dedupe, loadPlayData, weekdayFor } from "./playData"
 
@@ -18,7 +18,7 @@ const avaRows = []
 
 for (const [date, words] of avas) {
     if (until && date > until) continue
-    avaRows.push({ dateKey: date, words: JSON.stringify(words), score: calculateTotalPoints(words, [], false, false) })
+    avaRows.push({ dateKey: date, words: JSON.stringify(words), score: scoreSolo({ words, board: { seedWord: null, boardDate: date } }) })
 }
 
 for (const [date, games] of byDay) {
@@ -28,30 +28,34 @@ for (const [date, games] of byDay) {
     if (!avaWords || !valid) continue
 
     const seen = new Set<string>()
-    for (const g of dedupe(games)) {
-        const key = g.words.join(",")
+    for (const game of dedupe(games)) {
+        const key = game.words.join(",")
         if (seen.has(key)) continue
         seen.add(key)
 
-        const words = g.words.filter((w) => valid.has(w))
-        const score = calculateTotalPoints(words, avaWords, true, g.fair_fight, true)
-        const avaScore = calculateTotalPoints(avaWords, words, g.fair_fight, g.fair_fight, true)
-        const avaScoreFair = calculateTotalPoints(avaWords, words, true, true, true)
+        const words = game.words.filter((word) => valid.has(word))
+        const fairFight = game.fair_fight
+        const match = { opponentWords: avaWords, fairFight, seedWord: null, boardDate: date }
+        const fairMatch = { ...match, fairFight: true }
+        const score = scorePlayer({ words, match })
+        const avaScore = scoreOpponent({ playerWords: words, match })
+        const scoreFair = scorePlayer({ words, match: fairMatch })
+        const avaScoreFair = scoreOpponent({ playerWords: words, match: fairMatch })
 
         rows.push({
-            id: g.id,
+            id: game.id,
             dateKey: date,
             weekday: weekdayFor(date),
-            createdAt: Math.round(g.created_ms),
-            country: g.country,
-            city: g.city,
-            fairFight: g.fair_fight,
+            createdAt: Math.round(game.created_ms),
+            country: game.country,
+            city: game.city,
+            fairFight,
             wordCount: words.length,
-            longest: words.reduce((a, w) => Math.max(a, w.length), 0),
+            longest: words.reduce((longest, word) => Math.max(longest, word.length), 0),
             score,
             avaScore,
             beatAva: score > avaScore,
-            beatAvaFair: calculateTotalPoints(words, avaWords, true, true, true) > avaScoreFair,
+            beatAvaFair: scoreFair > avaScoreFair,
             words: JSON.stringify(words),
         })
     }

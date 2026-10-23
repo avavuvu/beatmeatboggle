@@ -1,5 +1,5 @@
 import { loadDirtyWordsFromDisk } from "../../src/lib/server/dictionary"
-import { calculateTotalPoints, wordLengthToPoints } from "../../src/lib/scoring"
+import { scorePlayer, wordLengthToPoints } from "../../src/lib/scoring"
 import { dataPath, loadWords, pct, quantile, share, writeCsv } from "../lib"
 import { isBackfilled, loadPlayData, PLAYER_IDS_SINCE } from "./playData"
 
@@ -32,38 +32,40 @@ type Row = {
 
 const rows: Row[] = []
 
-for (const g of players) {
-    if (isBackfilled(g) && g.score === -1) continue
-    const valid = boardWords.get(g.date_key)
-    const avaWords = avas.get(g.date_key)
+for (const game of players) {
+    if (isBackfilled(game) && game.score === -1) continue
+    const valid = boardWords.get(game.date_key)
+    const avaWords = avas.get(game.date_key)
     if (!valid || !avaWords) continue
 
-    const onBoard = g.words.filter((w) => valid.has(w))
-    const invalid = g.words.length - onBoard.length
-    const recomputed = calculateTotalPoints(onBoard, avaWords, true, g.fair_fight, true)
-    const noComparison = calculateTotalPoints(g.words, [], true, g.fair_fight, true)
-    const delta = g.score - recomputed
+    const onBoard = game.words.filter((word) => valid.has(word))
+    const invalid = game.words.length - onBoard.length
+    const fairFight = game.fair_fight
+    const match = { opponentWords: avaWords, fairFight, seedWord: null, boardDate: game.date_key }
+    const recomputed = scorePlayer({ words: onBoard, match })
+    const everyWordBonused = scorePlayer({ words: game.words, match: { ...match, opponentWords: [] } })
+    const delta = game.score - recomputed
 
     let verdict: Verdict = "match"
     if (delta !== 0) {
-        if (g.score > maxScore.get(g.date_key)!) verdict = "impossible"
+        if (game.score > maxScore.get(game.date_key)!) verdict = "impossible"
         else if (invalid > 0) verdict = "invalid-words"
-        else if (g.score === noComparison) verdict = "ava-missing-bonus"
+        else if (game.score === everyWordBonused) verdict = "ava-missing-bonus"
         else verdict = delta > 0 ? "client-high" : "client-low"
     } else if (invalid > 0) {
         verdict = "invalid-words"
     }
 
     rows.push({
-        id: g.id,
-        date: g.date_key,
-        era: g.date_key >= PLAYER_IDS_SINCE ? "recent" : "early",
-        challenge: !!g.challenged_by,
-        clientScore: g.score,
+        id: game.id,
+        date: game.date_key,
+        era: game.date_key >= PLAYER_IDS_SINCE ? "recent" : "early",
+        challenge: !!game.challenged_by,
+        clientScore: game.score,
         recomputed,
         delta,
         invalidWords: invalid,
-        submittedWords: g.words.length,
+        submittedWords: game.words.length,
         verdict,
     })
 }

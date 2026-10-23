@@ -1,9 +1,9 @@
 import { readFileSync } from "node:fs"
 import { weekDayMap, WEEKDAYS, type Dice } from "../../src/lib/board"
 import { dateFromKey } from "../../src/lib/constants"
-import { generateClassicLegacy, generateWithWordLegacy } from "../../src/lib/server/generateBoard"
+
 import { getGameDateKey } from "../../src/lib/server/gameDate"
-import { allWords, DATA_DIR, pick, rngFrom, PRODUCTION_LENGTHS } from "../lib"
+import { allWords, DATA_DIR, generateClassicLegacy, generateWithWordLegacy, pick, rngFrom, PRODUCTION_LENGTHS } from "../lib"
 
 export type BoardRow = {
     date_key: string

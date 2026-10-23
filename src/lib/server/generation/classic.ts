@@ -1,10 +1,22 @@
 import { pick, shuffle, type Rng } from "./rng"
 
 const DICE = [
-    "AACIOT", "ABILTY", "ABJMOQ", "ACDEMP",
-    "ACELRS", "ADENVZ", "AHMORS", "BIFORX",
-    "DENOSW", "DKNOTU", "EEFHIY", "EGKLUY",
-    "EGINTV", "EHINPS", "ELPSTU", "GILRUW",
+    "AACIOT",
+    "ABILTY",
+    "ABJMOQ",
+    "ACDEMP",
+    "ACELRS",
+    "ADENVZ",
+    "AHMORS",
+    "BIFORX",
+    "DENOSW",
+    "DKNOTU",
+    "EEFHIY",
+    "EGKLUY",
+    "EGINTV",
+    "EHINPS",
+    "ELPSTU",
+    "GILRUW",
 ]
 
 export const constructClassic = (rng: Rng, size: number): string[] => {

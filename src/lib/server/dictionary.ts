@@ -11,7 +11,9 @@ export const loadDictionaryFromDisk = async (): Promise<void> => {
         return
     }
 
-    dictionaryManager.init(await readFile(join(process.cwd(), "static", "wordList.txt"), "utf8"))
+    dictionaryManager.init(
+        await readFile(join(process.cwd(), "static", "wordList.txt"), "utf8")
+    )
 }
 
 export const loadDirtyWordsFromDisk = async (): Promise<void> => {
@@ -19,5 +21,7 @@ export const loadDirtyWordsFromDisk = async (): Promise<void> => {
         return
     }
 
-    initDirtyWords(await readFile(join(process.cwd(), "static", "dirtyWords.txt"), "utf8"))
+    initDirtyWords(
+        await readFile(join(process.cwd(), "static", "dirtyWords.txt"), "utf8")
+    )
 }

@@ -92,8 +92,5 @@ Since early August, returning players have been 60–75% of daily play. New-play
 
 ## What I'd take from this
 
-1. **Ladders are already a fifth of play.** Surfacing them in the reveal (and weighting the seed draw) builds on existing behaviour rather than inventing one.
-2. **The first game is the leaky step.** 8–13% next-day return from a first game vs 66–75% from the 11th. Whatever the reveal shows a first-timer — percentile, the seed word and its rungs, "you found 12 of 34 common words" — matters more for growth than the board does.
-3. **Use the knowledge model's per-word probabilities for the "words found by X%" stat and for a board's expected score,** but keep word count as the floor — it's nearly as good and far simpler.
-4. **The stored scores are fine to trust for stats** once challenge rows and the early-era board mismatches are excluded, which `players.ts` now does.
-5. **Fix `created_at` to `timestamptz`** before any more time-based analysis goes on the site.
+1. **The first game is the leaky step.** 8–13% next-day return from a first game vs 66–75% from the 11th. What the reveal shows a first-timer — their percentile, "you found 12 of 34 common words" — matters more for growth than the board does.
+2. **Use the knowledge model's per-word probabilities for the "words found by X%" stat and for a board's expected score,** but keep word count as the floor — it's nearly as good and far simpler.

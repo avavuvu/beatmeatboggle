@@ -27,7 +27,7 @@ const summarise = (cell: string, size: number) => {
         distinct: round(mean(num(rs, "distinct"))),
         eeoo: round(mean(rs.map((r) => Number(r.adjEE) + Number(r.adjOO)))),
         jqxz: round(mean(num(rs, "rare"))),
-        "pass floor": pct(share(rs.map((r) => r.passed === true))),
+        "meets reqs": pct(share(rs.map((r) => r.passed === true))),
         "med tries": median(num(rs, "attempts")),
         "seed plural%": seeded.length ? pct(share(seeded.map((r) => r.seedInflection === "plural"))) : "-",
         "seed zipf<3": seeded.length ? pct(share(seeded.map((r) => Number(r.seedZipf) < 3))) : "-",

@@ -8,4 +8,9 @@
 
 <Head title="Practice" />
 
-<Game board={data.board} dateKey={data.practiceKey} playerStatus="practice" opponentWords={null} />
+<Game
+    board={data.board}
+    dateKey={data.practiceKey}
+    playerStatus="practice"
+    opponentWords={null}
+/>

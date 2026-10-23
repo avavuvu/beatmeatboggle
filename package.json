@@ -1,7 +1,7 @@
 {
   "name": "boggle",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "netlify dev",
@@ -26,6 +26,7 @@
     "netlify-cli": "^27.0.1",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.6",
+    "prettier-plugin-svelte": "^4.1.1",
     "svelte": "^5.56.8",
     "svelte-check": "^4.7.3",
     "tailwindcss": "^4.3.3",
@@ -47,7 +48,6 @@
     "esbuild": "^0.28.0"
   },
   "trustedDependencies": [
-    "esbuild",
     "@esbuild/darwin-arm64"
   ]
 }

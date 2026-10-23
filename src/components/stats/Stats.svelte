@@ -2,7 +2,7 @@
     import type { DayStats, WordStat } from "$lib/statsTypes"
     import { loadGameState } from "$lib/session/gameState"
     import { loadDirtyWords } from "$lib/dictionary/load"
-    import { calculateTotalPoints } from "$lib/scoring"
+    import { scorePlayer } from "$lib/scoring"
     import preferences from "$lib/Preferences.svelte"
     import {
         formatPercentage,
@@ -30,7 +30,9 @@
     const longestWord = $derived(getLongestWord(data.words))
     const bestWord = $derived(getBestWord(data.words))
     const averageWordLength = $derived(getAverageFoundWordLength(data.words))
-    const foundTogetherPercentage = $derived(getFoundTogetherPercentage(data.words))
+    const foundTogetherPercentage = $derived(
+        getFoundTogetherPercentage(data.words)
+    )
 
     const freakWords = $derived(
         data.words.filter(({ plays }) => plays === 0).map(({ word }) => word)
@@ -41,20 +43,30 @@
     )
 
     const playerRarestWord = $derived(
-        foundWords ? (getRarestWords(data.words, foundWords, 1)[0] ?? null) : null
+        foundWords
+            ? (getRarestWords(data.words, foundWords, 1)[0] ?? null)
+            : null
     )
 
     const playerMissedWords = $derived(
-        foundWords ? getMostCommonMissedWords(data.words, foundWords, LIST_LIMIT) : []
+        foundWords
+            ? getMostCommonMissedWords(data.words, foundWords, LIST_LIMIT)
+            : []
     )
 
     const avaRareWords = $derived(
-        data.scores.avasWords ? getRarestWords(data.words, data.scores.avasWords, LIST_LIMIT) : []
+        data.scores.avasWords
+            ? getRarestWords(data.words, data.scores.avasWords, LIST_LIMIT)
+            : []
     )
 
     const avaMissedWords = $derived(
         data.scores.avasWords
-            ? getMostCommonMissedWords(data.words, data.scores.avasWords, LIST_LIMIT)
+            ? getMostCommonMissedWords(
+                  data.words,
+                  data.scores.avasWords,
+                  LIST_LIMIT
+              )
             : []
     )
 
@@ -77,13 +89,15 @@
         loadDirtyWords().then(() => {
             if (cancelled) return
 
-            playerScore = calculateTotalPoints(
-                saved.foundWords,
-                avasWords ?? [],
-                true,
-                preferences.settings.fairFight.value,
-                avasWords !== null
-            )
+            playerScore = scorePlayer({
+                words: saved.foundWords,
+                match: {
+                    opponentWords: avasWords,
+                    fairFight: preferences.settings.fairFight.value,
+                    seedWord: data.seedWord,
+                    boardDate: data.dateKey,
+                },
+            })
         })
 
         return () => {
@@ -95,7 +109,11 @@
 {#snippet wordList(entries: WordStat[])}
     <ul class="freakwords">
         {#each entries as { word, percentage } (word)}
-            <li><span class="uppercase">{word}</span> ({formatPercentage(percentage)})</li>
+            <li>
+                <span class="uppercase">{word}</span> ({formatPercentage(
+                    percentage
+                )})
+            </li>
         {/each}
     </ul>
 {/snippet}
@@ -112,14 +130,20 @@
     {#if longestWord}
         <p>
             <strong class="block">
-                The longest possible word was <span class="uppercase">{longestWord.word}</span>
+                The longest possible word was <span class="uppercase"
+                    >{longestWord.word}</span
+                >
             </strong>
             Which was only found by {longestWord.plays} players.
         </p>
     {/if}
 
     {#if averageWordLength !== null}
-        <p>The average word found was <strong>{averageWordLength.toFixed(1)}</strong> letters long.</p>
+        <p>
+            The average word found was <strong
+                >{averageWordLength.toFixed(1)}</strong
+            > letters long.
+        </p>
     {/if}
 
     {#if bestWord}
@@ -127,12 +151,16 @@
             <strong class="block">
                 The best word was <span class="uppercase">{bestWord.word}</span>
             </strong>
-            It earned players the most points in total. {formatPercentage(bestWord.percentage)} of players found it.
+            It earned players the most points in total. {formatPercentage(
+                bestWord.percentage
+            )} of players found it.
         </p>
     {/if}
 
     <p>
-        Together, players found <strong>{formatPercentage(foundTogetherPercentage)}</strong> of all possible words.
+        Together, players found <strong
+            >{formatPercentage(foundTogetherPercentage)}</strong
+        > of all possible words.
     </p>
 
     {#if freakWords.length !== 0}
@@ -151,16 +179,22 @@
     <section>
         {#if playerFoundPercentage !== null}
             <p>
-                <strong>You found {formatPercentage(playerFoundPercentage)} of all possible words.</strong>
+                <strong
+                    >You found {formatPercentage(playerFoundPercentage)} of all possible
+                    words.</strong
+                >
             </p>
         {/if}
 
         {#if playerRarestWord}
             <p>
                 <strong class="block">
-                    Your rarest word was <span class="uppercase">{playerRarestWord.word}</span>.
+                    Your rarest word was <span class="uppercase"
+                        >{playerRarestWord.word}</span
+                    >.
                 </strong>
-                Only {formatPercentage(playerRarestWord.percentage)} of players found it.
+                Only {formatPercentage(playerRarestWord.percentage)} of players found
+                it.
             </p>
         {/if}
 

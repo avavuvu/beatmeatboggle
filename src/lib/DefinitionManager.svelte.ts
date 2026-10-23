@@ -20,10 +20,10 @@ class DefinitionManager {
         this.currentDefinition = { type: "loading" }
 
         try {
-            const defintion = await getDefinition(word)
+            const definition = await getDefinition(word)
             this.currentDefinition = {
                 type: "definition",
-                data: defintion,
+                data: definition,
             }
         } catch (e) {
             this.currentDefinition = {
@@ -38,5 +38,5 @@ class DefinitionManager {
     }
 }
 
-const definitionManaager = new DefinitionManager()
-export default definitionManaager
+const definitionManager = new DefinitionManager()
+export default definitionManager

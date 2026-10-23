@@ -6,6 +6,7 @@
     import BoardInput from "@/BoardInput.svelte"
     import { fade, slide } from "svelte/transition"
     import { page } from "$app/state"
+    import definitionManager from "$lib/DefinitionManager.svelte"
     import type { PageData } from "./$types"
 
     const { data }: { data: PageData } = $props()
@@ -17,12 +18,26 @@
 
     // svelte-ignore state_referenced_locally
     let board = $state(
-        Array.from({length: 49}, (_, i) => data.letters?.[i] ?? ALPHABET[i % 25])
+        Array.from(
+            { length: 49 },
+            (_, i) => data.letters?.[i] ?? ALPHABET[i % 25]
+        )
     )
 
     let solution: string[] | null = $state(null)
     let showOptions = $state(false)
     let showExportUrl = $state(false)
+    let selectedWord = $state<string | null>(null)
+
+    const onWordClick = (word: string) => {
+        if (selectedWord === word) {
+            definitionManager.setWord(word)
+            return
+        }
+
+        definitionManager.clearWord()
+        selectedWord = word
+    }
 
     const onsubmit = (event: SubmitEvent) => {
         event.preventDefault()
@@ -31,7 +46,10 @@
     }
 
     const shareUrl = $derived.by(() => {
-        const letters = board.slice(0, size * size).join("").toUpperCase()
+        const letters = board
+            .slice(0, size * size)
+            .join("")
+            .toUpperCase()
         const params = new URLSearchParams({ size: String(size), letters })
 
         return `${page.url.origin}${page.url.pathname}?${params.toString()}`
@@ -41,10 +59,11 @@
 <Head
     title="Boggle Board Solver"
     description="Find every possible combination of words from your Boggle board, for 4x4, 5x5, 6x6, and 7x7 Boggle boards"
-    />
+/>
 
-
-<div class="text-foreground min-h-screen flex justify-center items-center gap-4 py-12">
+<div
+    class="text-foreground min-h-screen flex justify-center items-center gap-4 py-12"
+>
     <div class="w-xl px-4 sm:px-2">
         <span class="inline-flex gap-4 w-full">
             <h1 class="px-2 font-bold">Boggle Board Solver</h1>
@@ -53,8 +72,8 @@
 
         <form
             {onsubmit}
-            class="border p-4 min-h-48 flex justify-center items-center flex-col gap-4">
-
+            class="border p-4 min-h-48 flex justify-center items-center flex-col gap-4"
+        >
             <BoardInput
                 {size}
                 bind:letters={board}
@@ -64,26 +83,39 @@
             <div class="flex gap-2">
                 <button
                     type="button"
-                    onclick={() => showOptions = !showOptions}
-                    class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer">
+                    onclick={() => (showOptions = !showOptions)}
+                    class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer"
+                >
                     Options
                 </button>
-                <button class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer">Solve</button>
+                <button
+                    class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer"
+                    >Solve</button
+                >
             </div>
         </form>
 
         {#if showOptions}
             <div class="border p-4 my-4 flex flex-col gap-4" transition:slide>
-                <div class="border flex items-center  gap-2 px-2 w-min">
+                <div class="border flex items-center gap-2 px-2 w-min">
                     <label for="size">Size</label>
-                    <input name="size" id="size" class="px-4 outline-0 w-20" type="number" bind:value={size} min="2" max="7"/>
+                    <input
+                        name="size"
+                        id="size"
+                        class="px-4 outline-0 w-20"
+                        type="number"
+                        bind:value={size}
+                        min="2"
+                        max="7"
+                    />
                 </div>
 
                 <div class="flex flex-col gap-2">
                     <button
                         type="button"
-                        onclick={() => showExportUrl = true}
-                        class="border w-min px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer">
+                        onclick={() => (showExportUrl = true)}
+                        class="border w-min px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer"
+                    >
                         Export
                     </button>
 
@@ -92,40 +124,46 @@
                             readonly
                             class="border px-2 py-1 w-full"
                             value={shareUrl}
-                            onclick={(event) => event.currentTarget.select()}/>
+                            onclick={(event) => event.currentTarget.select()}
+                        />
                     {/if}
                 </div>
             </div>
         {/if}
 
         {#if solution}
-            <div class="border p-4 min-h-36 gap-4 my-4 text-left grid grid-cols-1 grid-rows-1 mb-24" transition:slide>
-                <div in:fade class="col-start-1 col-end-2 row-start-1 row-end-2">
-                    <p class="italic text-accent mb-2">Click on a word to see its definition</p>
-                    <WordList words={solution} />
+            <div
+                class="border p-4 min-h-36 gap-4 my-4 text-left grid grid-cols-1 grid-rows-1 mb-24"
+                transition:slide
+            >
+                <div
+                    in:fade
+                    class="col-start-1 col-end-2 row-start-1 row-end-2"
+                >
+                    <p class="italic text-accent mb-2">
+                        Click on a word to see its definition
+                    </p>
+                    <WordList words={solution} {selectedWord} {onWordClick} />
                 </div>
 
-                <div class="definition col-start-1 col-end-2 row-start-1 row-end-2 text-left">
-                    <Definition/>
+                <div
+                    class="definition col-start-1 col-end-2 row-start-1 row-end-2 text-left"
+                >
+                    <Definition />
                 </div>
             </div>
         {/if}
 
-        <div class="my-4 text-muted">
-
-        </div>
-
+        <div class="my-4 text-muted"></div>
     </div>
 </div>
 
 <style>
-
     a {
         text-decoration: underline;
     }
 
-
-     .definition:empty {
-         pointer-events: none;
-     }
+    .definition:empty {
+        pointer-events: none;
+    }
 </style>

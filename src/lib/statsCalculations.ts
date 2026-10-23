@@ -5,17 +5,18 @@ const COUNTRY_DISPLAY_NAMES: Record<string, string> = {
     "United Kingdom": "the UK",
     "United States": "the US",
     "The Netherlands": "the Netherlands",
-    "Philippines": "the Philippines",
+    Philippines: "the Philippines",
     "United Arab Emirates": "the UAE",
     "Dominican Republic": "the Dominican Republic",
     "Cayman Islands": "the Cayman Islands",
     "Northern Mariana Islands": "the Northern Mariana Islands",
     "Isle of Man": "the Isle of Man",
-    "Maldives": "the Maldives",
-    "Seychelles": "the Seychelles",
+    Maldives: "the Maldives",
+    Seychelles: "the Seychelles",
 }
 
-export const formatCountry = (country: string) => COUNTRY_DISPLAY_NAMES[country] ?? country
+export const formatCountry = (country: string) =>
+    COUNTRY_DISPLAY_NAMES[country] ?? country
 
 export const formatPercentage = (value: number) => `${value.toFixed(1)}%`
 
@@ -28,8 +29,14 @@ const byPlaysDescending = (a: WordStat, b: WordStat) =>
 const byPlaysAscending = (a: WordStat, b: WordStat) =>
     a.plays - b.plays || b.word.length - a.word.length
 
-const countPlayers = (distribution: ScoreCount[], predicate: (score: number) => boolean) =>
-    distribution.reduce((total, { score, count }) => (predicate(score) ? total + count : total), 0)
+const countPlayers = (
+    distribution: ScoreCount[],
+    predicate: (score: number) => boolean
+) =>
+    distribution.reduce(
+        (total, { score, count }) => (predicate(score) ? total + count : total),
+        0
+    )
 
 export const getFoundTogetherPercentage = (words: WordStat[]) =>
     toPercentage(words.filter(({ plays }) => plays > 0).length, words.length)
@@ -37,12 +44,18 @@ export const getFoundTogetherPercentage = (words: WordStat[]) =>
 export const getFoundPercentage = (words: WordStat[], found: string[]) => {
     const foundSet = new Set(found)
 
-    return toPercentage(words.filter(({ word }) => foundSet.has(word)).length, words.length)
+    return toPercentage(
+        words.filter(({ word }) => foundSet.has(word)).length,
+        words.length
+    )
 }
 
 export const getLongestWord = (words: WordStat[]) =>
     words.reduce<WordStat | null>(
-        (longest, entry) => (!longest || entry.word.length > longest.word.length ? entry : longest),
+        (longest, entry) =>
+            !longest || entry.word.length > longest.word.length
+                ? entry
+                : longest,
         null
     )
 
@@ -53,7 +66,12 @@ export const getBestWord = (words: WordStat[]) => {
     for (const entry of words) {
         const value = wordLengthToPoints(entry.word) * entry.plays
 
-        if (value > bestValue || (value === bestValue && best && entry.word.length > best.word.length)) {
+        if (
+            value > bestValue ||
+            (value === bestValue &&
+                best &&
+                entry.word.length > best.word.length)
+        ) {
             best = entry
             bestValue = value
         }
@@ -74,7 +92,11 @@ export const getAverageFoundWordLength = (words: WordStat[]) => {
     return plays > 0 ? letters / plays : null
 }
 
-export const getRarestWords = (words: WordStat[], found: string[], limit: number) => {
+export const getRarestWords = (
+    words: WordStat[],
+    found: string[],
+    limit: number
+) => {
     const foundSet = new Set(found)
 
     return words
@@ -83,7 +105,11 @@ export const getRarestWords = (words: WordStat[], found: string[], limit: number
         .slice(0, limit)
 }
 
-export const getMostCommonMissedWords = (words: WordStat[], found: string[], limit: number) => {
+export const getMostCommonMissedWords = (
+    words: WordStat[],
+    found: string[],
+    limit: number
+) => {
     const foundSet = new Set(found)
 
     return words
@@ -94,14 +120,31 @@ export const getMostCommonMissedWords = (words: WordStat[], found: string[], lim
 
 export const getAverageScore = (distribution: ScoreCount[], players: number) =>
     players > 0
-        ? distribution.reduce((total, { score, count }) => total + score * count, 0) / players
+        ? distribution.reduce(
+              (total, { score, count }) => total + score * count,
+              0
+          ) / players
         : null
 
-export const getPercentile = (distribution: ScoreCount[], players: number, score: number) =>
-    toPercentage(countPlayers(distribution, (other) => other < score), players)
+export const getPercentile = (
+    distribution: ScoreCount[],
+    players: number,
+    score: number
+) =>
+    toPercentage(
+        countPlayers(distribution, (other) => other < score),
+        players
+    )
 
-export const getBeatScorePercentage = (distribution: ScoreCount[], players: number, score: number) =>
-    toPercentage(countPlayers(distribution, (other) => other > score), players)
+export const getBeatScorePercentage = (
+    distribution: ScoreCount[],
+    players: number,
+    score: number
+) =>
+    toPercentage(
+        countPlayers(distribution, (other) => other > score),
+        players
+    )
 
 export const getRank = (distribution: ScoreCount[], score: number) =>
     countPlayers(distribution, (other) => other > score) + 1

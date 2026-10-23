@@ -1,7 +1,10 @@
 <script lang="ts">
     import type { WordStat } from "$lib/statsTypes"
 
-    const { words, previewCount = 3 }: { words: WordStat[]; previewCount?: number } = $props()
+    const {
+        words,
+        previewCount = 3,
+    }: { words: WordStat[]; previewCount?: number } = $props()
 
     let showAll = $state(false)
 
@@ -38,7 +41,7 @@
         {#if !showAll}
             <tr>
                 <td colspan="2">
-                    <button onclick={() => showAll = true}>show all</button>
+                    <button onclick={() => (showAll = true)}>show all</button>
                 </td>
             </tr>
         {/if}

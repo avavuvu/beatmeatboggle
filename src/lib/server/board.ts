@@ -7,10 +7,14 @@ import { weekDayMap, WEEKDAYS } from "../board"
 import { loadDictionaryFromDisk } from "./dictionary"
 import { getGameDateKey } from "./gameDate"
 
-const generatorFor = (dateKey: string) => weekDayMap[WEEKDAYS[dateFromKey(dateKey).getUTCDay()]].dice
+const generatorFor = (dateKey: string) =>
+    weekDayMap[WEEKDAYS[dateFromKey(dateKey).getUTCDay()]].dice
 
 export const getOrCreateBoard = async (dateKey: string) => {
-    const [existing] = await db.select().from(boards).where(eq(boards.dateKey, dateKey))
+    const [existing] = await db
+        .select()
+        .from(boards)
+        .where(eq(boards.dateKey, dateKey))
 
     if (existing) {
         return existing
@@ -18,11 +22,22 @@ export const getOrCreateBoard = async (dateKey: string) => {
 
     await loadDictionaryFromDisk()
 
-    const { size, letters, time, totalWords, seedWord, ladder } = resolveBoard(dateFromKey(dateKey))
+    const { size, letters, time, totalWords, seedWord, ladder } = resolveBoard(
+        dateFromKey(dateKey)
+    )
 
     const [inserted] = await db
         .insert(boards)
-        .values({ dateKey, size, letters, time, totalWords, seedWord, ladder, generator: generatorFor(dateKey) })
+        .values({
+            dateKey,
+            size,
+            letters,
+            time,
+            totalWords,
+            seedWord,
+            ladder,
+            generator: generatorFor(dateKey),
+        })
         .onConflictDoNothing({ target: boards.dateKey })
         .returning()
 
@@ -30,7 +45,10 @@ export const getOrCreateBoard = async (dateKey: string) => {
         return inserted
     }
 
-    const [raced] = await db.select().from(boards).where(eq(boards.dateKey, dateKey))
+    const [raced] = await db
+        .select()
+        .from(boards)
+        .where(eq(boards.dateKey, dateKey))
     return raced
 }
 
@@ -54,14 +72,29 @@ export const rerollBoard = async (dateKey: string) => {
     await loadDictionaryFromDisk()
 
     const seed = `${dateKey}-${crypto.randomUUID()}`
-    const { size, letters, time, totalWords, seedWord, ladder } = resolveBoard(dateFromKey(dateKey), seed)
+    const { size, letters, time, totalWords, seedWord, ladder } = resolveBoard(
+        dateFromKey(dateKey),
+        seed
+    )
     const generator = generatorFor(dateKey)
 
     const [[board]] = await Promise.all([
         db
             .insert(boards)
-            .values({ dateKey, size, letters, time, totalWords, seedWord, ladder, generator })
-            .onConflictDoUpdate({ target: boards.dateKey, set: { letters, totalWords, seedWord, ladder, generator } })
+            .values({
+                dateKey,
+                size,
+                letters,
+                time,
+                totalWords,
+                seedWord,
+                ladder,
+                generator,
+            })
+            .onConflictDoUpdate({
+                target: boards.dateKey,
+                set: { letters, totalWords, seedWord, ladder, generator },
+            })
             .returning(),
         db.delete(avasWords).where(eq(avasWords.dateKey, dateKey)),
     ])

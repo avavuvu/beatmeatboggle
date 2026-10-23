@@ -3,7 +3,10 @@ import {
     PUBLIC_PATREON_REDIRECT_URI,
     PUBLIC_PATREON_CAMPAIGN_ID,
 } from "$env/static/public"
-import { PATREON_CLIENT_SECRET, PATREON_CREATOR_TOKEN } from "$env/static/private"
+import {
+    PATREON_CLIENT_SECRET,
+    PATREON_CREATOR_TOKEN,
+} from "$env/static/private"
 import type { Cookies } from "@sveltejs/kit"
 import {
     PATRON_COOKIE,
@@ -39,7 +42,9 @@ export type PatreonIdentity = {
 
 class PatreonAuthError extends Error {}
 
-const requestTokens = async (body: Record<string, string>): Promise<PatreonTokens> => {
+const requestTokens = async (
+    body: Record<string, string>
+): Promise<PatreonTokens> => {
     const response = await fetch(TOKEN_URL, {
         method: "POST",
         headers: {
@@ -77,7 +82,9 @@ export const refreshTokens = (refreshToken: string) =>
         refresh_token: refreshToken,
     })
 
-export const fetchIdentity = async (accessToken: string): Promise<PatreonIdentity> => {
+export const fetchIdentity = async (
+    accessToken: string
+): Promise<PatreonIdentity> => {
     const params = new URLSearchParams({
         include: "memberships,memberships.campaign",
         "fields[member]": "patron_status,currently_entitled_amount_cents",
@@ -142,7 +149,9 @@ export const buildPatronSession = (
 const isStale = (session: PatronSession) =>
     Date.now() - session.checkedAt > RECHECK_AFTER[session.tier]
 
-const recheck = async (session: PatronSession): Promise<PatronSession | null> => {
+const recheck = async (
+    session: PatronSession
+): Promise<PatronSession | null> => {
     let tokens: PatreonTokens = {
         accessToken: session.accessToken,
         refreshToken: session.refreshToken,
@@ -150,12 +159,18 @@ const recheck = async (session: PatronSession): Promise<PatronSession | null> =>
 
     try {
         try {
-            return buildPatronSession(await fetchIdentity(tokens.accessToken), tokens)
+            return buildPatronSession(
+                await fetchIdentity(tokens.accessToken),
+                tokens
+            )
         } catch (e) {
             if (!(e instanceof PatreonAuthError)) throw e
 
             tokens = await refreshTokens(tokens.refreshToken)
-            return buildPatronSession(await fetchIdentity(tokens.accessToken), tokens)
+            return buildPatronSession(
+                await fetchIdentity(tokens.accessToken),
+                tokens
+            )
         }
     } catch (e) {
         if (e instanceof PatreonAuthError) {
@@ -208,12 +223,13 @@ type MemberResponse = {
 }
 
 export const fetchMembers = async (): Promise<Record<number, string[]>> => {
-    const members: Array<{ name: string, cents: number}> = []
+    const members: Array<{ name: string; cents: number }> = []
     let cursor: string | null = null
 
     do {
         const params = new URLSearchParams({
-            "fields[member]": "full_name,patron_status,currently_entitled_amount_cents",
+            "fields[member]":
+                "full_name,patron_status,currently_entitled_amount_cents",
             "page[size]": "100",
         })
 
@@ -232,15 +248,15 @@ export const fetchMembers = async (): Promise<Record<number, string[]>> => {
         )
 
         if (!response.ok) {
-            throw new Error(`patreon members request failed: ${response.status}`)
+            throw new Error(
+                `patreon members request failed: ${response.status}`
+            )
         }
 
         const { data, meta }: MemberResponse = await response.json()
 
         for (const { attributes } of data) {
-            if (
-                attributes.patron_status === "active_patron"
-            ) {
+            if (attributes.patron_status === "active_patron") {
                 members.push({
                     name: attributes.full_name,
                     cents: attributes.currently_entitled_amount_cents,
@@ -253,7 +269,9 @@ export const fetchMembers = async (): Promise<Record<number, string[]>> => {
 
     const byTier: Record<number, string[]> = {}
 
-    for (const { name, cents } of members.toSorted((a, b) => a.name.localeCompare(b.name))) {
+    for (const { name, cents } of members.toSorted((a, b) =>
+        a.name.localeCompare(b.name)
+    )) {
         ;(byTier[cents] ??= []).push(name)
     }
 

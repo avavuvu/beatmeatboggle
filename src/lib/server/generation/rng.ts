@@ -4,7 +4,7 @@ export type Rng = () => number
 
 export const rngFrom = (seed: string): Rng => seedrandom(seed)
 
-export const shuffle = <T,>(rng: Rng, arr: T[]): T[] => {
+export const shuffle = <T>(rng: Rng, arr: T[]): T[] => {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(rng() * (i + 1))
         ;[arr[i], arr[j]] = [arr[j], arr[i]]
@@ -12,7 +12,8 @@ export const shuffle = <T,>(rng: Rng, arr: T[]): T[] => {
     return arr
 }
 
-export const pick = <T,>(rng: Rng, arr: T[]): T => arr[Math.floor(rng() * arr.length)]
+export const pick = <T>(rng: Rng, arr: T[]): T =>
+    arr[Math.floor(rng() * arr.length)]
 
 export const cumulative = (weights: number[]): number[] => {
     const out = new Array<number>(weights.length)
@@ -21,7 +22,7 @@ export const cumulative = (weights: number[]): number[] => {
     return out
 }
 
-export const pickWeighted = <T,>(rng: Rng, arr: T[], cum: number[]): T => {
+export const pickWeighted = <T>(rng: Rng, arr: T[], cum: number[]): T => {
     const r = rng() * cum[cum.length - 1]
     let lo = 0
     let hi = cum.length - 1
@@ -33,7 +34,10 @@ export const pickWeighted = <T,>(rng: Rng, arr: T[], cum: number[]): T => {
     return arr[lo]
 }
 
-export const weightedPick = (rng: Rng, weights: Record<string, number>): string => {
+export const weightedPick = (
+    rng: Rng,
+    weights: Record<string, number>
+): string => {
     const entries = Object.entries(weights)
     const total = entries.reduce((s, [, w]) => s + w, 0)
     let r = rng() * total

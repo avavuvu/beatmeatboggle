@@ -4,40 +4,30 @@ import { construct, isWordless, type Construction } from "./generators"
 import type { Pool } from "./pools"
 
 export {
-    FLOORS,
-    WORDLESS_FLOORS,
-    type Floor,
-} from "../../src/lib/server/generation/floor"
-import { FLOORS, WORDLESS_FLOORS, type Floor } from "../../src/lib/server/generation/floor"
+    REQUIREMENTS,
+    WORDLESS_REQUIREMENTS,
+    type BoardRequirements,
+} from "../../src/lib/server/generation/requirements"
+import {
+    REQUIREMENTS,
+    WORDLESS_REQUIREMENTS,
+    meetsRequirements,
+    shortfall,
+    type BoardRequirements,
+    type BoardStats,
+} from "../../src/lib/server/generation/requirements"
 
-export const floorFor = (construction: Construction, size: number) =>
-    isWordless(construction) ? WORDLESS_FLOORS[size] : FLOORS[size]
+export const requirementsFor = (construction: Construction, size: number) =>
+    isWordless(construction) ? WORDLESS_REQUIREMENTS[size] : REQUIREMENTS[size]
 
-export const failures = (m: Metrics, floor: Floor): string[] => {
-    const out: string[] = []
-    if (m.words < floor.words) out.push("words")
-    if (m.len6plus < floor.len6plus) out.push("len6plus")
-    if (m.len7plus < floor.len7plus) out.push("len7plus")
-    if (m.words && m.len3 / m.words > floor.len3Share) out.push("len3Share")
-    if (m.words && m.plurals / m.words > floor.pluralShare) out.push("pluralShare")
-    if (m.seedWord && !m.seedFound) out.push("seedMissing")
-    return out
-}
-
-export const passesFloor = (m: Metrics, floor: Floor) => failures(m, floor).length === 0
-
-const softScore = (m: Metrics, floor: Floor) => {
-    const below = (v: number, min: number) => (v < min ? (min - v) / min : 0)
-    const above = (v: number, max: number) => (v > max ? (v - max) / max : 0)
-    return (
-        below(m.words, floor.words) * 3 +
-        below(m.len6plus, floor.len6plus) * 2 +
-        below(m.len7plus, floor.len7plus) +
-        above(m.words ? m.len3 / m.words : 0, floor.len3Share) +
-        above(m.words ? m.plurals / m.words : 0, floor.pluralShare) +
-        (m.seedWord && !m.seedFound ? 5 : 0)
-    )
-}
+const toStats = (m: Metrics): BoardStats => ({
+    words: m.wordList,
+    threeLetterWords: m.len3,
+    wordsAtLeast6Letters: m.len6plus,
+    wordsAtLeast7Letters: m.len7plus,
+    plurals: m.plurals,
+    seedWordFound: m.seedFound,
+})
 
 export type Selection = "single" | "refill" | "redraw"
 
@@ -65,7 +55,7 @@ export const generate = (
     const wordless = isWordless(construction)
     if (!wordless && !pool) throw new Error(`${construction} needs a pool`)
 
-    const floor = floorFor(construction, size)
+    const requirements = requirementsFor(construction, size)
     const first = rngFrom(trialSeed)
     const firstWord = wordless ? null : drawWord(first, pool!)
 
@@ -78,10 +68,10 @@ export const generate = (
         const letters = construct(construction, rng, size, seedWord)
         if (!letters) continue
         const metrics = evaluate(letters, size, seedWord)
-        const passed = passesFloor(metrics, floor)
+        const passed = meetsRequirements(toStats(metrics), requirements)
         const result = { letters, seedWord, attempts: i + 1, passed, metrics }
         if (passed) return result
-        if (!best || softScore(metrics, floor) < softScore(best.metrics, floor)) best = result
+        if (!best || shortfall(toStats(metrics), requirements) < shortfall(toStats(best.metrics), requirements)) best = result
     }
 
     return { ...best!, attempts }

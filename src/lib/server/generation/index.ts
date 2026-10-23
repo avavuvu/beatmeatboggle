@@ -1,10 +1,19 @@
 import type { Dice } from "../../board"
 import { rngFrom, type Rng } from "./rng"
-import { FIXED, ORIGINAL, constructLegacy } from "./legacy"
+import { constructWord } from "./word"
 import { constructBag, constructSpread } from "./bag"
 import { constructClassic } from "./classic"
-import { FLOORS, WORDLESS_FLOORS, failures, passesFloor, quality, softScore, type Floor, type Quality } from "./floor"
-import { drawPlaceableProductionSeedWord, drawProductionSeedWord, drawSeedWord, ladderOf } from "./pool"
+import {
+    REQUIREMENTS,
+    WORDLESS_REQUIREMENTS,
+    unmetRequirements,
+    meetsRequirements,
+    measureBoard,
+    shortfall,
+    type BoardRequirements,
+    type BoardStats,
+} from "./requirements"
+import { drawSeedWord, ladderOf } from "./pool"
 
 export type GeneratedBoard = {
     letters: string[]
@@ -21,34 +30,60 @@ export const FILLS_PER_WORD = 6
 
 const WORDLESS: Dice[] = ["classic", "bag"]
 
-export const floorFor = (dice: Dice, size: number): Floor => (WORDLESS.includes(dice) ? WORDLESS_FLOORS : FLOORS)[size]
+export const requirementsFor = (dice: Dice, size: number): BoardRequirements =>
+    (WORDLESS.includes(dice) ? WORDLESS_REQUIREMENTS : REQUIREMENTS)[size]
 
-const construct = (dice: Dice, rng: Rng, size: number, seedWord: string | null): string[] | null => {
+const construct = (
+    dice: Dice,
+    rng: Rng,
+    size: number,
+    seedWord: string | null
+): string[] | null => {
     switch (dice) {
         case "classic":
             return constructClassic(rng, size)
         case "bag":
             return constructBag(rng, size)
         case "word":
-            return constructLegacy(rng, size, seedWord!, FIXED)
+            return constructWord(rng, size, seedWord!)
         case "spread":
             return constructSpread(rng, size, seedWord!)
     }
 }
 
-export const generateBoard = (dice: Dice, seed: string, size: number): GeneratedBoard => {
-    const floor = floorFor(dice, size)
+export const generateBoard = (
+    dice: Dice,
+    seed: string,
+    size: number
+): GeneratedBoard => {
+    const requirements = requirementsFor(dice, size)
     const wordless = WORDLESS.includes(dice)
-    let best: { letters: string[]; seedWord: string | null; q: Quality; attempts: number } | null = null
+    let best: {
+        letters: string[]
+        seedWord: string | null
+        stats: BoardStats
+        attempts: number
+    } | null = null
 
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-        const seedWord = wordless ? null : drawSeedWord(rngFrom(`${seed}-w${Math.floor(attempt / FILLS_PER_WORD)}`), size).word
-        const letters = construct(dice, rngFrom(attempt === 0 ? seed : `${seed}-${attempt}`), size, seedWord)
+        const seedWord = wordless
+            ? null
+            : drawSeedWord(
+                  rngFrom(`${seed}-w${Math.floor(attempt / FILLS_PER_WORD)}`),
+                  size
+              ).word
+        const letters = construct(
+            dice,
+            rngFrom(attempt === 0 ? seed : `${seed}-${attempt}`),
+            size,
+            seedWord
+        )
         if (!letters) continue
-        const q = quality(letters, size, seedWord)
-        const candidate = { letters, seedWord, q, attempts: attempt + 1 }
-        if (passesFloor(q, floor)) return finish(dice, candidate, true)
-        if (!best || softScore(q, floor) < softScore(best.q, floor)) best = candidate
+        const stats = measureBoard(letters, size, seedWord)
+        const candidate = { letters, seedWord, stats, attempts: attempt + 1 }
+        if (meetsRequirements(stats, requirements)) return finish(dice, candidate, true)
+        if (!best || shortfall(stats, requirements) < shortfall(best.stats, requirements))
+            best = candidate
     }
 
     return finish(dice, { ...best!, attempts: MAX_ATTEMPTS }, false)
@@ -56,7 +91,17 @@ export const generateBoard = (dice: Dice, seed: string, size: number): Generated
 
 const finish = (
     dice: Dice,
-    { letters, seedWord, q, attempts }: { letters: string[]; seedWord: string | null; q: Quality; attempts: number },
+    {
+        letters,
+        seedWord,
+        stats,
+        attempts,
+    }: {
+        letters: string[]
+        seedWord: string | null
+        stats: BoardStats
+        attempts: number
+    },
     passed: boolean
 ): GeneratedBoard => ({
     letters,
@@ -65,16 +110,18 @@ const finish = (
     generator: dice,
     attempts,
     passed,
-    words: q.words,
+    words: stats.words,
 })
 
-export const generateWithWordLegacy = (seed: string, size: number): string[] => {
-    const rng = rngFrom(seed)
-    return constructLegacy(rng, size, drawProductionSeedWord(rng), ORIGINAL)
+export { constructWord, constructSpread, constructBag, constructClassic }
+export {
+    REQUIREMENTS,
+    WORDLESS_REQUIREMENTS,
+    unmetRequirements,
+    meetsRequirements,
+    measureBoard,
+    shortfall,
+    type BoardRequirements,
+    type BoardStats,
 }
-
-export const generateClassicLegacy = (seed: string, size: number): string[] => constructClassic(rngFrom(seed), size)
-
-export { constructLegacy, constructSpread, constructBag, constructClassic, ORIGINAL, FIXED }
-export { FLOORS, WORDLESS_FLOORS, failures, passesFloor, quality, softScore, type Floor, type Quality }
-export { drawPlaceableProductionSeedWord, drawProductionSeedWord, drawSeedWord }
+export { drawSeedWord }

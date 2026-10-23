@@ -1,7 +1,9 @@
 import { getAdjacentPositions } from "./constants"
 export { getAdjacentPositions } from "./constants"
 import toaster from "./Toaster.svelte"
-import scoreTracker, { ScoreTracker } from "./ScoreTracker.svelte"
+import { scoreWord } from "./scoring"
+import { checkWord, describeWordProblem } from "./checkWord"
+import { findPath } from "./boardPath"
 import Chain from "$lib/chain.svelte"
 import { saveGameState, loadGameState } from "$lib/session"
 import type { GameSession } from "./gameSession"
@@ -14,7 +16,8 @@ class GameManager {
     gameState: "playing" | "loading" | "gameOver" | "paused" | "backgrounded" =
         $state("loading")
     secondsLeft = $state(180)
-    isTentative: boolean = $state(false)
+    // fix for typing u after a Q (as Qu is bundled)
+    #awaitingU = false
 
     #timerHandle: ReturnType<typeof setInterval> | undefined = undefined
 
@@ -28,24 +31,13 @@ class GameManager {
         this.save()
     }
 
-    constructor(
-        session: GameSession,
-        opponentWords: string[] | null,
-        opponentName: string = "Ava"
-    ) {
+    constructor(session: GameSession) {
         this.session = session
 
         this.secondsLeft = session.board.time
 
         this.foundWords = []
         this.currentChain.clear()
-
-        scoreTracker.init(
-            session.totalPossibleWords,
-            opponentWords,
-            opponentName,
-            session.challengedBy !== null
-        )
 
         this.load()
     }
@@ -133,7 +125,7 @@ class GameManager {
                 body: JSON.stringify({
                     words: this.foundWords,
                     dateKey: this.session.dateKey,
-                    fairFight: scoreTracker.fairFight,
+                    fairFight: this.session.match.fairFight,
                     playerId: this.session.playerId,
                     challengedBy: this.session.challengedBy,
                 }),
@@ -159,9 +151,7 @@ class GameManager {
         if (!this.isPlayingGame) return
 
         this.currentChain.removeLast()
-        if (this.currentChain.length === 0) {
-            this.isTentative = false
-        }
+        this.#awaitingU = false
     }
 
     addTile = (index: number) => {
@@ -197,6 +187,7 @@ class GameManager {
         const letter = this.session.board.letters[index]
 
         this.currentChain.add(index, letter)
+        this.#awaitingU = false
     }
 
     submitWord = () => {
@@ -208,29 +199,25 @@ class GameManager {
         }
 
         this.currentChain.clear()
-        this.isTentative = false
+        this.#awaitingU = false
 
-        const notLongEnough = word.length < 3
+        const problem = checkWord({
+            word,
+            foundWords: this.foundWords,
+            totalPossibleWords: this.session.totalPossibleWords,
+        })
 
-        if (notLongEnough) {
-            toaster.addError(`"${word}" is not long enough`)
-            return
-        }
-
-        const alreadyFound = this.foundWords.includes(word)
-
-        if (alreadyFound) {
-            toaster.addError("Word already found")
-            return
-        }
-
-        if (!this.session.totalPossibleWords.includes(word)) {
-            toaster.addError(`"${word}" is not in the word list`)
+        if (problem) {
+            toaster.addError(describeWordProblem({ word, problem }))
             return
         }
 
         this.foundWords.push(word)
-        scoreTracker.addWord(word)
+        toaster.addWordToast({
+            word,
+            score: scoreWord({ word, match: this.session.match }),
+            opponentName: this.session.opponentName,
+        })
         this.save()
     }
 
@@ -238,48 +225,9 @@ class GameManager {
         return searchArea.find(([_, letter]) => letter === char)
     }
 
-    findPath = (chars: string[]): number[] | null => {
-        if (chars.length === 0) return []
-
-        const path: number[] = []
-
-        const dfs = (charIndex: number): boolean => {
-            if (charIndex === chars.length) return true
-
-            const char = chars[charIndex]
-            const candidates =
-                charIndex === 0
-                    ? Array.from(
-                          {
-                              length:
-                                  this.session.board.size *
-                                  this.session.board.size,
-                          },
-                          (_, i) => i
-                      )
-                    : getAdjacentPositions(
-                          path[path.length - 1],
-                          this.session.board.size
-                      )
-
-            for (const pos of candidates) {
-                if (path.includes(pos)) continue
-                if (this.session.board.letters[pos] !== char) continue
-
-                path.push(pos)
-                if (dfs(charIndex + 1)) return true
-                path.pop()
-            }
-
-            return false
-        }
-
-        return dfs(0) ? path : null
-    }
-
     getSearchArea = (): [number, string][] => {
         if (this.currentChain.length === 0) {
-            return this.session.board.letters.entries().toArray()
+            return [...this.session.board.letters.entries()]
         }
 
         return getAdjacentPositions(
@@ -300,11 +248,17 @@ class GameManager {
         if (!this.isPlayingGame) return
         toaster.showToast = false
 
+        if (char === "u" && this.#awaitingU) {
+            this.#awaitingU = false
+            return
+        }
+        this.#awaitingU = false
+
         const tile = this.findTileFromCharacter(char, this.getSearchArea())
 
         if (tile) {
             this.currentChain.add(tile[0], tile[1])
-            this.isTentative = false
+            this.#awaitingU = tile[1] === "q"
             return
         }
 
@@ -312,7 +266,11 @@ class GameManager {
             .map(([_, l]) => l)
             .concat(char)
 
-        const path = this.findPath(targetChars)
+        const path = findPath({
+            tiles: targetChars,
+            letters: this.session.board.letters,
+            size: this.session.board.size,
+        })
 
         if (!path) return
 
@@ -320,7 +278,7 @@ class GameManager {
         for (const index of path) {
             this.currentChain.add(index, this.session.board.letters[index])
         }
-        this.isTentative = true
+        this.#awaitingU = char === "q"
     }
 
     #persists = () =>
@@ -330,7 +288,7 @@ class GameManager {
     save = () => {
         if (!this.#persists()) return
 
-        saveGameState(this.session.dateKey, {
+        saveGameState(this.session.saveKey, {
             foundWords: this.foundWords,
             secondsLeft: this.secondsLeft,
             gameOver: this.gameState === "gameOver",
@@ -341,7 +299,7 @@ class GameManager {
     load = () => {
         if (!this.#persists()) return false
 
-        const state = loadGameState(this.session.dateKey)
+        const state = loadGameState(this.session.saveKey)
         if (!state) return false
 
         this.foundWords = state.foundWords
@@ -350,10 +308,6 @@ class GameManager {
 
         if (state.average !== undefined) {
             this.averageGameScore = state.average
-        }
-
-        for (const word of this.foundWords) {
-            scoreTracker.loadWord(word)
         }
 
         return true

@@ -1,12 +1,14 @@
 import { writeFileSync } from "node:fs"
-import { generateClassicLegacy, generateWithWordLegacy } from "../../src/lib/server/generateBoard"
+
 import {
     CURRENT,
     FIXED,
-    FLOORS,
+    generateClassicLegacy,
+    generateWithWordLegacy,
+    REQUIREMENTS,
     SEEDED,
     SELECTIONS,
-    WORDLESS_FLOORS,
+    WORDLESS_REQUIREMENTS,
     constructLegacy,
     constructSpread,
     curatedPool,
@@ -125,6 +127,6 @@ for (const seedWord of EXAMPLE_SEEDS) {
 writeFileSync(dataPath("factorial_examples.json"), JSON.stringify(examples, null, 2))
 writeFileSync(
     dataPath("factorial_meta.json"),
-    JSON.stringify({ N, cells: cells.map((c) => c.label), timing, floors: FLOORS, wordlessFloors: WORDLESS_FLOORS }, null, 2)
+    JSON.stringify({ N, cells: cells.map((c) => c.label), timing, requirements: REQUIREMENTS, wordlessRequirements: WORDLESS_REQUIREMENTS }, null, 2)
 )
 console.log(`wrote ${rows.length} rows to scripts/data/factorial.csv`)

@@ -1,23 +1,23 @@
 <script lang="ts">
-    import Game from "@/Game.svelte";
-    import { browser } from "$app/environment";
-    import { page } from "$app/state";
-    import { redirect } from "@sveltejs/kit";
-    import { onMount } from "svelte";
+    import Game from "@/Game.svelte"
+    import { browser } from "$app/environment"
+    import { page } from "$app/state"
+    import { redirect } from "@sveltejs/kit"
+    import { onMount } from "svelte"
     import type { ResolvedBoard } from "$lib/board"
 
     export const verify = () => {
-        const token = browser ? localStorage.getItem("admin_token") : null;
-        const isAdmin = !!token;
+        const token = browser ? localStorage.getItem("admin_token") : null
+        const isAdmin = !!token
 
         if (!isAdmin && browser) {
-            redirect(303, "/early");
+            redirect(303, "/early")
         }
 
-        return isAdmin;
-    };
+        return isAdmin
+    }
 
-    let verified = $state(verify());
+    let verified = $state(verify())
 
     let dateKey: string | undefined = $state()
     let board: ResolvedBoard | undefined = $state()
@@ -32,7 +32,9 @@
         }
 
         const response = await fetch(`/api/board?dateKey=${dateKey}`, {
-            headers: { authorization: localStorage.getItem("admin_token") ?? "" },
+            headers: {
+                authorization: localStorage.getItem("admin_token") ?? "",
+            },
         })
 
         if (!response.ok) {
@@ -41,7 +43,7 @@
         }
 
         board = await response.json()
-    });
+    })
 </script>
 
 {#if error}

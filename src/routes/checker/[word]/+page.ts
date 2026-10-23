@@ -5,20 +5,20 @@ import type { PageLoad } from "./$types"
 export const prerender = false
 
 export const entries = () => {
-	const paths: RouteParams<"/checker/[word]">[] = []
+    const paths: RouteParams<"/checker/[word]">[] = []
 
     for (const word of checkerWords) {
         paths.push({ word })
-	}
+    }
 
-	return paths
+    return paths
 }
 
 export const load: PageLoad = async ({ params, url }) => {
-    const loadWithScrabble =(url.searchParams.has("scrabble"))
+    const loadWithScrabble = url.searchParams.has("scrabble")
 
     return {
         loadWithScrabble,
-        word: params.word
+        word: params.word,
     }
 }

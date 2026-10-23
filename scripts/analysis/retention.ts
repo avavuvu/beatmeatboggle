@@ -1,5 +1,5 @@
 import { loadDirtyWordsFromDisk } from "../../src/lib/server/dictionary"
-import { calculateTotalPoints } from "../../src/lib/scoring"
+import { scoreOpponent, scorePlayer } from "../../src/lib/scoring"
 import { dataPath, loadWords, mean, pct, readCsv, round, share, spearman, writeCsv } from "../lib"
 import { isDailyPlay, loadPlayData, PLAYER_IDS_SINCE, weekdayFor, type PlayerRow } from "./playData"
 
@@ -19,18 +19,20 @@ type Play = { playerId: string; date: string; score: number; avaScore: number; b
 const plays: Play[] = []
 const seen = new Set<string>()
 
-for (const g of players) {
-    if (!g.player_id || g.date_key < PLAYER_IDS_SINCE || !isDailyPlay(g)) continue
-    const key = `${g.player_id}|${g.date_key}`
+for (const game of players) {
+    if (!game.player_id || game.date_key < PLAYER_IDS_SINCE || !isDailyPlay(game)) continue
+    const key = `${game.player_id}|${game.date_key}`
     if (seen.has(key)) continue
-    const valid = boardWords.get(g.date_key)
-    const avaWords = avas.get(g.date_key)
+    const valid = boardWords.get(game.date_key)
+    const avaWords = avas.get(game.date_key)
     if (!valid || !avaWords) continue
     seen.add(key)
-    const words = g.words.filter((w) => valid.has(w))
-    const score = calculateTotalPoints(words, avaWords, true, g.fair_fight, true)
-    const avaScore = calculateTotalPoints(avaWords, words, g.fair_fight, g.fair_fight, true)
-    plays.push({ playerId: g.player_id, date: g.date_key, score, avaScore, beatAva: score > avaScore, words: words.length })
+    const words = game.words.filter((word) => valid.has(word))
+    const fairFight = game.fair_fight
+    const match = { opponentWords: avaWords, fairFight, seedWord: null, boardDate: game.date_key }
+    const score = scorePlayer({ words, match })
+    const avaScore = scoreOpponent({ playerWords: words, match })
+    plays.push({ playerId: game.player_id, date: game.date_key, score, avaScore, beatAva: score > avaScore, words: words.length })
 }
 
 const LAST = plays.reduce((m, p) => (p.date > m ? p.date : m), "")

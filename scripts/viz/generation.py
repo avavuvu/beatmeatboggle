@@ -25,7 +25,7 @@ days = pd.read_csv(DATA / "play_days.csv")
 rerolls = json.loads((DATA / "rerolls.json").read_text())
 examples = json.loads((DATA / "factorial_examples.json").read_text())
 meta = json.loads((DATA / "factorial_meta.json").read_text())
-floors = {int(k): v for k, v in meta["floors"].items()}
+requirements = {int(k): v for k, v in meta["requirements"].items()}
 
 def save(fig, name):
     style.save(fig, OUT / name)
@@ -79,13 +79,13 @@ def revealed_preference():
             ax.scatter([m["words"] for m in group], [m["len6plus"] for m in group], color=color, label=label, marker=marker, s=70, alpha=0.85, linewidths=2)
             for m in group:
                 ax.annotate(m["seedWord"], (m["words"], m["len6plus"]), fontsize=6.5, xytext=(4, 3), textcoords="offset points", color=color)
-        ax.axvline(floors[size]["words"], color=MUTED, linestyle="--", linewidth=1)
-        ax.axhline(floors[size]["len6plus"], color=MUTED, linestyle="--", linewidth=1)
+        ax.axvline(requirements[size]["minWords"], color=MUTED, linestyle="--", linewidth=1)
+        ax.axhline(requirements[size]["minWordsAtLeast6Letters"], color=MUTED, linestyle="--", linewidth=1)
         ax.set_xlabel("findable words")
         ax.set_ylabel("words of 6+ letters")
         ax.set_title(f"{size}×{size} word days since the reroll button (2026-09-29)", fontsize=10)
         ax.legend(fontsize=8, loc="upper left")
-    fig.suptitle("Your revealed preference: every board you rerolled was below the dashed floor", y=1.0)
+    fig.suptitle("Your revealed preference: every board you rerolled was below the dashed minimum", y=1.0)
     fig.tight_layout()
     save(fig, "A2_revealed_preference.png")
 
@@ -119,7 +119,7 @@ CELL_ORDER = [
     ("fixed", "redraw"),
     ("spread", "redraw"),
 ]
-SEL_LABEL = {"single": "one board\n(today)", "refill": "retry fill until\nfloor, same word", "redraw": "retry with new\nword until floor"}
+SEL_LABEL = {"single": "one board\n(today)", "refill": "retry fill until\nrequirements met,\nsame word", "redraw": "retry with new\nword until\nrequirements met"}
 
 def cell_rows(size, construction, selection, pool="placeable"):
     return fact[(fact["size"] == size) & (fact["construction"] == construction) & (fact["selection"] == selection) & (fact["pool"] == pool)]
@@ -140,7 +140,7 @@ def factorial_grid():
             for key in ("cmedians", "cbars", "cmins", "cmaxes"):
                 parts[key].set_color(INK)
                 parts[key].set_linewidth(1)
-            ax.axhline(floors[size]["words"], color=MUTED, linestyle="--", linewidth=1)
+            ax.axhline(requirements[size]["minWords"], color=MUTED, linestyle="--", linewidth=1)
             ax.set_xticks([1, 2, 3])
             ax.set_xticklabels(["current", "+ fixes", "spread"], fontsize=9)
             for i, d in enumerate(data):
@@ -150,7 +150,7 @@ def factorial_grid():
             if col == 0:
                 ax.set_ylabel(f"{size}×{size}: findable words")
     fig.suptitle("Construction (columns within panel) × selection (panels). Same seed words and rng in every cell.", y=0.99)
-    fig.text(0.5, 0.01, "dashed = floor calibrated to your rerolls (100 words on 4×4, 200 on 5×5)", ha="center", fontsize=8, color=MUTED)
+    fig.text(0.5, 0.01, "dashed = minimum word count calibrated to your rerolls (100 words on 4×4, 200 on 5×5)", ha="center", fontsize=8, color=MUTED)
     fig.tight_layout(rect=(0, 0.02, 1, 0.97))
     save(fig, "B1_factorial_grid.png")
 
@@ -191,7 +191,7 @@ def paired_deltas():
     fig.tight_layout()
     save(fig, "B2_paired_deltas.png")
 
-def floor_tail():
+def requirements_tail():
     fig, axes = plt.subplots(1, 2, figsize=(13, 4.5))
     for ax, size in zip(axes, [4, 5]):
         hi = int(fact[fact["size"] == size]["words"].quantile(0.995))
@@ -203,7 +203,7 @@ def floor_tail():
         ]:
             vals = cell_rows(size, c, s)["words"]
             ax.hist(vals, bins=bins, alpha=alpha, color=color, label=f"{LABELS[c]} / {s}   p10 = {int(vals.quantile(0.1))}")
-        ax.axvline(floors[size]["words"], color=MUTED, linestyle="--", linewidth=1)
+        ax.axvline(requirements[size]["minWords"], color=MUTED, linestyle="--", linewidth=1)
         ax.set_title(f"{size}×{size}", fontsize=10)
         ax.set_xlabel("findable words")
         ax.set_ylabel("boards")
@@ -303,7 +303,7 @@ def wordless():
             parts[key].set_linewidth(1)
         for i, d in enumerate(data):
             ax.text(i + 1, np.max(d), f"{int(np.median(d))}", ha="center", va="bottom", fontsize=8, color=colors[i])
-        ax.axhline(floors[size]["words"], color=MUTED, linestyle="--", linewidth=1)
+        ax.axhline(requirements[size]["minWords"], color=MUTED, linestyle="--", linewidth=1)
         ax.set_xticks(range(1, len(names) + 1))
         ax.set_xticklabels(names, fontsize=7.5, rotation=15, ha="right")
         ax.set_ylabel("findable words")
@@ -363,7 +363,7 @@ if __name__ == "__main__":
     seed_find_rate()
     factorial_grid()
     paired_deltas()
-    floor_tail()
+    requirements_tail()
     secondary_metrics()
     example_boards()
     wordless()

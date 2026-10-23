@@ -1,21 +1,17 @@
 <script lang="ts">
-    import Toggle from "@/settings/Toggle.svelte";
-    import preferences, {
-            type SettingKey,
-        } from "$lib/Preferences.svelte"
+    import Toggle from "@/settings/Toggle.svelte"
+    import preferences, { type SettingKey } from "$lib/Preferences.svelte"
     import Head from "@/styling/Head.svelte"
 
     const entries = $derived(
         Object.entries(preferences.settings) as [
             SettingKey,
             (typeof preferences.settings)[SettingKey],
-        ][],
-    );
+        ][]
+    )
 </script>
 
-<Head
-    title="Settings"
-    />
+<Head title="Settings" />
 
 <div class="text-foreground max-w-4xl my-10 mx-auto px-4">
     <span class="inline-flex gap-4 w-full">

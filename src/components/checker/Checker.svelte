@@ -1,16 +1,18 @@
 <script lang="ts">
-    import definitionManaager from "$lib/DefinitionManager.svelte"
+    import definitionManager from "$lib/DefinitionManager.svelte"
     import { officialWords, scrabbleWords } from "$lib/dictionary/lists"
     import Definition from "@/Definition.svelte"
     import { cross } from "@/icons/cross.svelte"
     import { tick } from "@/icons/tick.svelte"
-    import Head from "@/styling/Head.svelte"
+
     import { fade, slide } from "svelte/transition"
     import Toggle from "@/settings/Toggle.svelte"
-    import { preventDefault } from "svelte/legacy"
 
-    const { preloaded, loadWithScrabble = false }: {
-        preloaded?: string,
+    const {
+        preloaded,
+        loadWithScrabble = false,
+    }: {
+        preloaded?: string
         loadWithScrabble?: boolean
     } = $props()
 
@@ -29,26 +31,26 @@
     const outcome = $derived.by(() => {
         const normalizedWord = testWord.toLowerCase().trim()
 
-        if(!normalizedWord) {
+        if (!normalizedWord) {
             return null
         }
 
         return {
             word: normalizedWord,
-            isWord: (
-                useScrabble
-                    ? scrabbleList
-                    : officialList
-                ).has(normalizedWord)
+            isWord: (useScrabble ? scrabbleList : officialList).has(
+                normalizedWord
+            ),
         }
     })
 
     const define = () => {
-        definitionManaager.setWord(testWord)
+        definitionManager.setWord(testWord)
     }
 </script>
 
-<div class="text-foreground min-h-screen flex justify-center items-center gap-4 py-24">
+<div
+    class="text-foreground min-h-screen flex justify-center items-center gap-4 py-24"
+>
     <div class="w-xl px-4 sm:px-2">
         <span class="inline-flex gap-4 w-full">
             <h1 class="px-2 font-bold">Boggle Word Checker</h1>
@@ -56,34 +58,45 @@
         </span>
 
         <form
-            onsubmit={(event) => {event.preventDefault(); testWord = input}}
-            class="border p-4 min-h-48 flex justify-center items-center flex-col gap-4">
+            onsubmit={(event) => {
+                event.preventDefault()
+                testWord = input
+            }}
+            class="border p-4 min-h-48 flex justify-center items-center flex-col gap-4"
+        >
             <span>
                 Is
                 <input
                     class="border p-2 lowercase w-36"
                     type="text"
-                    bind:value={input}>
+                    bind:value={input}
+                />
                 a word?
             </span>
             <button
                 type="submit"
-                class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer">Check</button>
+                class="border w-min mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer"
+                >Check</button
+            >
         </form>
 
         {#if outcome}
-            <div class="border p-4 min-h-36 gap-4 my-4 text-center grid grid-cols-1 grid-rows-1" transition:slide>
+            <div
+                class="border p-4 min-h-36 gap-4 my-4 text-center grid grid-cols-1 grid-rows-1"
+                transition:slide
+            >
                 {#key outcome.word}
-                    <div in:fade class="flex gap-2 flex-col justify-center items-center
-                        col-start-1 col-end-2 row-start-1 row-end-2">
-
+                    <div
+                        in:fade
+                        class="flex gap-2 flex-col justify-center items-center
+                        col-start-1 col-end-2 row-start-1 row-end-2"
+                    >
                         <div class="w-12">
                             {#if outcome.isWord}
                                 {@render tick()}
                             {:else}
                                 {@render cross()}
                             {/if}
-
                         </div>
                         <span>
                             {outcome.word}
@@ -101,14 +114,17 @@
 
                         <button
                             onclick={define}
-                            class="border  mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer">
+                            class="border mx-auto px-2 py-1 hover:bg-foreground hover:text-surface transition-all cursor-pointer"
+                        >
                             Define {outcome.word}
                         </button>
                     </div>
                 {/key}
 
-                <div class="definition col-start-1 col-end-2 row-start-1 row-end-2 text-left">
-                    <Definition/>
+                <div
+                    class="definition col-start-1 col-end-2 row-start-1 row-end-2 text-left"
+                >
+                    <Definition />
                 </div>
             </div>
         {/if}
@@ -118,13 +134,20 @@
                 bind:checked={useScrabble}
                 heading="dictionary"
                 optionOn="Use Scrabble Dictionary"
-                compact/>
+                compact
+            />
 
             <div class="my-2 text-muted">
-                The Boggle board game does not have an official word list. This word checker is designed for the online word game <a href="/">Beat Me at Boggle</a>. It can also be used for games of pen-and-paper Boggle, as well as Scrabble and other word games. <a href="/about/words">Click here to find out what counts as a word.</a>
+                The Boggle board game does not have an official word list. This
+                word checker is designed for the online word game <a href="/"
+                    >Beat Me at Boggle</a
+                >. It can also be used for games of pen-and-paper Boggle, as
+                well as Scrabble and other word games.
+                <a href="/about/words"
+                    >Click here to find out what counts as a word.</a
+                >
             </div>
         </div>
-
     </div>
 </div>
 
@@ -133,7 +156,7 @@
         text-decoration: underline;
     }
 
-     .definition:empty {
-         pointer-events: none;
-     }
+    .definition:empty {
+        pointer-events: none;
+    }
 </style>

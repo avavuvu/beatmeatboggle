@@ -22,7 +22,11 @@ export const loadGameState = (dateKey: string): SavedGameState | null => {
 
     try {
         const state = JSON.parse(saved)
-        if (!Array.isArray(state?.foundWords) || typeof state.secondsLeft !== "number") return null
+        if (
+            !Array.isArray(state?.foundWords) ||
+            typeof state.secondsLeft !== "number"
+        )
+            return null
         return state
     } catch {
         return null

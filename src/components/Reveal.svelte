@@ -1,167 +1,257 @@
 <script lang="ts">
-    import scoreTracker from "$lib/ScoreTracker.svelte";
-    import JSConfetti from "js-confetti";
-    import { page } from "$app/state";
-    import { fade, slide } from "svelte/transition";
-    import preferences from "$lib/Preferences.svelte"
+    import { onMount } from "svelte"
+    import { fade, slide } from "svelte/transition"
+    import JSConfetti from "js-confetti"
+
+    import { reveal } from "$lib/reveal"
     import type GameManager from "$lib/GameManager.svelte"
+    import { challengeManager } from "$lib/challenge/challenge.svelte"
+    import definitionManager from "$lib/DefinitionManager.svelte"
+    import { fetchDayPlayStats, type DayPlayStats } from "$lib/dayPlayStats"
+    import { isRare, RARE_MISSED_SHARE, shareOf } from "$lib/rarity"
+    import { formatPercentage, getPercentile } from "$lib/statsCalculations"
     import { logo } from "./icons/logo.svelte"
     import WordList from "./WordList.svelte"
-    import { challengeManager } from "$lib/challenge/challenge.svelte"
+    import WordButton from "./WordButton.svelte"
 
-    const { game }: {
+    let {
+        game,
+        selectedWord = $bindable(null),
+    }: {
         game: GameManager
-    }  = $props()
+        selectedWord?: string | null
+    } = $props()
 
     // svelte-ignore state_referenced_locally
+    const { session, foundWords } = game
+
     const {
+        opponentName,
         scores,
         didWin,
-        opponentWordMap,
-        playerWordMap,
-        totalWordsMap,
-        opponentName
-    } = scoreTracker.getReveal(game.foundWords, game.session.totalPossibleWords)
+        opponentWords,
+        playerWords,
+        missedWords,
+        foundByYou,
+        uniqueToYou,
+    } = reveal({ session, foundWords })
 
-    // svelte-ignore state_referenced_locally
-    const isPractice = game.session.playerState === "practice"
+    const isPractice = session.playerState === "practice"
+    const seedWord = session.seedWord
 
-    const delay = 1000;
+    const delay = 1000
 
-    let mounted = $state(false);
+    const topScore = $derived(
+        Math.max(scores.you, scores.opponent, game.averageGameScore ?? 0, 1)
+    )
 
-    $effect(() => {
-        setTimeout(() => {
-            mounted = true;
-        }, 1000);
+    const delayStyle = (index: number) =>
+        `animation-delay: ${delay + index * 400}ms;`
 
-        if (didWin) {
-            const confetti = new JSConfetti();
+    let dayStats = $state<DayPlayStats | null>(null)
 
-            confetti.addConfetti({
-                confettiRadius: 6,
-            });
+    const shares = $derived(dayStats?.shares ?? null)
+
+    const percentile = $derived.by(() => {
+        const distribution = dayStats?.distribution
+        if (!distribution) return null
+        const players = distribution.reduce(
+            (total, { count }) => total + count,
+            0
+        )
+        return getPercentile(distribution, players, scores.you)
+    })
+
+    const rare = (word: string) => isRare({ word, shares })
+    const rareMissed = (word: string) =>
+        isRare({ word, shares, threshold: RARE_MISSED_SHARE })
+    const selectedShare = $derived(
+        selectedWord ? shareOf({ word: selectedWord, shares }) : null
+    )
+
+    const onWordClick = (word: string) => {
+        challengeManager.showChallenge = false
+
+        if (selectedWord === word) {
+            definitionManager.setWord(word)
+            return
         }
-    });
 
-    const getDelayStyle = (index: number) => `transition-delay: ${delay + index * 400}ms;`
+        definitionManager.clearWord()
+        selectedWord = word
+    }
 
-    const opponentWords = $derived(opponentWordMap.map(([word]) => word))
-    const opponentFoundWords = $derived(
-        new Set(opponentWordMap.filter(([, wasFound]) => wasFound).map(([word]) => word))
-    )
+    const openChallenge = () => {
+        definitionManager.clearWord()
+        challengeManager.showChallenge = true
+    }
 
-    const playerWords = $derived(playerWordMap.map(([word]) => word))
-    const playerUniqueWords = $derived(
-        new Set(playerWordMap.filter(([, isUnique]) => isUnique).map(([word]) => word))
-    )
+    onMount(() => {
+        if (isPractice) return
 
-    const totalWords = $derived(totalWordsMap.map(([word]) => word))
+        fetchDayPlayStats(session.dateKey).then((stats) => {
+            dayStats = stats
+        })
+    })
 
-    const topScore = $derived(Math.max(scores.you, scores.opponent, game.averageGameScore ?? 0, 1))
+    onMount(() => {
+        if (!didWin) return
 
-    // svelte-ignore state_referenced_locally
-    const { seedWord, ladder } = game.session.hidden
-    const foundSeedWord = $derived(seedWord !== null && game.foundWords.includes(seedWord))
-    const rungs = $derived(seedWord ? [...ladder].reverse().concat(seedWord) : [])
+        const confetti = new JSConfetti()
+        confetti.addConfetti({ confettiRadius: 6 })
+
+        return () => confetti.destroyCanvas()
+    })
 </script>
 
-{#snippet chartBar(index: number, score: number, name: string )}
-<div
-    in:fade
-    class="flex flex-col w-full justify-end text-sm text-center relative"
->
+{#snippet chartBar(index: number, score: number, name: string)}
     <div
-        class="text-center w-full text-surface absolute transition-all duration-500"
-        class:move={score < 40}
-        style="opacity: {Number(mounted) * 100}%; {getDelayStyle(index)}"
+        class="flex flex-col w-full min-w-0 justify-end text-sm text-center relative"
     >
-        <p>{name}</p>
-        <p>
-            {Math.floor(score)}
-        </p>
+        <div
+            class="appear text-center w-full text-surface absolute"
+            class:move={score < 40}
+            style={delayStyle(index)}
+        >
+            <p class="truncate px-1">{name}</p>
+            <p>{Math.floor(score)}</p>
+        </div>
+        <div
+            class="bar rise"
+            class:player={index === 0}
+            style="height: {(score / topScore) * 100}%; {delayStyle(index)}"
+        ></div>
     </div>
-    <div
-        class:player={name === "You!"}
-        class="bar text-xs text-surface transition-all duration-500 ease-out"
-        style="height: {mounted ? (score / topScore) * 100 : 0}%; {getDelayStyle(index)}"
-    ></div>
-</div>
 {/snippet}
 
 <div
     transition:slide={{ delay }}
-    class="game-over h-full grid grid-rows-4 bg-surface border border-border"
+    class="h-full grid grid-rows-[minmax(0,1fr)_minmax(0,2fr)_auto] bg-surface border border-border"
 >
-    <div class="flex gap-1 w-full min-h-0 p-2">
-        {#if isPractice}
+    <div class="grid grid-rows-[minmax(0,1fr)] min-h-0 p-2">
+        <div class="flex gap-1 min-h-0 [grid-area:1/1]">
             {@render chartBar(0, scores.you, "You!")}
-            <a
-                href="/practice"
-                class="w-full flex justify-center items-center underline text-center"
-                style="opacity: {Number(mounted) * 100}%; {getDelayStyle(1)}"
-            >
-                Play Again
-            </a>
-        {:else}
-            {@render chartBar(0, scores.you, "You!")}
-            {@render chartBar(1, scores.opponent, opponentName)}
-            {#if game.averageGameScore !== undefined}
-                {@render chartBar(2, game.averageGameScore, "Average")}
+            {#if isPractice}
+                <a
+                    href="/practice"
+                    class="appear w-full flex justify-center items-center underline text-center"
+                    style={delayStyle(1)}
+                >
+                    Play Again
+                </a>
             {:else}
-                <div class="w-full flex justify-center items-center">
+                {@render chartBar(1, scores.opponent, opponentName)}
+                {#if game.averageGameScore !== undefined}
+                    {@render chartBar(2, game.averageGameScore, "Average")}
+                {:else}
                     <div
-                        style="opacity: {Number(mounted) * 100}%; {getDelayStyle(2)}"
-                        class="w-8 h-8 transition-all duration-500 animate-[spin_2s_linear_infinite]"
+                        class="w-full flex justify-center items-center"
+                        role="status"
+                        aria-label="Loading the average score"
                     >
-                        {@render logo()}
+                        <div
+                            class="appear w-8 h-8 animate-[spin_2s_linear_infinite]"
+                            style={delayStyle(2)}
+                        >
+                            {@render logo()}
+                        </div>
                     </div>
-                </div>
-            {/if}
-        {/if}
-    </div>
-    <div class="row-span-2 overflow-y-scroll p-2">
-        {#if seedWord}
-            <div class="hidden-word mb-4 p-2 border border-border">
-                <h3 class="font-bold">
-                    {#if foundSeedWord}
-                        You found the hidden word!
-                    {:else}
-                        The hidden word was
-                    {/if}
-                </h3>
-                <p class="text-lg font-bold">{seedWord}</p>
-                {#if rungs.length > 1}
-                    <p class="text-sm text-accent">
-                        {#each rungs as rung, index}
-                            <span class:found={game.foundWords.includes(rung)}>{rung}</span>{#if index < rungs.length - 1}{" → "}{/if}
-                        {/each}
-                    </p>
                 {/if}
+            {/if}
+        </div>
+        {#if selectedWord && selectedShare !== null}
+            <div
+                transition:fade={{ duration: 150 }}
+                class="z-10 grid grid-rows-[auto_1fr] [grid-area:1/1] bg-surface"
+            >
+                <button
+                    class="justify-self-end px-1 cursor-pointer underline"
+                    onclick={() => (selectedWord = null)}
+                >
+                    Close
+                </button>
+                <div class="flex flex-col items-center justify-center">
+                    <span class="text-lg font-bold">{selectedWord}</span>
+                    <span>
+                        found by {formatPercentage(selectedShare * 100)} of players
+                    </span>
+                </div>
             </div>
         {/if}
-
+    </div>
+    <div class="overflow-y-auto p-2">
         {#if !isPractice}
-            <h3 class="font-bold">{opponentName}'s words</h3>
+            <h2 class="font-bold">{opponentName}'s words</h2>
+            <p class="italic text-accent">
+                Tap a word to see its definition
+            </p>
             <WordList
                 words={opponentWords}
-                itemClass={(word) => opponentFoundWords.has(word) ? "found" : undefined}
+                {selectedWord}
+                {onWordClick}
+                marks={(word) => ({
+                    found: foundByYou.has(word),
+                    rare: rare(word),
+                })}
             />
 
-            <hr class="my-4"/>
+            <hr class="my-4" />
         {/if}
 
-        <h3 class="font-bold">Your words</h3>
+        <h2 class="font-bold">Your words</h2>
         <WordList
             words={playerWords}
-            itemClass={(word) => playerUniqueWords.has(word) ? "unique" : undefined}
+            {selectedWord}
+            {onWordClick}
+            marks={(word) => ({
+                unique: uniqueToYou.has(word),
+                rare: rare(word),
+            })}
         />
+            <div class="bg-foreground text-surface my-4 p-2 -mx-2">
+                {#if seedWord}
+                    <p>
+                        {#if foundByYou.has(seedWord)}
+                            You found the <a href="/about/boards" class="underline">hidden word</a>! Which today was
+                        {:else}
+                            The <a href="/about/boards" class="underline">hidden word</a> today was
+                        {/if}
+                        <span class="font-bold"
+                            ><WordButton
+                                word={seedWord}
+                                selected={selectedWord === seedWord}
+                                onclick={() => onWordClick(seedWord)}
+                                inverted
+                            /></span
+                        >.
+                    </p>
+                    <br/>
+                {/if}
 
-        <hr class="my-4"/>
+                {#if percentile !== null}
+                    <p>
+                        You did better than {formatPercentage(percentile)} of players
+                    </p>
+                {/if}
+                <p>
+                    {#if session.isArchive}
+                        <a href="/stats/{session.dateKey}" class="underline">Click here to see the full stats for this board</a>
+                    {:else}
+                        <a href="/stats" class="underline">Click here to see how you did on yesterday's board</a>
+                    {/if}
+                </p>
+            </div>
 
-        <h3 class="font-bold">All words</h3>
-        <p class="italic text-accent">Click on a word to see its definition</p>
-        <WordList words={totalWords} />
+
+
+        <h2 class="font-bold">Missed words</h2>
+        <WordList
+            words={missedWords}
+            {selectedWord}
+            {onWordClick}
+            marks={(word) => ({ rare: rareMissed(word) })}
+            rareLabel={false}
+        />
     </div>
     <div class="bubble-container flex gap-1 flex-col [align-items:end]">
         <div class="imessage-bubble">
@@ -177,7 +267,7 @@
         {#if !isPractice}
             <button
                 class="imessage-bubble underline cursor-pointer"
-                onclick={() => challengeManager.showChallenge = true}
+                onclick={openChallenge}
             >
                 Challenge someone else!
                 <div class="bubble-tail"></div>
@@ -192,11 +282,6 @@
         color: var(--color-foreground);
     }
 
-    .hidden-word .found {
-        color: var(--color-foreground);
-        font-weight: bold;
-    }
-
     .bar {
         background-color: var(--color-foreground);
     }
@@ -205,32 +290,23 @@
         background-color: var(--color-muted);
     }
 
-    :global(.bubble-container) {
-        padding: 0.5rem;
+    .appear {
+        animation: appear 500ms ease-out both;
     }
 
-    :global(.imessage-bubble) {
-        position: relative;
-        background: var(--color-foreground);
-        color: var(--color-surface);
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro",
-            "Helvetica Neue", sans-serif;
-        font-size: 0.85rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 1rem;
-        border-bottom-right-radius: 0.25rem;
-        max-width: 85%;
-        line-height: 1.3;
+    .rise {
+        animation: rise 500ms ease-out both;
     }
 
-    :global(.bubble-tail) {
-        position: absolute;
-        bottom: 0;
-        right: -6px;
-        width: 12px;
-        height: 12px;
-        background: var(--color-foreground);
-        clip-path: polygon(0 0, 0% 100%, 100% 100%);
-        border-bottom-right-radius: 0.5rem;
+    @keyframes appear {
+        from {
+            opacity: 0;
+        }
+    }
+
+    @keyframes rise {
+        from {
+            height: 0;
+        }
     }
 </style>

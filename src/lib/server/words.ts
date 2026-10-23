@@ -8,8 +8,14 @@ export type DayWordStats = {
     words: WordStat[]
 }
 
-export const getDayWordStats = async (dateKey: string): Promise<DayWordStats> => {
-    const { rows } = await db.execute<{ word: string; plays: number; players: number }>(sql`
+export const getDayWordStats = async (
+    dateKey: string
+): Promise<DayWordStats> => {
+    const { rows } = await db.execute<{
+        word: string
+        plays: number
+        players: number
+    }>(sql`
         with players as (
             select count(*)::int as total
             from ${playerWords}

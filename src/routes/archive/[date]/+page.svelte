@@ -7,14 +7,23 @@
     const { data }: { data: PageData } = $props()
 
     // svelte-ignore state_referenced_locally
-    const dateFormatted = dateFromKey(data.dateKey).toLocaleDateString("en-AU", {
-        month: "long",
-        day: "2-digit",
-        year: "numeric",
-        timeZone: "UTC",
-    })
+    const dateFormatted = dateFromKey(data.dateKey).toLocaleDateString(
+        "en-AU",
+        {
+            month: "long",
+            day: "2-digit",
+            year: "numeric",
+            timeZone: "UTC",
+        }
+    )
 </script>
 
 <Head title={dateFormatted} />
 
-<Game board={data.board} dateKey={data.dateKey} playerStatus="player" opponentWords={data.avasWords} />
+<Game
+    board={data.board}
+    dateKey={data.dateKey}
+    playerStatus="player"
+    opponentWords={data.avasWords}
+    isArchive
+/>

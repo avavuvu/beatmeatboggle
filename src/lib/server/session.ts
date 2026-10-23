@@ -3,7 +3,11 @@ import { SESSION_SECRET } from "$env/static/private"
 import { dev } from "$app/environment"
 import type { Cookies } from "@sveltejs/kit"
 
-export { PATRON_COOKIE, type PatronSession, type PatronTier } from "./sessionTypes"
+export {
+    PATRON_COOKIE,
+    type PatronSession,
+    type PatronTier,
+} from "./sessionTypes"
 import { PATRON_COOKIE, type PatronSession } from "./sessionTypes"
 
 const sign = (payload: string) =>
