@@ -20,5 +20,15 @@ export const loadGameState = (dateKey: string): SavedGameState | null => {
     const saved = localStorage.getItem(`${GAME_KEY_PREFIX}${dateKey}`)
     if (!saved) return null
 
-    return JSON.parse(saved)
+    try {
+        const state = JSON.parse(saved)
+        if (
+            !Array.isArray(state?.foundWords) ||
+            typeof state.secondsLeft !== "number"
+        )
+            return null
+        return state
+    } catch {
+        return null
+    }
 }

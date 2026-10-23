@@ -4,8 +4,11 @@ Beat Me At Boggle is my daily word game, play today's game at [beatmeatboggle.co
 
 It is written in Typescript and SvelteKit with Tailwind
 
-## TODO
-
+|folder|contents|
+|-|-|
+|`src/`, `netlify/`, `db/` | the site |
+|`scripts/`| word list build, data vis |
+|`docs/`|graphs and videos|
 
 
 ### Note

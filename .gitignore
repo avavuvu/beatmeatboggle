@@ -21,3 +21,12 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Scripts: raw db exports and generated data never enter git; licensed word list sources neither
+scripts/data/
+scripts/wordlist/sources/
+scripts/.venv/
+__pycache__/
+
+# regenerable in seconds, see scripts/README.md
+docs/graphs/**/*.mp4

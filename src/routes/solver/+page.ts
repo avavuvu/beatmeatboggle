@@ -5,9 +5,10 @@ export const load: PageLoad = async ({ url, fetch }) => {
     await loadDictionary(fetch)
 
     const sizeParam = Number(url.searchParams.get("size"))
-    const size = Number.isFinite(sizeParam) && sizeParam >= 2 && sizeParam <= 7
-        ? sizeParam
-        : null
+    const size =
+        Number.isFinite(sizeParam) && sizeParam >= 2 && sizeParam <= 7
+            ? sizeParam
+            : null
 
     const lettersParam = url.searchParams.get("letters")
     const letters = lettersParam ? lettersParam.toLowerCase().split("") : null

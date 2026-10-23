@@ -50,6 +50,34 @@
       "when": 1790576267861,
       "tag": "0006_small_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792648958585,
+      "tag": "0007_ancient_punisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792649703877,
+      "tag": "0008_legal_falcon",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792649768681,
+      "tag": "0009_backfill_play_mode",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792650845254,
+      "tag": "0010_mushy_unus",
+      "breakpoints": true
     }
   ]
 }

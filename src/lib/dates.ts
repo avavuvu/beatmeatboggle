@@ -6,8 +6,11 @@ export const isValidDateKey = (dateKey: string): boolean => {
     }
 
     const date = dateFromKey(dateKey)
-    return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(dateKey)
+    return (
+        !Number.isNaN(date.getTime()) && date.toISOString().startsWith(dateKey)
+    )
 }
+
 
 export const formatDateKey = (dateKey: string): string =>
     dateFromKey(dateKey).toLocaleDateString("en-AU", {

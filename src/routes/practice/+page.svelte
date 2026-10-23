@@ -3,9 +3,11 @@
     import JoinPatreon from "@/JoinPatreon.svelte"
     import type { PatronTier } from "$lib/server/session"
     import PracticeForm from "@/PracticeForm.svelte"
-    import { page } from "$app/state";
+    import { page } from "$app/state"
 
-    const { data }: {
+    const {
+        data,
+    }: {
         data: {
             tier: PatronTier | null
             fullName: string | null
@@ -30,7 +32,9 @@
             <a class="underline" href="/auth/login">Sign in</a>
         {:else}
             <form method="POST" action="/auth/logout">
-                <button type="submit" class="underline cursor-pointer">Sign out</button>
+                <button type="submit" class="underline cursor-pointer"
+                    >Sign out</button
+                >
             </form>
         {/if}
     </span>
@@ -40,34 +44,41 @@
             <div class="pb-4 flex justify-between gap-[2ch] h-24">
                 <p class="font-bold">Hi {data.fullName}!</p>
                 {#if data.thumbUrl}
-                    <img class="border p-2" src={data.thumbUrl} alt="{data.fullName}'s profile picture" />
+                    <img
+                        class="border p-2"
+                        src={data.thumbUrl}
+                        alt="{data.fullName}'s profile picture"
+                    />
                 {/if}
             </div>
         {/if}
 
         <div class="py-4">
             {#if kickback}
-                <p >You must subscribe to play practice games.</p>
+                <p>You must subscribe to play practice games.</p>
                 <p>
                     <JoinPatreon tier={data.tier} />
                 </p>
             {:else}
-                {#if data.tier === 'free'}
+                {#if data.tier === "free"}
                     <p>You're connected but not yet a member.</p>
                     <JoinPatreon tier={data.tier} />
                     <span> to play practice games.</span>
                 {:else if !data.tier}
                     <p>Practice games are available to Patreon supporters.</p>
-                    <p>If you like my work, please consider subscribing! It would mean a lot.</p>
-                    <a class="underline" href="/auth/login">Connect with Patreon</a>
+                    <p>
+                        If you like my work, please consider subscribing! It
+                        would mean a lot.
+                    </p>
+                    <a class="underline" href="/auth/login"
+                        >Connect with Patreon</a
+                    >
                 {/if}
             {/if}
-
-
         </div>
 
-        <div style:opacity={data.tier !== 'paid' ? 0.5 : 1}>
-            <PracticeForm/>
+        <div style:opacity={data.tier !== "paid" ? 0.5 : 1}>
+            <PracticeForm />
         </div>
     </main>
 </div>

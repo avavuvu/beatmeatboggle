@@ -7,19 +7,19 @@
         checked = $bindable(false),
         compact = false,
     }: {
-        heading: string;
-        optionOff?: string;
-        optionOn: string;
-        description?: string;
-        checked?: boolean;
-        compact?: boolean;
-    } = $props();
+        heading: string
+        optionOff?: string
+        optionOn: string
+        description?: string
+        checked?: boolean
+        compact?: boolean
+    } = $props()
 
-    const id = $derived(heading.toLowerCase());
+    const id = $props.id()
 </script>
 
 {#if !compact}
-<h2 class="font-bold">{heading}</h2>
+    <h2 class="font-bold">{heading}</h2>
 {/if}
 
 {#if description}
@@ -93,7 +93,6 @@
         grid-template-columns: unset;
     }
 
-
     .setting:has(input:checked) .option-on {
         text-decoration: underline;
     }
@@ -104,6 +103,11 @@
 
     input:checked + .slider {
         background-color: var(--color-foreground);
+    }
+
+    input:focus-visible + .slider {
+        outline: 2px solid var(--color-foreground);
+        outline-offset: 3px;
     }
 
     input:checked + .slider:before {

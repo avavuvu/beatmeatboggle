@@ -1,12 +1,6 @@
-import wordList from "$lib/dictionary/wordList.txt?raw"
-import scrabble from "$lib/dictionary/scrabble.txt?raw"
+import { checkerWords as checkerWordSet } from "$lib/dictionary/lists"
 
-const checkerWords = [...new Set(
-    [
-        wordList.trim().split("\n"),
-        scrabble.trim().split("\n"),
-    ].flat()
-)]
+const checkerWords = [...checkerWordSet]
 
 export const SITEMAP_CHUNK_SIZE = 10_000
 

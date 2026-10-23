@@ -3,9 +3,9 @@
         char,
         selected,
     }: {
-        char: string;
-        selected: boolean;
-    } = $props();
+        char: string
+        selected: boolean
+    } = $props()
 
     const isQ = $derived(char === "Q")
 </script>
@@ -18,7 +18,6 @@
     y="0.79"
     text-anchor="middle"
     letter-spacing={isQ ? -0.1 : "unset"}
-    // font-weight="bold"
 >
     {isQ ? "Qu" : char}
 </text>
@@ -27,8 +26,7 @@
     rect {
         fill: var(--color-board);
         stroke: var(--color-surface);
-        transform: fill;
-        transition-duration: 100ms;
+        transition: fill 100ms;
     }
     /*
     rect:hover {

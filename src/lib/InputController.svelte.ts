@@ -10,7 +10,7 @@ class InputController {
         this.game = game
     }
 
-    isSliding = $state(false)
+    isSliding = false
 
     #lastActivatedIndex: number = -1
     #lastPointerClientX: number = 0
@@ -25,8 +25,10 @@ class InputController {
         clientY: number,
         rect: DOMRect
     ): [number, number] => {
-        const svgX = ((clientX - rect.left) / rect.width) * this.game.session.board.size
-        const svgY = ((clientY - rect.top) / rect.height) * this.game.session.board.size
+        const svgX =
+            ((clientX - rect.left) / rect.width) * this.game.session.board.size
+        const svgY =
+            ((clientY - rect.top) / rect.height) * this.game.session.board.size
         return [svgX, svgY]
     }
 
@@ -34,7 +36,11 @@ class InputController {
         let bestIndex = -1
         let bestDist = PROXIMITY_THRESHOLD
 
-        for (let i = 0; i < this.game.session.board.size * this.game.session.board.size; i++) {
+        for (
+            let i = 0;
+            i < this.game.session.board.size * this.game.session.board.size;
+            i++
+        ) {
             const cx = (i % this.game.session.board.size) + 0.5
             const cy = Math.floor(i / this.game.session.board.size) + 0.5
             const dist = Math.hypot(svgX - cx, svgY - cy)
@@ -49,17 +55,20 @@ class InputController {
 
     inputKey = (event: KeyboardEvent) => {
         if (!this.game.isPlayingGame) return
-        event.preventDefault()
+        if (event.metaKey || event.ctrlKey || event.altKey) return
 
         switch (event.key) {
             case "Backspace":
+                event.preventDefault()
                 this.game.removeLast()
                 break
             case "Enter":
+                event.preventDefault()
                 this.game.submitWord()
                 break
             default:
                 if (event.key.match(/^[a-zA-Z]$/)) {
+                    event.preventDefault()
                     this.game.inputChar(event.key.toLowerCase())
                 }
                 break

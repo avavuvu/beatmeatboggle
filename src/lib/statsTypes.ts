@@ -18,6 +18,7 @@ export type DayStats = {
     dateKey: string
     size: number
     letters: string[]
+    seedWord: string | null
     words: WordStat[]
     scores: DayScores
 }

@@ -5,7 +5,9 @@ export * from "./gameState"
 
 export const generatePlayerId = (): string => {
     const bytes = crypto.getRandomValues(new Uint8Array(6))
-    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+        ""
+    )
 }
 
 export const getPlayerId = (): string | null => {
@@ -21,5 +23,4 @@ export const getPlayerId = (): string | null => {
     localStorage.setItem(PLAYER_ID_KEY, newId)
 
     return newId
-
 }

@@ -72,7 +72,9 @@
         return bins
     })
 
-    const topCount = $derived(Math.max(1, ...histogram.map(({ count }) => count)))
+    const topCount = $derived(
+        Math.max(1, ...histogram.map(({ count }) => count))
+    )
 </script>
 
 {#snippet chartBar(index: number, bin: Bin, name: string)}
@@ -153,7 +155,8 @@
         }
     }
 
-    .bar, .square {
+    .bar,
+    .square {
         --ava-pattern: repeating-linear-gradient(
             -45deg,
             transparent 0 3px,
@@ -168,11 +171,13 @@
         background-color: var(--color-foreground);
     }
 
-    .bar.player, .square.player {
+    .bar.player,
+    .square.player {
         background-color: var(--color-muted);
     }
 
-    .ava-label, .player-label {
+    .ava-label,
+    .player-label {
         color: var(--color-surface);
     }
 
@@ -204,11 +209,13 @@
         height: 1.25em;
     }
 
-    .bar.average, .square.average {
+    .bar.average,
+    .square.average {
         background-image: var(--average-pattern);
     }
 
-    .bar.ava, .square.ava {
+    .bar.ava,
+    .square.ava {
         background-image: var(--ava-pattern);
     }
 

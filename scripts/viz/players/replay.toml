@@ -1,0 +1,90 @@
+[video]
+fps = 30
+width = 1080
+height = 1920
+crf = 18
+preset = "slow"
+
+[timing]
+start_delay = 0.45
+tap_first = 0.04
+tap_extra = 0.26
+tap_curve = 1.6
+hold_base = 0.23
+hold_per_point = 0.01
+fade = 0.18
+end_hold = 3.0
+
+[layout]
+margin = 0.05
+logo_width = 0.42
+logo_gap = 0.02
+list_rows = 11
+list_cols = 2
+word_size = 26
+score_size = 12
+list_size = 12
+
+[board]
+letter_size_4 = 52
+letter_size_5 = 41
+letter_baseline = 0.3
+grout = 1.6
+line_width = 4.5
+dot_size = 18
+
+[popups]
+size = 13
+rise = 0.025
+duration = 1.8
+steps = 12
+fade_from = 0.7
+rare_label = "only {pct}% found it"
+seed_label = "the seed word"
+
+[bonuses]
+"opponent bonus" = { label = "Ava didn't find that", colour = "muted", sound = "", priority = 1 }
+"unique" = { label = "unique", colour = "muted", sound = "", priority = 1 }
+"dirty bonus" = { label = "dirty word!", colour = "#d44a8a", sound = "dirty", priority = 2 }
+
+[words]
+rare_below = 0.12
+
+[colours]
+rare = "#e67e22"
+seed = "#c0392b"
+heat_to = "#7b4fa3"
+
+[colours.light]
+surface = "#faf3ea"
+board = "#366c94"
+letter = "#faf3ea"
+muted = "#808080"
+foreground = "#366c94"
+line = "#808080"
+logo = "logo_light.png"
+
+[colours.dark]
+surface = "#003154"
+board = "#315178"
+letter = "#d6d6d6"
+muted = "#4a6e82"
+foreground = "#d6d6d6"
+line = "#9aa8b4"
+logo = "logo_dark.png"
+
+[audio]
+rate = 48000
+bitrate = "160k"
+tap_scale = [0, 2, 4, 5, 7, 9, 11]
+tap_max_degrees = 14
+
+[sounds]
+dir = "sounds"
+start = "start.wav"
+tap = "tap.wav"
+submit = "submit.wav"
+rare = "rare.wav"
+seed = "seed.wav"
+dirty = "dirty.wav"
+end = "end.wav"

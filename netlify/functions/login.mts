@@ -1,5 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
-import { timingSafeEqual } from 'crypto';
+import { timingSafeEqual } from 'node:crypto';
 
 export default async function login(req: Request, context: Context) {
     if (req.method !== 'POST') {

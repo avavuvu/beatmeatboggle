@@ -3,19 +3,12 @@ import { SESSION_SECRET } from "$env/static/private"
 import { dev } from "$app/environment"
 import type { Cookies } from "@sveltejs/kit"
 
-export type PatronTier = "free" | "paid"
-
-export type PatronSession = {
-    patreonUserId: string
-    tier: PatronTier
-    fullName: string | null
-    thumbUrl: string | null
-    accessToken: string
-    refreshToken: string
-    checkedAt: number
-}
-
-export const PATRON_COOKIE = "patron_session"
+export {
+    PATRON_COOKIE,
+    type PatronSession,
+    type PatronTier,
+} from "./sessionTypes"
+import { PATRON_COOKIE, type PatronSession } from "./sessionTypes"
 
 const sign = (payload: string) =>
     createHmac("sha256", SESSION_SECRET).update(payload).digest("hex")

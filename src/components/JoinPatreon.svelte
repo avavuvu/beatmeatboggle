@@ -45,7 +45,12 @@
 </a>
 {#if tier}
     <span class="text-muted">
-        (<button type="button" class="underline cursor-pointer" onclick={recheck} disabled={checking}>
+        (<button
+            type="button"
+            class="underline cursor-pointer"
+            onclick={recheck}
+            disabled={checking}
+        >
             {checking ? "checking..." : "already subscribed?"}
         </button>)
     </span>

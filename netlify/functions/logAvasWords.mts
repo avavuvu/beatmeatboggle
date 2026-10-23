@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions"
+import { purgeCache } from "@netlify/functions"
 import { db } from "../../db"
 import { avasWords } from "../../db/schema"
 
@@ -37,6 +38,12 @@ export default async function logAvasWords(req: Request, context: Context) {
             target: avasWords.dateKey,
             set: { words },
         })
+
+    try {
+        await purgeCache({ tags: ["play-page"] })
+    } catch (e) {
+        console.error("cache purge failed", e)
+    }
 
     return Response.json(
         { success: true, dateKey, wordCount: words.length },

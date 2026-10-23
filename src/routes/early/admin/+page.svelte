@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { ResolvedBoard } from "$lib/board"
 
-    let date = $state(new Date().toISOString().slice(0, 10));
+    let date = $state(new Date().toISOString().slice(0, 10))
 
     let board: ResolvedBoard | null = $state(null)
     let error: string | null = $state(null)
@@ -38,7 +38,10 @@
             class="border p-2 text-center bg-foreground text-surface"
             type="date"
             bind:value={date}
-            oninput={() => { board = null; error = null }}
+            oninput={() => {
+                board = null
+                error = null
+            }}
         />
 
         <ul class="text-left underline">
@@ -46,7 +49,12 @@
                 <a href="/early/admin/play?date={date}">play</a>
             </li>
             <li>
-                <button type="button" class="underline cursor-pointer" onclick={reroll} disabled={busy}>
+                <button
+                    type="button"
+                    class="underline cursor-pointer"
+                    onclick={reroll}
+                    disabled={busy}
+                >
                     {busy ? "rerolling..." : "reroll"}
                 </button>
             </li>
@@ -63,7 +71,10 @@
                     style:grid-template-columns="repeat({board.size}, 1fr)"
                 >
                     {#each board.letters as letter}
-                        <span class="border aspect-square flex items-center justify-center">{letter}</span>
+                        <span
+                            class="border aspect-square flex items-center justify-center"
+                            >{letter}</span
+                        >
                     {/each}
                 </div>
                 <p class="mt-2">{board.totalWords.length} words</p>

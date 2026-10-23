@@ -9,7 +9,7 @@ let cachedAt = 0
 
 async function getAllDateKeys(): Promise<string[]> {
     const now = Date.now()
-    if (cachedDateKeys && now - cachedAt <  60 * 60 * 1000) {
+    if (cachedDateKeys && now - cachedAt < 60 * 60 * 1000) {
         return cachedDateKeys
     }
 

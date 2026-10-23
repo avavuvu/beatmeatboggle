@@ -20339,8 +20339,6 @@ egress
 egresses
 egret
 egrets
-egyptian
-egyptians
 eider
 eiderdown
 eiderdowns
@@ -28470,10 +28468,6 @@ gynecologist
 gynecologists
 gynecology
 gyoza
-gyp
-gypped
-gypping
-gyps
 gypsum
 gyrate
 gyrated
@@ -31310,8 +31304,6 @@ iguanodon
 ikebana
 ikon
 ikons
-ilea
-ileum
 iliac
 iliad
 ilium
@@ -33817,8 +33809,6 @@ isle
 isles
 islet
 islets
-ism
-isms
 isobar
 isobars
 isogons
@@ -53404,13 +53394,8 @@ retaliatory
 retaped
 retapes
 retaping
-retard
 retardant
 retardants
-retardation
-retarded
-retarding
-retards
 retaste
 retasted
 retaxes

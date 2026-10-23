@@ -6,6 +6,6 @@
 <Head
     title="Boggle Word Checker"
     description="Verify if a word can be played in Boggle, Scrabble, or any word game"
-    />
+/>
 
-<Checker/>
+<Checker />

@@ -12,7 +12,9 @@ export type ChallengeData = {
 }
 
 const hexToBytes = (hex: string): Uint8Array => {
-    const padded = hex.padStart(PLAYER_ID_BYTES * 2, "0").slice(0, PLAYER_ID_BYTES * 2)
+    const padded = hex
+        .padStart(PLAYER_ID_BYTES * 2, "0")
+        .slice(0, PLAYER_ID_BYTES * 2)
     const bytes = new Uint8Array(PLAYER_ID_BYTES)
     for (let i = 0; i < PLAYER_ID_BYTES; i++) {
         bytes[i] = parseInt(padded.slice(i * 2, i * 2 + 2), 16)
@@ -43,7 +45,11 @@ const fromBase64Url = (b64url: string): Uint8Array => {
     return Uint8Array.from(binary, (char) => char.charCodeAt(0))
 }
 
-export const encodeChallenge = ({ date, playerId, name }: ChallengeData): string => {
+export const encodeChallenge = ({
+    date,
+    playerId,
+    name,
+}: ChallengeData): string => {
     const dateMs = Date.UTC(
         Number(date.slice(0, 4)),
         Number(date.slice(5, 7)) - 1,
@@ -72,7 +78,11 @@ export const decodeChallenge = (token: string): ChallengeData | null => {
             return null
         }
 
-        const view = new DataView(payload.buffer, payload.byteOffset, payload.byteLength)
+        const view = new DataView(
+            payload.buffer,
+            payload.byteOffset,
+            payload.byteLength
+        )
         const daysSinceEpoch = view.getUint16(0, false)
 
         const dateMs = EPOCH_MS + daysSinceEpoch * MS_PER_DAY

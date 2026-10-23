@@ -1,12 +1,14 @@
 <script lang="ts">
     import type { Snippet } from "svelte"
 
-    const { children, title }: {
-        children: Snippet,
-        title: string,
+    const {
+        children,
+        title,
+    }: {
+        children: Snippet
+        title: string
     } = $props()
 </script>
-
 
 <div class="text-foreground max-w-3xl my-10 mx-auto px-4">
     <span class="inline-flex gap-4 w-full">
@@ -17,8 +19,6 @@
         {@render children()}
     </main>
 </div>
-
-
 
 <style>
     main :global(p) {

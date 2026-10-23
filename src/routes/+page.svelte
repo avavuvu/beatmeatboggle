@@ -1,9 +1,8 @@
 <script lang="ts">
     import Head from "@/styling/Head.svelte"
-    import { browser } from '$app/environment'
+    import { browser } from "$app/environment"
 
     const playedBefore = browser && localStorage.length > 1
-
 </script>
 
 <Head />
@@ -11,7 +10,7 @@
 <svg
     class="max-w-3xl mx-auto mt-4"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="-10 0 740.57 279.29"
+    viewBox="-6 -6 716 288"
     width="100%"
     height="100%"
 >
@@ -26,7 +25,6 @@
     /></svg
 >
 
-
 <div class="text-foreground max-w-4xl mx-auto px-4">
     <h1 class="px-2">
         <span> Beat </span>
@@ -35,26 +33,29 @@
         <span> Boggle </span>
     </h1>
 
-    <main class="border ">
+    <main class="border">
         <div class="p-4 *>py-2">
             <h2 class="font-bold">My name is Ava and I like Boggle</h2>
             <p>So much so, I decided to make this online version.</p>
             <p>
-                Every day, I play a game of Boggle. The next day, you try and beat
-                my score.
+                Every day, I play a game of Boggle. The next day, you try and
+                beat my score.
             </p>
             <p>
-                If you manage to beat me -- well, you don't get anything. Except maybe
-                the satisfaction of knowing you're better at Boggle than me.
+                If you manage to beat me -- well, you don't get anything. Except
+                maybe the satisfaction of knowing you're better at Boggle than
+                me.
             </p>
         </div>
-        <div class="w-full bg-foreground flex  justify-center text-surface">
+        <div class="w-full bg-foreground flex justify-center text-surface">
             <a class="" href="/play"> {">"} Play Today's Game! {"<"} </a>
-         </div>
+        </div>
     </main>
 
     <aside class="border p-4 my-4">
-        <ul class="flex gap-2 md:gap-6 flex-wrap justify-between sm:justify-start">
+        <ul
+            class="flex gap-2 md:gap-6 flex-wrap justify-between sm:justify-start"
+        >
             <li>
                 <a class="underline new" href="/stats"> stats </a>
             </li>
@@ -80,7 +81,9 @@
                 <a class="underline" href="/about"> about </a>
             </li>
             <li>
-                <a class="underline" href="/about/words"> about the dictionary </a>
+                <a class="underline" href="/about/words">
+                    about the dictionary
+                </a>
             </li>
             <li>
                 <a class="underline" href="/about/boards"> about the boards </a>
@@ -93,8 +96,6 @@
             </li>
         </ul>
     </aside>
-
-
 </div>
 
 <style>

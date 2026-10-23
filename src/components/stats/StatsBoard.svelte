@@ -12,7 +12,12 @@
     )
 </script>
 
-<svg class="grid" viewBox="0 0 {size} {size}" role="img" aria-label="{size}x{size} board">
+<svg
+    class="grid"
+    viewBox="0 0 {size} {size}"
+    role="img"
+    aria-label="{size}x{size} board"
+>
     {#each cells as { x, y, char }}
         <g transform={`translate(${x}, ${y})`}>
             <Tile {char} selected={false} />

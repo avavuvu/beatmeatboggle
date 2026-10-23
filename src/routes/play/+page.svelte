@@ -17,8 +17,11 @@
     })
 </script>
 
-<Head
-    title={dateFormatted}
-    />
+<Head title={dateFormatted} />
 
-<Game dateKey={data.dateKey} board={data.board} playerStatus="player" opponentWords={data.avasWords} />
+<Game
+    dateKey={data.dateKey}
+    board={data.board}
+    playerStatus="player"
+    opponentWords={data.avasWords}
+/>

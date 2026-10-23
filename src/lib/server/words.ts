@@ -8,18 +8,24 @@ export type DayWordStats = {
     words: WordStat[]
 }
 
-export const getDayWordStats = async (dateKey: string): Promise<DayWordStats> => {
-    const { rows } = await db.execute<{ word: string; plays: number; players: number }>(sql`
+export const getDayWordStats = async (
+    dateKey: string
+): Promise<DayWordStats> => {
+    const { rows } = await db.execute<{
+        word: string
+        plays: number
+        players: number
+    }>(sql`
         with players as (
             select count(*)::int as total
             from ${playerWords}
-            where ${playerWords.dateKey} = ${dateKey}
+            where ${playerWords.dateKey} = ${dateKey} and ${playerWords.mode} = 'daily'
         ),
         plays as (
             select w.word, count(*)::int as plays
             from ${playerWords}
             cross join lateral jsonb_array_elements_text(${playerWords.words}) as w(word)
-            where ${playerWords.dateKey} = ${dateKey}
+            where ${playerWords.dateKey} = ${dateKey} and ${playerWords.mode} = 'daily'
             group by w.word
         )
         select t.word, coalesce(p.plays, 0)::int as plays, players.total as players

@@ -14,11 +14,7 @@ const buildDate = new Date().toISOString()
 export const GET = ({ params }: { params: { chunk: string } }) => {
     const chunk = Number(params.chunk)
 
-    if (
-        !Number.isInteger(chunk) ||
-        chunk < 0 ||
-        chunk >= sitemapChunkCount
-    ) {
+    if (!Number.isInteger(chunk) || chunk < 0 || chunk >= sitemapChunkCount) {
         error(404)
     }
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type InputController from "$lib/InputController.svelte";
+    import type InputController from "$lib/InputController.svelte"
 
     const { inputController }: { inputController: InputController } = $props()
 
@@ -8,4 +8,4 @@
     }
 </script>
 
-<svelte:window {onkeydown}/>
+<svelte:window {onkeydown} />

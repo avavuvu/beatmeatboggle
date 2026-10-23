@@ -1,22 +1,26 @@
 <script lang="ts">
-    import toaster, { type Toast } from "$lib/Toaster.svelte";
-    import { fade } from "svelte/transition";
+    import toaster, { type Toast } from "$lib/Toaster.svelte"
+    import { fade } from "svelte/transition"
 
-    let latestToast: Toast | undefined = $state();
+    let latestToast: Toast | undefined = $state()
 
-    let timeOut: ReturnType<typeof setTimeout>;
+    let timeOut: ReturnType<typeof setTimeout>
 
     $effect(() => {
-        latestToast = toaster.toasts.at(-1);
-        toaster.showToast = true;
+        latestToast = toaster.toasts.at(-1)
+        toaster.showToast = true
 
-        clearTimeout(timeOut);
+        clearTimeout(timeOut)
 
         timeOut = setTimeout(() => {
-            toaster.showToast = false;
-        }, 3000);
-    });
+            toaster.showToast = false
+        }, 3000)
+    })
 </script>
+
+<p class="sr-only" role="status" aria-live="polite">
+    {latestToast ? latestToast.content.join(". ") : ""}
+</p>
 
 {#if toaster.showToast && latestToast}
     {@const { content, type } = latestToast}

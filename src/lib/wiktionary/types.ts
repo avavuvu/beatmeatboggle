@@ -6,11 +6,11 @@
 export interface paths {
     "/entries/{language}/{word}": {
         parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
         /**
          * Entries
          * @description Retrieves dictionary entries for a specified word for a specific language or all available
@@ -20,49 +20,49 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Whether to include translations of the word to other languages. */
-                    translations?: boolean;
+                    translations?: boolean
                     /** @description Whether to pretty-print the JSON response. */
-                    pretty?: boolean;
-                };
-                header?: never;
+                    pretty?: boolean
+                }
+                header?: never
                 path: {
                     /**
                      * @description ISO 639-1/639-3 (2 or 3 letter) language code for word lookup, or "all" to retrieve
                      *     entries across all available languages.
                      */
-                    language: string;
+                    language: string
                     /** @description Word to retrieve entries for. */
-                    word: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
+                    word: string
+                }
+                cookie?: never
+            }
+            requestBody?: never
             responses: {
                 200: {
                     headers: {
-                        [name: string]: unknown;
-                    };
+                        [name: string]: unknown
+                    }
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["EntriesByLanguageAndWord"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+                        "application/json; charset=utf-8": components["schemas"]["EntriesByLanguageAndWord"]
+                    }
+                }
+            }
+        }
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
     "/languages": {
         parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
         /**
          * Languages
          * @description Retrieves all available languages with the number of words in the dictionary.
@@ -71,34 +71,34 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Whether to pretty-print the JSON response. */
-                    pretty?: boolean;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
+                    pretty?: boolean
+                }
+                header?: never
+                path?: never
+                cookie?: never
+            }
+            requestBody?: never
             responses: {
                 200: {
                     headers: {
-                        [name: string]: unknown;
-                    };
+                        [name: string]: unknown
+                    }
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["LanguageWithWords"][];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+                        "application/json; charset=utf-8": components["schemas"]["LanguageWithWords"][]
+                    }
+                }
+            }
+        }
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
     schemas: {
         /**
@@ -107,149 +107,149 @@ export interface components {
          */
         EntriesByLanguageAndWord: {
             /** @description The word being looked up. */
-            word: string;
+            word: string
             /** @description All dictionary entries for this word in different languages and contexts. */
-            entries: components["schemas"]["Entry"][];
+            entries: components["schemas"]["Entry"][]
             /** @description Information about where this data comes from and how it can be used. */
-            source: components["schemas"]["Source"] & unknown;
-        };
+            source: components["schemas"]["Source"] & unknown
+        }
         /**
          * Entry
          * @description A dictionary entry for a word in one specific language.
          */
         Entry: {
             /** @description Which language this entry is for. */
-            language: components["schemas"]["Language"] & unknown;
+            language: components["schemas"]["Language"] & unknown
             /** @description What type of word this is (noun, verb, adjective, etc.). */
-            partOfSpeech: string;
+            partOfSpeech: string
             /** @description How to pronounce this word. */
-            pronunciations: components["schemas"]["Pronunciation"][];
+            pronunciations: components["schemas"]["Pronunciation"][]
             /** @description Different forms of this word (like plural, past tense). */
-            forms: components["schemas"]["Form"][];
+            forms: components["schemas"]["Form"][]
             /** @description All the different meanings of this word. */
-            senses: components["schemas"]["Sense"][];
+            senses: components["schemas"]["Sense"][]
             /** @description Words that mean the same thing as this word (for the whole entry). */
-            synonyms: string[];
+            synonyms: string[]
             /** @description Words that mean the opposite of this word (for the whole entry). */
-            antonyms: string[];
-        };
+            antonyms: string[]
+        }
         /**
          * Form
          * @description A different form of the word (like plural, past tense, etc.).
          */
         Form: {
             /** @description The different form of this word. */
-            word: string;
+            word: string
             /** @description Labels describing what kind of form this is (plural, past tense, etc.). */
-            tags: string[];
-        };
+            tags: string[]
+        }
         /**
          * Language
          * @description Information about a language.
          */
         Language: {
             /** @description ISO 639-1/639-3 (2 or 3 letter) language code. */
-            code: string;
+            code: string
             /** @description The full name of this language in English. */
-            name: string;
-        };
+            name: string
+        }
         /**
          * LanguageWithWords
          * @description Information about a language with the number of words in the dictionary.
          */
         LanguageWithWords: {
             /** @description ISO 639-1/639-3 (2 or 3 letter) language code. */
-            code: string;
+            code: string
             /** @description The full name of this language in English. */
-            name: string;
+            name: string
             /**
              * Format: uint32
              * @description The number of words in the dictionary for this language.
              */
-            words: number;
-        };
+            words: number
+        }
         /**
          * License
          * @description Legal terms for using the dictionary data.
          */
         License: {
             /** @description Name of the license. */
-            name: string;
+            name: string
             /** @description Link to read the full license terms. */
-            url: string;
-        };
+            url: string
+        }
         /**
          * Pronunciation
          * @description How to pronounce a word using phonetic symbols.
          */
         Pronunciation: {
             /** @description The type of pronunciation (like "ipa", "enpr", etc.). */
-            type: components["schemas"]["PronunciationType"] & unknown;
+            type: components["schemas"]["PronunciationType"] & unknown
             /** @description The pronunciation written in the specified notation. */
-            text: string;
+            text: string
             /** @description Labels describing this pronunciation (like dialect or formality level). */
-            tags: string[];
-        };
+            tags: string[]
+        }
         /** @enum {string} */
-        PronunciationType: "ipa" | "enpr";
+        PronunciationType: "ipa" | "enpr"
         /**
          * Quote
          * @description A quote from a book or other source showing how the word is used.
          */
         Quote: {
             /** @description The actual quote text. */
-            text: string;
+            text: string
             /** @description Where this quote came from (book title, author, etc.). */
-            reference: string;
-        };
+            reference: string
+        }
         /**
          * Sense
          * @description One specific meaning of a word with examples and related information.
          */
         Sense: {
             /** @description What this meaning of the word means. */
-            definition: string;
+            definition: string
             /** @description Labels about how this meaning is used (formal, old-fashioned, technical, etc.). */
-            tags: string[];
+            tags: string[]
             /** @description Example sentences showing how to use this meaning. */
-            examples: string[];
+            examples: string[]
             /** @description Real quotes from books or other sources using this word. */
-            quotes: components["schemas"]["Quote"][];
+            quotes: components["schemas"]["Quote"][]
             /** @description Words that mean the same as this specific meaning. */
-            synonyms: string[];
+            synonyms: string[]
             /** @description Words that mean the opposite of this specific meaning. */
-            antonyms: string[];
+            antonyms: string[]
             /** @description How to say this meaning in other languages. */
-            translations?: components["schemas"]["Translation"][];
+            translations?: components["schemas"]["Translation"][]
             /** @description More specific meanings within this meaning. */
-            subsenses: components["schemas"]["Sense"][];
-        };
+            subsenses: components["schemas"]["Sense"][]
+        }
         /**
          * Source
          * @description Information about where the dictionary data comes from.
          */
         Source: {
             /** @description Link to the original Wiktionary page. */
-            url: string;
+            url: string
             /** @description Legal information about how you can use this data. */
-            license: components["schemas"]["License"] & unknown;
-        };
+            license: components["schemas"]["License"] & unknown
+        }
         /**
          * Translation
          * @description How to say a word in another language.
          */
         Translation: {
             /** @description Which language this translation is in. */
-            language: components["schemas"]["Language"] & unknown;
+            language: components["schemas"]["Language"] & unknown
             /** @description The word or phrase in that language. */
-            word: string;
-        };
-    };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+            word: string
+        }
+    }
+    responses: never
+    parameters: never
+    requestBodies: never
+    headers: never
+    pathItems: never
 }
-export type $defs = Record<string, never>;
-export type operations = Record<string, never>;
+export type $defs = Record<string, never>
+export type operations = Record<string, never>

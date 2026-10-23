@@ -1,23 +1,26 @@
 <script lang="ts">
-    import { createGameSession } from "$lib/gameSession";
-    import type { ResolvedBoard } from "$lib/board";
-    import GameManager from "$lib/GameManager.svelte";
-    import InputController from "$lib/InputController.svelte";
+    import { createGameSession } from "$lib/gameSession"
+    import type { ResolvedBoard } from "$lib/board"
+    import GameManager from "$lib/GameManager.svelte"
+    import InputController from "$lib/InputController.svelte"
     import { onMount, onDestroy } from "svelte"
     import type { PlayerState } from "$lib/constants"
     import { browser } from "$app/environment"
     import { loadGameState } from "$lib/session"
-    import Board from "./Board.svelte";
-    import Input from "./Input.svelte";
-    import Logo from "./Logo.svelte";
-    import Reveal from "./Reveal.svelte";
-    import Toast from "./Toast.svelte";
+    import Board from "./Board.svelte"
+    import Input from "./Input.svelte"
+    import Logo from "./Logo.svelte"
+    import Reveal from "./Reveal.svelte"
+    import Toast from "./Toast.svelte"
     import toaster from "$lib/Toaster.svelte"
     import Definition from "./Definition.svelte"
     import { pause } from "./icons/pause.svelte"
     import { backspace } from "./icons/backspace.svelte"
     import { submit } from "./icons/submit.svelte"
     import Challenge from "./Challenge.svelte"
+    import { challengeManager } from "$lib/challenge/challenge.svelte"
+    import definitionManager from "$lib/DefinitionManager.svelte"
+    import { findPath, wordToTiles } from "$lib/boardPath"
 
     const {
         dateKey,
@@ -25,45 +28,67 @@
         playerStatus,
         opponentWords,
         opponentName = "Ava",
-        challengedBy = null
+        challengedBy = null,
+        isArchive = false,
     }: {
-        dateKey: string;
-        board: ResolvedBoard;
-        playerStatus: PlayerState;
-        opponentWords: string[] | null,
-        opponentName?: string,
+        dateKey: string
+        board: ResolvedBoard
+        playerStatus: PlayerState
+        opponentWords: string[] | null
+        opponentName?: string
         challengedBy?: string | null
+        isArchive?: boolean
     } = $props()
 
     // svelte-ignore state_referenced_locally
-    const session = createGameSession(dateKey, playerStatus, board, challengedBy)
-    // svelte-ignore state_referenced_locally
-    const game = new GameManager(session, opponentWords, opponentName)
+    const session = createGameSession({
+        dateKey,
+        playerState: playerStatus,
+        board,
+        opponentWords,
+        opponentName,
+        challengedBy,
+        isArchive,
+    })
+    const game = new GameManager(session)
 
     const inputController = new InputController(game)
 
+    let selectedWord = $state<string | null>(null)
+
+    const highlightPath = $derived(
+        selectedWord
+            ? findPath({
+                  tiles: wordToTiles(selectedWord),
+                  letters: session.board.letters,
+                  size: session.board.size,
+              })
+            : null
+    )
+
     const timeDisplay = $derived.by(() => {
-        const minutes = Math.floor(game.secondsLeft / 60);
-        const seconds = game.secondsLeft % 60;
+        const minutes = Math.floor(game.secondsLeft / 60)
+        const seconds = game.secondsLeft % 60
 
         if (game.secondsLeft < 60) {
-            return String(seconds).padStart(2, "0");
+            return String(seconds).padStart(2, "0")
         }
 
-        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    });
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+    })
 
     let canAnimate = $state(false)
     let error: null | any = $state()
 
     let introDelay = 3200
     let hasStartedOnce = false
+    let introTimer: ReturnType<typeof setTimeout> | undefined
 
     const startOrResumeTimer = () => {
         if (!hasStartedOnce) {
             hasStartedOnce = true
 
-            if (loadGameState(session.dateKey)) {
+            if (loadGameState(session.saveKey)) {
                 introDelay = 0
                 canAnimate = false
             } else {
@@ -71,9 +96,14 @@
             }
 
             game.gameState = "loading"
-            setTimeout(() => {
+            introTimer = setTimeout(() => {
+                introTimer = undefined
+                if (document.hidden) {
+                    game.gameState = "backgrounded"
+                    return
+                }
                 game.startGame()
-            }, introDelay);
+            }, introDelay)
         } else {
             game.resume()
         }
@@ -112,25 +142,31 @@
         if (!document.hidden) {
             attemptAutoResume()
         }
-    });
+    })
 
     onDestroy(() => {
         if (browser) {
-            document.removeEventListener("visibilitychange", handleVisibilityChange)
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange
+            )
         }
-        game.stopTimer();
-        toaster.showToast = false;
-    });
+        clearTimeout(introTimer)
+        challengeManager.showChallenge = false
+        definitionManager.clearWord()
+        game.stopTimer()
+        toaster.showToast = false
+    })
 </script>
 
 {#if error}
-	<div>
-		<h1>An error has occurred</h1>
+    <div>
+        <h1>An error has occurred</h1>
 
-		<code class="text-red-400">
-			{JSON.stringify(error)}
-		</code>
-	</div>
+        <code class="text-red-400">
+            {JSON.stringify(error)}
+        </code>
+    </div>
 {/if}
 
 <div
@@ -147,12 +183,13 @@
                 type="button"
                 class="timer-button"
                 onclick={toggleTimer}
-                aria-label={game.gameState === "playing" ? "Pause timer" : "Resume timer"}
+                aria-label={game.gameState === "playing"
+                    ? "Pause timer"
+                    : "Resume timer"}
             >
                 {#if game.gameState === "paused"}
                     <div class="h-16 w-16">
                         {@render pause()}
-
                     </div>
                 {:else}
                     {timeDisplay}
@@ -160,7 +197,7 @@
             </button>
         </div>
         <div class="board edge">
-            <Board {canAnimate} {game} {inputController} />
+            <Board {canAnimate} {game} {inputController} {highlightPath} />
         </div>
         <div
             class="words -z-20 pointer-events-none flex flex-col
@@ -192,18 +229,22 @@
         </h1>
         {#if game.gameState === "gameOver"}
             <div class="reveal">
-                <Reveal {game} />
+                <Reveal {game} bind:selectedWord />
             </div>
-            <div class="definition edge">
-                <Definition/>
-            </div>
-            <div class="challenge edge">
-                <Challenge {game}/>
-            </div>
+            {#if definitionManager.currentDefinition}
+                <div class="definition edge">
+                    <Definition />
+                </div>
+            {/if}
+            {#if challengeManager.showChallenge}
+                <div class="challenge edge">
+                    <Challenge {game} />
+                </div>
+            {/if}
         {/if}
         <div
             class="backspace edge touch-manipulation bg-surface"
-            style={game.isPlayingGame ? "display: unset;" : "display: none;" }
+            style={game.isPlayingGame ? "display: unset;" : "display: none;"}
         >
             <button
                 onclick={() => game.removeLast()}
@@ -217,7 +258,7 @@
         </div>
         <div
             class="submit edge touch-manipulation bg-surface"
-            style={game.isPlayingGame ? "display: unset;" :  "display: none;"}
+            style={game.isPlayingGame ? "display: unset;" : "display: none;"}
         >
             <button
                 class="w-full h-full cursor-pointer flex items-center justify-center"
@@ -262,12 +303,35 @@
         grid-area: 1 / 2 / 5 / 6;
         overflow: hidden;
     }
-    .challenge {
+    .challenge,
+    .definition {
         grid-area: 1 / 2 / 5 / 6;
         z-index: 10;
     }
     .banner {
         grid-area: 1 / 1 / 5 / 2;
+    }
+
+    @media (min-width: 601px) {
+        .banner {
+            position: relative;
+            container-type: size;
+            overflow: hidden;
+        }
+
+        .banner a {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: calc(100cqh - 2rem);
+            height: calc(100cqw - 1rem);
+            translate: -50% -50%;
+            rotate: -90deg;
+        }
+
+        .banner :global(svg) {
+            max-width: none;
+        }
     }
     .timer {
         grid-area: 1 / 6 / 2 / 8;
@@ -286,9 +350,6 @@
     }
     .reveal {
         grid-area: 1 / 6 / 5 / 8;
-    }
-    .definition {
-        grid-area: 1 / 1 / 5 / 2;
     }
 
     /* MOBILE */
@@ -341,25 +402,24 @@
         }
 
         .game-container.game-over .board {
-        	grid-area: 2 / 1 / 4 / 5;
+            grid-area: 2 / 1 / 4 / 5;
         }
 
         .game-container.game-over .gutter {
-      		display: none;
+            display: none;
         }
         .game-container.game-over .reveal {
-        	grid-area: 4 / 1 / 8 / 5;
+            grid-area: 4 / 1 / 8 / 5;
         }
-        .game-container.game-over .definition, .game-container.game-over .challenge {
-        	grid-area: 2 / 1 / 5 / 5;
+        .game-container.game-over .definition,
+        .game-container.game-over .challenge {
+            grid-area: 2 / 1 / 5 / 5;
             z-index: 10;
         }
         .game-container.game-over .challenge {
-        	grid-area: 2 / 1 / 5 / 5;
+            grid-area: 2 / 1 / 5 / 5;
             z-index: 10;
         }
-
-
     }
 
     .timer {

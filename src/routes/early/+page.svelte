@@ -1,30 +1,30 @@
 <script lang="ts">
-    import { goto, invalidateAll } from "$app/navigation";
-    import Game from "@/Game.svelte";
-    import Logo from "@/Logo.svelte";
+    import { goto, invalidateAll } from "$app/navigation"
+    import Game from "@/Game.svelte"
+    import Logo from "@/Logo.svelte"
 
-    let password = $state("");
-    let error = $state("");
+    let password = $state("")
+    let error = $state("")
 
     const login = async () => {
-        error = "";
+        error = ""
 
         const res = await fetch("/early/admin/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ password }),
-        });
+        })
 
         if (res.ok) {
-            const { token } = await res.json();
-            localStorage.setItem("admin_token", token);
-            await goto("/early/admin");
-            error = "success";
+            const { token } = await res.json()
+            localStorage.setItem("admin_token", token)
+            await goto("/early/admin")
+            error = "success"
         } else {
             error =
-                res.status === 429 ? "Too many attempts." : "Wrong password.";
+                res.status === 429 ? "Too many attempts." : "Wrong password."
         }
-    };
+    }
 </script>
 
 <div class="max-w-32 mx-auto mt-48 p-4">

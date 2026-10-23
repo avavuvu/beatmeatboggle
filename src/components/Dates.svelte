@@ -2,9 +2,13 @@
     import { tick } from "./icons/tick.svelte"
     import { logo } from "./icons/logo.svelte"
 
-    const { dates, paid, pastGames }: {
-        dates: string[],
-        paid: boolean,
+    const {
+        dates,
+        paid,
+        pastGames,
+    }: {
+        dates: string[]
+        paid: boolean
         pastGames: Record<string, boolean>
     } = $props()
 
@@ -23,21 +27,12 @@
         "12": "December",
     } as const
 
-    type Month = typeof monthMap[keyof typeof monthMap]
-
+    const months: Record<string, string[][]> = {}
     // svelte-ignore state_referenced_locally
-    const months: Partial<Record<Month,string[][]>> = Object.groupBy(
-        dates.map(date => date.split("-")),
-        (date) => {
-            // 0 year
-            // 1 month
-            // 2 day
-            const month = monthMap[date[1] as keyof typeof monthMap]
-            return month
-        }
-
-    )
-
+    for (const parts of dates.map((date) => date.split("-"))) {
+        const label = `${monthMap[parts[1]]} ${parts[0]}`
+        ;(months[label] ??= []).push(parts)
+    }
 </script>
 
 <div class="flex flex-wrap gap-2 justify-center">
@@ -47,7 +42,7 @@
         <div class="w-xs border p-2">
             <h3 class="w-full border-b mb-1">{month}</h3>
             <div class="grid grid-cols-7 font-bold">
-                {#each ['MON','TUE','WED','THU','FRI','SAT','SUN'] as day}
+                {#each ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"] as day}
                     <span>{day}</span>
                 {/each}
             </div>
@@ -55,14 +50,17 @@
                 {#each dates ?? [] as date}
                     {@const isoKey = date.join("-")}
                     {@const [year, month, day] = date.map(Number)}
-                    {@const col = (new Date(year, month - 1, day).getDay() + 6) % 7 + 1}
+                    {@const col =
+                        ((new Date(year, month - 1, day).getDay() + 6) % 7) + 1}
                     {@const row = Math.ceil((day + firstDayOffset) / 7)}
                     <li
-                        style:grid-column-start={col} style:grid-row-start={row}>
+                        style:grid-column-start={col}
+                        style:grid-row-start={row}
+                    >
                         <svelte:element
+                            this={paid ? "a" : "span"}
                             href="/archive/{isoKey}"
-                            this={paid ? "a" : "span"} >
-
+                        >
                             {#if pastGames[isoKey] !== undefined}
                                 {@const hasFinishedGame = pastGames[isoKey]}
                                 <span class="inline-block w-4 h-4 align-middle">
@@ -81,5 +79,4 @@
             </ul>
         </div>
     {/each}
-
 </div>

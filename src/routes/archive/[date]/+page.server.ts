@@ -13,7 +13,9 @@ type ArchivedGame = {
 
 const cachedGames = new Map<string, ArchivedGame>()
 
-const getArchivedGame = async (dateKey: string): Promise<ArchivedGame | null> => {
+const getArchivedGame = async (
+    dateKey: string
+): Promise<ArchivedGame | null> => {
     const cached = cachedGames.get(dateKey)
     if (cached) return cached
 
@@ -28,6 +30,8 @@ const getArchivedGame = async (dateKey: string): Promise<ArchivedGame | null> =>
                 letters: boards.letters,
                 time: boards.time,
                 totalWords: boards.totalWords,
+                seedWord: boards.seedWord,
+                ladder: boards.ladder,
             })
             .from(boards)
             .where(eq(boards.dateKey, dateKey)),
@@ -35,7 +39,11 @@ const getArchivedGame = async (dateKey: string): Promise<ArchivedGame | null> =>
 
     if (!ava || !board) return null
 
-    const game: ArchivedGame = { dateKey, avasWords: ava.words, board }
+    const game: ArchivedGame = {
+        dateKey,
+        avasWords: ava.words,
+        board: { ...board, ladder: board.ladder ?? [] },
+    }
     cachedGames.set(dateKey, game)
 
     return game
