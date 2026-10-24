@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
+    import WordButton from "./WordButton.svelte"
+
     export type WordMarks = {
         found?: boolean
         unique?: boolean
         rare?: boolean
     }
-</script>
-
-<script lang="ts">
-    import WordButton from "./WordButton.svelte"
 
     const {
         words,

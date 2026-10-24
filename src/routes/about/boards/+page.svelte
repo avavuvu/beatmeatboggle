@@ -32,58 +32,58 @@
         <thead>
             <tr>
                 <th>Weekday</th>
-                <th>Generator</th>
+                <th>Gener&ZeroWidthSpace;ator</th>
                 <th>Size</th>
-                <th>Time</th>
+                <th>Min&ZeroWidthSpace;utes</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Monday</td>
-                <td>Classic dice</td>
+                <td>Clas&ZeroWidthSpace;sic dice</td>
                 <td>4x4</td>
-                <td>3 minutes</td>
+                <td>3</td>
             </tr>
             <tr>
                 <td>Tuesday</td>
                 <td>Word-based</td>
                 <td>4x4</td>
-                <td>3 minutes</td>
+                <td>3</td>
 
             </tr>
             <tr>
-                <td>Wednesday</td>
+                <td>Wed&ZeroWidthSpace;nesday</td>
                 <td>Word-based</td>
                 <td>4x4</td>
-                <td>3 minutes</td>
+                <td>3</td>
 
             </tr>
             <tr>
                 <td>Thursday</td>
                 <td>Word-based</td>
                 <td>4x4</td>
-                <td>3 minutes</td>
+                <td>3</td>
 
             </tr>
             <tr>
                 <td>Friday</td>
                 <td>Word-based</td>
                 <td>4x4</td>
-                <td>3 minutes</td>
+                <td>3</td>
 
             </tr>
             <tr>
                 <td>Saturday</td>
                 <td>Word-based</td>
                 <td>5x5</td>
-                <td>4 minutes</td>
+                <td>4</td>
 
             </tr>
             <tr>
                 <td>Sunday</td>
                 <td>Word-based</td>
                 <td>5x5</td>
-                <td>4 minutes</td>
+                <td>4</td>
 
             </tr>
         </tbody>

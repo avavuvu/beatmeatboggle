@@ -191,7 +191,7 @@
                 {onWordClick}
                 marks={(word) => ({
                     found: foundByYou.has(word),
-                    rare: rare(word),
+                    rare: false,
                 })}
             />
 
